@@ -1,0 +1,6 @@
+id: m01-electricity-basics
+title: "Module 1: Electricity Basics"
+description: "Understand electric charge, current, voltage, resistance, Ohm's law, and safe laboratory habits."
+order: 1
+lessons:
+  - m01-l01-what-is-electricity

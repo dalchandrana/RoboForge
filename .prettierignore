@@ -1,0 +1,17 @@
+dist/
+build/
+target/
+src-tauri/
+coverage/
+playwright-report/
+test-results/
+node_modules/
+*.tsbuildinfo
+pnpm-lock.yaml
+content/
+docs/
+.agents/
+AGENTS.md
+PRD.md
+GEMINI.md
+**/content-bundle.json

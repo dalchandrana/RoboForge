@@ -1,0 +1,141 @@
+{
+  "builtAt": "2026-10-03T20:21:12.452Z",
+  "paths": {
+    "electronics-embedded-foundations": {
+      "id": "electronics-embedded-foundations",
+      "title": "Electronics & Embedded Foundations",
+      "description": "From electricity basics to programming Arduino microcontrollers and your first autonomous robot.",
+      "modules": [
+        "m01-electricity-basics"
+      ]
+    }
+  },
+  "modules": {
+    "m01-electricity-basics": {
+      "id": "m01-electricity-basics",
+      "title": "Module 1: Electricity Basics",
+      "description": "Understand electric charge, current, voltage, resistance, Ohm's law, and safe laboratory habits.",
+      "order": 1,
+      "lessons": [
+        "m01-l01-what-is-electricity"
+      ]
+    }
+  },
+  "lessons": {
+    "m01-l01-what-is-electricity": {
+      "frontmatter": {
+        "id": "m01-l01-what-is-electricity",
+        "title": "What is electricity?",
+        "path": "electronics-embedded-foundations",
+        "module": "m01-electricity-basics",
+        "order": 1,
+        "level": "beginner",
+        "minutes": 15,
+        "prerequisites": [],
+        "objectives": [
+          "Explain what electric charge and electric current are",
+          "Understand the water pipe analogy and where it breaks"
+        ],
+        "keyIdeas": [
+          "Electricity is the flow of tiny electric charges called electrons.",
+          "Current requires a closed loop to keep moving.",
+          "Low-voltage DC power from small batteries is safe to learn with."
+        ],
+        "tags": [
+          "electricity",
+          "foundations",
+          "charge"
+        ],
+        "glossary": [
+          "charge",
+          "current",
+          "circuit"
+        ],
+        "needsHumanVerification": false,
+        "verified": true,
+        "sources": [
+          {
+            "title": "NIST Reference on Constants, Units, and Uncertainty",
+            "url": "https://physics.nist.gov/cuu/Units/index.html"
+          }
+        ],
+        "license": "CC-BY-SA-4.0",
+        "authors": [
+          "RoboForge Team"
+        ],
+        "locale": "en"
+      },
+      "rawMarkdown": "## 1. Hook\nHave you ever felt a tiny shock when touching a doorknob in winter?\nThat sudden little snap is static electricity jumping through the air.\nElectricity powers everything from a wristwatch to an autonomous Mars rover!\n\n<Callout type=\"safety\" title=\"Safe Lab Practice\">\nIn RoboForge, every hands-on circuit uses low-voltage DC batteries (under 12 volts). Never experiment with household wall sockets or mains power. Wall outlets carry deadly high voltages!\n</Callout>\n\n## 2. The Core Idea: What is Charge?\nAll matter around you is made of tiny atoms.\nAtoms contain positive protons and negative electrons.\nWhen electrons are pushed along a conductor like a copper wire, they form an **electric current**.\n\nThink of electric current as water flowing through a closed garden hose.\n- **Water particles** are like electric charges.\n- **The water pump** acts like a battery pushing the charges.\n- **The hose** is the conductive copper wire.\n\n<Callout type=\"info\" title=\"Where the Water Analogy Breaks\">\nWater can spill out into the open air from a cut hose. Electric current cannot spill onto your table! Charges will only flow if there is a complete, unbroken closed loop back to the battery.\n</Callout>\n\n## 3. See It: A Closed Circuit\nTo light up a small bulb or an LED, charges must travel in a complete circuit:\n\n1. Electrons start at the negative terminal of the battery.\n2. They travel through the connecting wire.\n3. They pass through the light bulb, making it glow.\n4. They return to the positive terminal of the battery.\n\nIf the wire is disconnected at any point, the flow stops instantly.\n\n## 4. Try It Out\nImagine you have a battery, two wires, and an LED bulb.\nWhat happens if you disconnect one wire?\nMake your prediction:\n- Will the light stay on for a second?\n- Or will it turn off immediately?\n\n<Reveal summary=\"See the explanation\">\nIt turns off immediately! Electric current cannot jump across open air gaps at low voltages. The loop must remain closed.\n</Reveal>\n\n## 5. Check Your Understanding\nAnswer the quiz below to check what you learned.\n\n## 6. Recap\n- Electricity is the flow of electric charges through a conductor.\n- Current requires a complete, unbroken loop to travel.\n- Low-voltage DC batteries provide safe power for our robotics projects.\n\n## 7. What's Next\nIn the next lesson, we will explore **Voltage, Current, and Resistance**, and see how they work together!",
+      "quiz": {
+        "id": "q-m01-l01-what-is-electricity",
+        "items": [
+          {
+            "type": "single",
+            "prompt": "What is an electric current fundamentally?",
+            "choices": [
+              {
+                "text": "The flow of tiny electric charges (electrons) through a conductor",
+                "correct": true
+              },
+              {
+                "text": "Liquid water moving inside a copper tube",
+                "correct": false
+              },
+              {
+                "text": "Sound waves vibrating through the air",
+                "correct": false
+              }
+            ],
+            "explanation": "Electric current is the physical movement of electric charges (typically electrons) through a conductive material."
+          },
+          {
+            "type": "single",
+            "prompt": "What happens to the current if you cut one wire in a simple battery and bulb circuit?",
+            "choices": [
+              {
+                "text": "Charges spill out onto the desk",
+                "correct": false
+              },
+              {
+                "text": "Current stops flowing immediately because the loop is broken",
+                "correct": true
+              },
+              {
+                "text": "The bulb glows brighter for a few seconds",
+                "correct": false
+              }
+            ],
+            "explanation": "At low voltages, charges cannot jump across the air gap. The circuit must form an unbroken closed loop to sustain current."
+          },
+          {
+            "type": "numeric",
+            "prompt": "If 10 Coulombs of electric charge flow past a sensor in 2 seconds, what is the electric current in Amperes? (Hint: Current = Charge / Time)",
+            "unit": "A",
+            "answer": 5,
+            "tolerance": 0.1,
+            "explanation": "Current (I) equals charge (Q) divided by time (t): 10 C / 2 s = 5 Amperes (A)."
+          },
+          {
+            "type": "multi",
+            "prompt": "Which of these are safe, recommended power sources for our school robotics projects?",
+            "choices": [
+              {
+                "text": "A 4x AA battery pack (6 Volts DC)",
+                "correct": true
+              },
+              {
+                "text": "A standard 9 Volt rectangular battery",
+                "correct": true
+              },
+              {
+                "text": "A household 120V / 230V AC wall outlet without a certified adapter",
+                "correct": false
+              }
+            ],
+            "explanation": "We only use low-voltage DC batteries (<= 12V DC). Mains wall power carries dangerous voltages that can cause fatal electric shocks."
+          }
+        ]
+      }
+    }
+  }
+}

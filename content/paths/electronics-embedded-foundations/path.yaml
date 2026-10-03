@@ -1,0 +1,5 @@
+id: electronics-embedded-foundations
+title: "Electronics & Embedded Foundations"
+description: "From electricity basics to programming Arduino microcontrollers and your first autonomous robot."
+modules:
+  - m01-electricity-basics

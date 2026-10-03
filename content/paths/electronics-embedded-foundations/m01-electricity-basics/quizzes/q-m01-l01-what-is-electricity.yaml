@@ -1,0 +1,41 @@
+id: q-m01-l01-what-is-electricity
+items:
+  - type: single
+    prompt: "What is an electric current fundamentally?"
+    choices:
+      - text: "The flow of tiny electric charges (electrons) through a conductor"
+        correct: true
+      - text: "Liquid water moving inside a copper tube"
+        correct: false
+      - text: "Sound waves vibrating through the air"
+        correct: false
+    explanation: "Electric current is the physical movement of electric charges (typically electrons) through a conductive material."
+
+  - type: single
+    prompt: "What happens to the current if you cut one wire in a simple battery and bulb circuit?"
+    choices:
+      - text: "Charges spill out onto the desk"
+        correct: false
+      - text: "Current stops flowing immediately because the loop is broken"
+        correct: true
+      - text: "The bulb glows brighter for a few seconds"
+        correct: false
+    explanation: "At low voltages, charges cannot jump across the air gap. The circuit must form an unbroken closed loop to sustain current."
+
+  - type: numeric
+    prompt: "If 10 Coulombs of electric charge flow past a sensor in 2 seconds, what is the electric current in Amperes? (Hint: Current = Charge / Time)"
+    unit: "A"
+    answer: 5
+    tolerance: 0.1
+    explanation: "Current (I) equals charge (Q) divided by time (t): 10 C / 2 s = 5 Amperes (A)."
+
+  - type: multi
+    prompt: "Which of these are safe, recommended power sources for our school robotics projects?"
+    choices:
+      - text: "A 4x AA battery pack (6 Volts DC)"
+        correct: true
+      - text: "A standard 9 Volt rectangular battery"
+        correct: true
+      - text: "A household 120V / 230V AC wall outlet without a certified adapter"
+        correct: false
+    explanation: "We only use low-voltage DC batteries (<= 12V DC). Mains wall power carries dangerous voltages that can cause fatal electric shocks."

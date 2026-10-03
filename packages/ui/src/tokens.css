@@ -1,0 +1,93 @@
+:root {
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans',
+    'Helvetica Neue', sans-serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+
+  /* Touch / Target size token */
+  --min-target-size: 40px;
+
+  /* Theme tokens - Light Mode default */
+  --bg-app: #f8fafc;
+  --bg-surface: #ffffff;
+  --bg-surface-elevated: #ffffff;
+  --bg-surface-subtle: #f1f5f9;
+  --border-subtle: #e2e8f0;
+  --border-strong: #cbd5e1;
+  --text-main: #0f172a;
+  --text-muted: #475569;
+  --text-faint: #94a3b8;
+
+  /* Brand Accents */
+  --brand-primary: #0284c7;
+  --brand-primary-hover: #0369a1;
+  --brand-primary-fg: #ffffff;
+  --brand-accent: #0ea5e9;
+
+  /* Status Tokens */
+  --status-info-bg: #f0f9ff;
+  --status-info-border: #bae6fd;
+  --status-info-text: #0369a1;
+
+  --status-tip-bg: #f0fdf4;
+  --status-tip-border: #bbf7d0;
+  --status-tip-text: #15803d;
+
+  --status-warning-bg: #fffbeb;
+  --status-warning-border: #fde68a;
+  --status-warning-text: #b45309;
+
+  --status-safety-bg: #fef2f2;
+  --status-safety-border: #fecaca;
+  --status-safety-text: #b91c1c;
+
+  /* Blueprint Grid Motif */
+  --blueprint-grid-color: rgba(2, 132, 199, 0.05);
+  --blueprint-grid-size: 24px;
+}
+
+[data-theme='dark'] {
+  --bg-app: #090d16;
+  --bg-surface: #111827;
+  --bg-surface-elevated: #1e293b;
+  --bg-surface-subtle: #162032;
+  --border-subtle: #1e293b;
+  --border-strong: #334155;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-faint: #64748b;
+
+  --brand-primary: #38bdf8;
+  --brand-primary-hover: #0284c7;
+  --brand-primary-fg: #090d16;
+  --brand-accent: #0284c7;
+
+  --status-info-bg: #082f49;
+  --status-info-border: #0369a1;
+  --status-info-text: #7dd3fc;
+
+  --status-tip-bg: #052e16;
+  --status-tip-border: #15803d;
+  --status-tip-text: #86efac;
+
+  --status-warning-bg: #451a03;
+  --status-warning-border: #b45309;
+  --status-warning-text: #fde68a;
+
+  --status-safety-bg: #450a0a;
+  --status-safety-border: #b91c1c;
+  --status-safety-text: #fca5a5;
+
+  --blueprint-grid-color: rgba(56, 189, 248, 0.04);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

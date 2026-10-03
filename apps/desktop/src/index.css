@@ -1,0 +1,19 @@
+@import '@roboforge/ui/tokens.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-sans);
+  background-color: var(--bg-app);
+  color: var(--text-main);
+  background-image:
+    linear-gradient(to right, var(--blueprint-grid-color) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--blueprint-grid-color) 1px, transparent 1px);
+  background-size: var(--blueprint-grid-size) var(--blueprint-grid-size);
+  min-width: 1024px;
+  min-height: 600px;
+}

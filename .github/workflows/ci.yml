@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  quality:
+    name: Lint, Test, Content Check, License Audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.5.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: 'pnpm'
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Content Lint
+        run: pnpm content:check
+
+      - name: Build Content Bundle
+        run: pnpm content:build
+
+      - name: Lint Code
+        run: pnpm lint
+
+      - name: Typecheck TypeScript
+        run: pnpm typecheck
+
+      - name: Unit Tests & Coverage
+        run: pnpm test:coverage
+
+      - name: License Audit
+        run: pnpm license:audit
+
+      - name: Cargo fmt and clippy
+        run: |
+          cd apps/desktop/src-tauri
+          cargo fmt --check
+          cargo clippy -- -D warnings
