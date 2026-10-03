@@ -117,7 +117,7 @@ Each requirement has an ID. Agents must reference IDs in commits and PRs (e.g., 
 | ID | Pri | Requirement | Acceptance criteria |
 |---|---|---|---|
 | FR-LRN-01 | P0 | Render lessons from MDX with front-matter (see `docs/CONTENT-GUIDE.md`) | Invalid front-matter fails the content build with a clear error |
-| FR-LRN-02 | P0 | Custom MDX components: `<Callout>` (info/tip/warning/safety), `<Circuit>`, `<ArduinoSketch>`, `<Quiz>`, `<TryIt>`, `<Formula>`, `<Reveal>` | Each documented with an example and unit-tested |
+| FR-LRN-02 | P0 | Custom MDX components: `<Callout>` (info/tip/warning/safety), `<Circuit>`, `<ArduinoSketch>`, `<Quiz>`, `<Exercise>`, `<TryIt>`, `<Formula>`, `<Reveal>`, `<Term>` | Each documented with an example and unit-tested |
 | FR-LRN-03 | P0 | Path → Module → Lesson hierarchy with prerequisites and estimated time | Locked/unlocked state is advisory (user may skip) |
 | FR-LRN-04 | P0 | Progress tracking: viewed, completed, exercise status, last position | Persists locally; survives app update |
 | FR-LRN-05 | P0 | Lesson footer: "Mark complete", "I'm confused" (opens coach with lesson context), "Report error" | Works offline except report |

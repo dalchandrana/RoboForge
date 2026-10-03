@@ -66,27 +66,37 @@ locale: en
 | `<Reveal summary="…">` | Collapsible hint/answer |
 | `<Term id="voltage">` | Glossary tooltip |
 
-## 4. Quiz file (`quizzes/<id>.yaml`)
+## 4. Quiz file (`content/paths/<path>/<module>/quizzes/<id>.yaml`)
 ```yaml
 id: q-m01-l03
 items:
-  - type: single          # single | multi | numeric | order
+  - type: numeric          # single | multi | numeric | order
     prompt: "A 9 V battery drives a 3 kΩ resistor. What is the current?"
     unit: mA
     answer: 3
     tolerance: 0.01
     explanation: "I = V / R = 9 / 3000 = 0.003 A = 3 mA."
+  - type: single
+    prompt: "If resistance increases while voltage stays constant, what happens to current?"
+    choices:
+      - text: "Current increases"
+        correct: false
+      - text: "Current decreases"
+        correct: true
+      - text: "Current stays the same"
+        correct: false
+    explanation: "According to Ohm's law (I = V / R), current is inversely proportional to resistance."
 ```
 Rules: plausible distractors, no trick questions, explanations teach.
 
-## 5. Exercise file (`exercises/<id>.yaml`)
+## 5. Exercise file (`content/paths/<path>/<module>/exercises/<id>.yaml`)
 ```yaml
 id: ex-led-resistor
 type: circuit-state
 prompt: "Make the LED glow safely from a 9 V battery."
 start: circuits/led-start.json
 assert:
-  - { net: "led", current_mA: { min: 5, max: 20 } }
+  - { part: "LED1", current_mA: { min: 5, max: 20 } }
   - { part: "LED1", status: "ok" }
 hints:
   - "What limits the current through an LED?"
