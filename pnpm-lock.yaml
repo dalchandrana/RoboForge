@@ -132,6 +132,9 @@ importers:
       '@roboforge/content-schema':
         specifier: workspace:*
         version: link:../content-schema
+      '@roboforge/sim-circuit':
+        specifier: workspace:*
+        version: link:../sim-circuit
 
   packages/i18n: {}
 

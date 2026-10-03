@@ -180,15 +180,23 @@ const PRESETS: Record<string, CircuitNetlist> = {
 export interface CircuitSimulatorProps {
   initialPreset?: keyof typeof PRESETS;
   embedded?: boolean;
+  onNetlistChange?: (netlist: CircuitNetlist) => void;
 }
 
 export const CircuitSimulator: React.FC<CircuitSimulatorProps> = ({
   initialPreset = 'led_safe',
   embedded: _embedded = false,
+  onNetlistChange,
 }) => {
   const [netlist, setNetlist] = useState<CircuitNetlist>(() =>
     JSON.parse(JSON.stringify(PRESETS[initialPreset] || PRESETS.led_safe)),
   );
+
+  React.useEffect(() => {
+    if (onNetlistChange) {
+      onNetlistChange(netlist);
+    }
+  }, [netlist, onNetlistChange]);
 
   const [viewMode, setViewMode] = useState<'breadboard' | 'schematic'>('breadboard');
   const [selectedCompId, setSelectedCompId] = useState<string | null>(null);

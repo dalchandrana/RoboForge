@@ -9,7 +9,8 @@
     ".": "./src/index.ts"
   },
   "dependencies": {
-    "@roboforge/content-schema": "workspace:*"
+    "@roboforge/content-schema": "workspace:*",
+    "@roboforge/sim-circuit": "workspace:*"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

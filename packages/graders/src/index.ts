@@ -1,4 +1,5 @@
 import type { QuizItem } from '@roboforge/content-schema';
+import { solveCircuit, type CircuitNetlist } from '@roboforge/sim-circuit';
 
 export interface GradingResult {
   passed: boolean;
@@ -131,6 +132,108 @@ export function gradeQuizItem(item: QuizItem, userResponse: unknown): GradingRes
         feedback: isCorrect
           ? `Perfect sequence! ${item.explanation}`
           : `Order is not quite right. ${item.explanation}`,
+      };
+    }
+  }
+}
+
+export interface CircuitAssertion {
+  target: 'node_voltage' | 'component_current' | 'component_status' | 'switch_state';
+  id: string; // node name or component id
+  expectedValue: number | string | boolean;
+  tolerance?: number;
+  explanation: string;
+}
+
+/**
+ * Auto-grades a circuit's simulated physical state against challenge criteria.
+ */
+export function gradeCircuitState(
+  netlist: CircuitNetlist,
+  assertion: CircuitAssertion,
+): GradingResult {
+  const result = solveCircuit(netlist);
+
+  if (!result.success) {
+    return {
+      passed: false,
+      score: 0,
+      feedback:
+        'Circuit cannot be solved: ' +
+        (result.ercIssues[0]?.message || 'severe short circuit detected.'),
+    };
+  }
+
+  switch (assertion.target) {
+    case 'node_voltage': {
+      const v = result.nodeVoltages[assertion.id];
+      if (v === undefined) {
+        return {
+          passed: false,
+          score: 0,
+          feedback: `Node "${assertion.id}" was not found in the circuit.`,
+        };
+      }
+      const expected = Number(assertion.expectedValue);
+      const tol = assertion.tolerance ?? 0.1;
+      const numGrading = gradeNumeric(v, expected, tol, 'V');
+      return {
+        ...numGrading,
+        feedback: numGrading.passed
+          ? `${numGrading.feedback} ${assertion.explanation}`
+          : numGrading.feedback,
+      };
+    }
+
+    case 'component_current': {
+      const state = result.componentStates[assertion.id];
+      if (!state) {
+        return {
+          passed: false,
+          score: 0,
+          feedback: `Component "${assertion.id}" was not found or has no current flow.`,
+        };
+      }
+      const expected = Number(assertion.expectedValue);
+      const tol = assertion.tolerance ?? 0.5;
+      const numGrading = gradeNumeric(state.current_mA, expected, tol, 'mA');
+      return {
+        ...numGrading,
+        feedback: numGrading.passed
+          ? `${numGrading.feedback} ${assertion.explanation}`
+          : numGrading.feedback,
+      };
+    }
+
+    case 'component_status': {
+      const state = result.componentStates[assertion.id];
+      const actualStatus = state?.status ?? 'unpowered';
+      const passed = actualStatus === assertion.expectedValue;
+      return {
+        passed,
+        score: passed ? 1.0 : 0.0,
+        feedback: passed
+          ? `Correct! ${assertion.explanation}`
+          : `Component status is "${actualStatus}", expected "${assertion.expectedValue}". ${assertion.explanation}`,
+        expected: String(assertion.expectedValue),
+        actual: actualStatus,
+      };
+    }
+
+    case 'switch_state': {
+      const comp = netlist.components.find(c => c.id === assertion.id);
+      const isClosed = Boolean(comp?.properties.closed);
+      const expectedClosed =
+        assertion.expectedValue === 'closed' || assertion.expectedValue === true;
+      const passed = isClosed === expectedClosed;
+      return {
+        passed,
+        score: passed ? 1.0 : 0.0,
+        feedback: passed
+          ? `Switch position is correct! ${assertion.explanation}`
+          : `Switch is currently ${isClosed ? 'closed' : 'open'}, please toggle it.`,
+        expected: expectedClosed ? 'closed' : 'open',
+        actual: isClosed ? 'closed' : 'open',
       };
     }
   }

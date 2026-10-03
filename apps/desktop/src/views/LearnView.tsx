@@ -4,6 +4,7 @@ import { t } from '@roboforge/i18n';
 import { gradeQuizItem } from '@roboforge/graders';
 import type { Quiz, QuizItem } from '@roboforge/content-schema';
 import bundleData from '../content-bundle.json';
+import { InteractiveCircuitChallenge } from '../components/circuit/InteractiveCircuitChallenge';
 
 interface LearnViewProps {
   isCompleted: boolean;
@@ -133,6 +134,18 @@ export const LearnView: React.FC<LearnViewProps> = ({
           <li>They return to the positive terminal of the battery.</li>
         </ol>
         <p>If the wire is disconnected at any point, the electric current ceases instantly.</p>
+
+        <InteractiveCircuitChallenge
+          title="Hands-On Challenge: Complete the Circuit Loop"
+          instructions="Flip the switch on the breadboard to close the circuit loop. Verify that electric current flows through the resistor and safely illuminates the LED without exceeding safe current limits."
+          initialPreset="led_safe"
+          assertion={{
+            target: 'component_status',
+            id: 'LED1',
+            expectedValue: 'ok',
+            explanation: 'The LED is conducting safe current through the completed loop.',
+          }}
+        />
 
         <h2 className="text-2xl font-bold text-white pt-4">4. Try It Out (Prediction)</h2>
         <p>
