@@ -1,5 +1,7 @@
 node_modules/
 target/
+src-tauri/target/
+src-tauri/gen/
 dist/
 build/
 .git/
@@ -7,3 +9,6 @@ build/
 models/
 coverage/
 playwright-report/
+test-results/
+.turbo/
+*.tsbuildinfo

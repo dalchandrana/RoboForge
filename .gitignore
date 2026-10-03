@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build artifacts
+dist/
+build/
+target/
+src-tauri/target/
+src-tauri/gen/
+*.tsbuildinfo
+.turbo/
+
+# Testing & Coverage
+coverage/
+playwright-report/
+test-results/
+blob-report/
+
+# OS / Editor
+.DS_Store
+*.swp
+*.swo
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+.idea/
+
+# Models & Large Binaries
+*.gguf
+models/
+
+# Environment
+.env
+.env.local
+.env.*.local
