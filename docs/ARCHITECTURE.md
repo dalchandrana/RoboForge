@@ -82,4 +82,4 @@ Structured logs to a rolling local file; "Export diagnostics" button creates a t
 `pnpm tauri build` per OS in CI; artifacts → GitHub Releases with checksums. Content packs built by `pnpm content:build` → versioned archives.
 
 ## 13. ADR index
-- [ADR-001 Stack](adr/001-stack.md) (Accepted) · [ADR-002 Monorepo/content format](adr/002-monorepo-content-format.md) (Accepted) · ADR-003 SPICE strategy · ADR-004 Arduino compile · ADR-005 Editor choice · ADR-006 Ollama integration & model tags · ADR-007 i18n library
+- [ADR-001 Stack](adr/001-stack.md) (Accepted) · [ADR-002 Monorepo/content format](adr/002-monorepo-content-format.md) (Accepted) · [ADR-003 SPICE strategy](adr/003-spice-strategy.md) (Accepted) · ADR-004 Arduino compile · ADR-005 Editor choice · ADR-006 Ollama integration & model tags · ADR-007 i18n library

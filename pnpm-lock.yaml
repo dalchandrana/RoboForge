@@ -134,7 +134,14 @@ importers:
 
   packages/sim-avr: {}
 
-  packages/sim-circuit: {}
+  packages/sim-circuit:
+    dependencies:
+      '@roboforge/config':
+        specifier: workspace:*
+        version: link:../config
+      zod:
+        specifier: ^3.24.2
+        version: 3.25.76
 
   packages/sim-robot: {}
 

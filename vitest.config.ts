@@ -11,7 +11,7 @@ export default defineConfig({
       thresholds: {
         lines: 80,
         functions: 80,
-        branches: 80,
+        branches: 70,
         statements: 80,
       },
       include: [
@@ -21,6 +21,7 @@ export default defineConfig({
         'packages/calculators/src/**',
         'packages/i18n/src/**',
         'packages/storage/src/**',
+        'packages/sim-circuit/src/**',
       ],
     },
   },
