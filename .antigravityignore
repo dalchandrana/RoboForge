@@ -1,0 +1,9 @@
+node_modules/
+target/
+dist/
+build/
+.git/
+*.gguf
+models/
+coverage/
+playwright-report/
