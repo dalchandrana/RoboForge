@@ -6,6 +6,7 @@ import { HomeView } from './views/HomeView';
 import { LearnView } from './views/LearnView';
 import { SettingsView } from './views/SettingsView';
 import { ToolsView } from './views/ToolsView';
+import { SimulatorView } from './views/SimulatorView';
 import { PlaceholderView } from './views/PlaceholderView';
 
 const storage = new StorageService();
@@ -200,21 +201,7 @@ export const App: React.FC = () => {
           />
         )}
 
-        {activeTab === 'simulate' && (
-          <PlaceholderView
-            title="Circuit & Arduino Simulators"
-            icon="⚡"
-            phase="Phase 1 & Phase 2"
-            description="Breadboard and schematic twin simulators powered by ngspice and avr8js."
-            features={[
-              'Breadboard drag-and-drop wiring',
-              'Schematic view synchronized from unified netlist',
-              'Live virtual multimeter (V, I, R) & oscilloscope',
-              'AVR microcontroller emulation with virtual LEDs and sensors',
-            ]}
-            onNavigateHome={() => setActiveTab('home')}
-          />
-        )}
+        {activeTab === 'simulate' && <SimulatorView />}
 
         {activeTab === 'projects' && (
           <PlaceholderView

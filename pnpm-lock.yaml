@@ -65,6 +65,9 @@ importers:
       '@roboforge/i18n':
         specifier: workspace:*
         version: link:../../packages/i18n
+      '@roboforge/sim-circuit':
+        specifier: workspace:*
+        version: link:../../packages/sim-circuit
       '@roboforge/storage':
         specifier: workspace:*
         version: link:../../packages/storage

@@ -16,6 +16,7 @@
     "@roboforge/content-schema": "workspace:*",
     "@roboforge/graders": "workspace:*",
     "@roboforge/i18n": "workspace:*",
+    "@roboforge/sim-circuit": "workspace:*",
     "@roboforge/storage": "workspace:*",
     "@roboforge/ui": "workspace:*",
     "clsx": "^2.1.1",

@@ -1,5 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import { solveCircuit, runERC, exportToSPICE, type CircuitNetlist } from './index';
+import {
+  solveCircuit,
+  runERC,
+  exportToSPICE,
+  getResistorColorBands,
+  type CircuitNetlist,
+} from './index';
 
 describe('packages/sim-circuit', () => {
   describe('Fixture 1: Voltage Divider', () => {
@@ -523,6 +529,26 @@ describe('packages/sim-circuit', () => {
       const spice = exportToSPICE(netlist);
       expect(spice).toContain('R_SW_SW1 N1 N2 1e9');
       expect(spice).not.toContain('G1');
+    });
+  });
+
+  describe('Resistor Color Code Helper', () => {
+    it('computes 4-band EIA color codes for standard resistors', () => {
+      const bands1k = getResistorColorBands(1000);
+      expect(bands1k.digit1.name).toBe('Brown'); // 1
+      expect(bands1k.digit2.name).toBe('Black'); // 0
+      expect(bands1k.multiplier.name).toBe('Red'); // 10^2
+      expect(bands1k.tolerance.name).toBe('Gold'); // 5%
+
+      const bands330 = getResistorColorBands(330);
+      expect(bands330.digit1.name).toBe('Orange'); // 3
+      expect(bands330.digit2.name).toBe('Orange'); // 3
+      expect(bands330.multiplier.name).toBe('Brown'); // 10^1
+
+      const bands10k = getResistorColorBands(10000);
+      expect(bands10k.digit1.name).toBe('Brown'); // 1
+      expect(bands10k.digit2.name).toBe('Black'); // 0
+      expect(bands10k.multiplier.name).toBe('Orange'); // 10^3
     });
   });
 });
