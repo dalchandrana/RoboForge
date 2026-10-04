@@ -64,10 +64,27 @@
   - `ArduinoSimulator.tsx`: Master coordinator managing `AvrRunner` simulation loop (`requestAnimationFrame` 50,000 cycles/frame), pin state sync, and serial streaming.
   - `SimulatorView.tsx`: Integrated top-level tab switcher (`⚡ Circuit Simulator` vs `🤖 Arduino Simulator`).
   - Browser verification recording: `arduino_sim_demo`.
+- **Slice 3: All 12 Engineering Calculators (`packages/calculators` & `apps/desktop`)**
+  - Implemented 12 pure mathematical calculator modules with step-by-step mathematical proofs, worked formulas, and explicit SI engineering units:
+    1. Ohm's Law & Power Dissipation ($V = I \times R$, $P = V \times I = I^2 R = V^2 / R$).
+    2. Resistor Color Code (4-band and 5-band decoding/encoding, E12/E24 nearest lookup, tolerance window).
+    3. Series & Parallel Resistors (equivalent resistance, branch currents, individual voltages, power dissipation).
+    4. Voltage Divider ($V_{\text{out}}$ unloaded and loaded with $R_L$, branch quiescent current, attenuation ratio).
+    5. LED Current-Limiting Resistor (standard E12/E24 resistor selection, $2\times$ safety factor wattage recommendation).
+    6. RC Time Constant & Filter ($\tau = R \times C$, $f_c = \frac{1}{2\pi R C}$, $1\tau, 3\tau, 5\tau$ charging curve).
+    7. Battery Operating Life (usable capacity with Peukert derating factor, weighted active/sleep duty cycle, hours/days).
+    8. PWM Duty Cycle & Waveform ($T_{\text{on}}$, $T_{\text{off}}$, average voltage, 8-bit Arduino `analogWrite` register).
+    9. RC Servo Pulse Width ($544\text{--}2400\,\mu\text{s} \leftrightarrow 0^\circ\text{--}180^\circ$, 50 Hz frame duty cycle).
+    10. Gear Ratio & Transmission ($GR = N_{\text{driven}} / N_{\text{driver}}$, output RPM, torque in $\text{N}\cdot\text{m}$ and $\text{kg}\cdot\text{cm}$, efficiency).
+    11. DC Motor Speed, Torque & Efficiency (electrical input power, angular velocity $\omega$, mechanical power, efficiency gauge, heat loss).
+    12. SI Engineering Prefix Converter (pico, nano, micro, milli, base, kilo, mega, giga with exponential scientific notation).
+  - 38 unit tests in `packages/calculators/src/index.test.ts` (94.57% statements, 100% functions).
+  - Upgraded `apps/desktop/src/views/ToolsView.tsx` with 5 category filter tabs, quick search, interactive visual resistor, rotating servo horn, and worked derivation cards.
+  - Browser verification recording: `calculators_demo`.
 
 ## Test & Coverage Status
-- **Unit Test Suite:** 80 tests passing (100% pass rate).
-- **Code Coverage:** 94.67% statements, 100% functions across all workspace packages.
+- **Unit Test Suite:** 112 tests passing (100% pass rate).
+- **Code Coverage:** 94.5% statements, 97.36% functions across all workspace packages.
 - **Lint & Types:** ESLint (0 errors, 0 warnings), TypeScript strict mode (0 errors).
 - **Browser Verifications:**
   - `circuit_sim_demo`
@@ -76,21 +93,19 @@
   - `onboarding_wizard_demo`
   - `curriculum_nav_demo`
   - `arduino_sim_demo`
+  - `calculators_demo`
 
 ## In progress
-- Phase 2, Slice 3: 12 Engineering Calculators (`packages/calculators` and `apps/desktop/src/views/ToolsView.tsx`).
+- Phase 2, Slice 4: 20-Part Component Library & Cheat Sheets (`content/components/` & `LibraryView.tsx`).
 
 ## Next (Phase 2 Milestones)
-1. **Slice 3: All 12 Engineering Calculators (`packages/calculators` & `ToolsView.tsx`):**
-   - Pure calculator functions with mathematical explanations & step-by-step formulas.
-   - Upgraded interactive UI with category tabs and live calculations.
-2. **Slice 4: 20-Part Component Library & Cheat Sheets (`content/components/` & `LibraryView.tsx`):**
-   - Absolute maximum ratings, pinouts, and communication protocols.
-3. **Slice 5: MVP Hardware Projects P1–P5 & Starter Kit BOM (`content/projects/` & `ProjectsView.tsx`):**
+1. **Slice 4: 20-Part Component Library & Cheat Sheets (`content/components/` & `LibraryView.tsx`):**
+   - Absolute maximum ratings, pinouts, and communication protocols (I2C, SPI, UART, PWM).
+2. **Slice 5: MVP Hardware Projects P1–P5 & Starter Kit BOM (`content/projects/` & `ProjectsView.tsx`):**
    - 5 guided projects with starter kit BOM and offline guides.
-4. **Slice 6: Curriculum Expansion (Modules 2, 3, 4: Lessons 11–26):**
+3. **Slice 6: Curriculum Expansion (Modules 2, 3, 4: Lessons 11–26):**
    - Microcontrollers, digital logic, actuators, and sensors.
-5. **Slice 7: Learning Motivation & Practice Engine (`PracticeView.tsx`):**
+4. **Slice 7: Learning Motivation & Practice Engine (`PracticeView.tsx`):**
    - Daily challenges, streak tracking, formula flashcards, and achievement badges.
 
 ## Open questions (for the maintainer)
