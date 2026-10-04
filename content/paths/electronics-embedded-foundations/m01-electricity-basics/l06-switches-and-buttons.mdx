@@ -1,0 +1,64 @@
+---
+id: m01-l06-switches-and-buttons
+title: "Switches and Buttons: Controlling the Current"
+path: electronics-embedded-foundations
+module: m01-electricity-basics
+order: 6
+level: beginner
+minutes: 20
+prerequisites:
+  - m01-l05-parallel-circuits
+objectives:
+  - "Understand how mechanical switches open and close electrical loops"
+  - "Differentiate momentary pushbuttons (NO vs NC) from latching switches"
+  - "Explain why digital input pins need pull-up or pull-down resistors"
+keyIdeas:
+  - "A switch creates an intentional air gap (open circuit) or physical metal bridge (closed circuit)."
+  - "Momentary switches only maintain contact while held down."
+  - "Floating inputs pick up electromagnetic noise unless tied high or low with resistors."
+tags:
+  - switches
+  - buttons
+  - inputs
+glossary:
+  - switch
+  - pushbutton
+  - pull-up
+  - floating
+needsHumanVerification: false
+verified: true
+sources:
+  - title: "Electronics Tutorials: Switch Types and Digital Inputs"
+    url: "https://physics.nist.gov/cuu/Units/index.html"
+license: CC-BY-SA-4.0
+authors:
+  - "RoboForge Team"
+locale: en
+---
+
+## 1. Hook: Taking Control
+So far, circuits operate continuously the moment a battery is connected. But what if you want to turn on a robot headlight only in the dark, or start a motor when a bumper strikes a wall?
+
+Switches provide human and mechanical control over electrical current.
+
+## 2. Opening and Closing the Loop
+A switch is simply a mechanical gap controller:
+- **Open (OFF):** Metal contacts are physically separated. Air between the contacts has billions of Ohms of resistance, so current stops completely ($I = 0$).
+- **Closed (ON):** Metal contacts touch firmly, creating a continuous low-resistance bridge (under $0.05\,\Omega$). Current flows freely.
+
+## 3. Momentary vs Latching
+- **Latching Switch:** Stays in its new position after you flip it (like your household light switch or breadboard toggle rocker).
+- **Momentary Pushbutton:** Returns to its default state as soon as you release your finger:
+  - **Normally Open (NO):** Disconnected by default; pressing closes the connection (like a doorbell or keyboard key).
+  - **Normally Closed (NC):** Connected by default; pressing breaks the connection (like an emergency stop button).
+
+<Callout type="safety" title="Emergency Stop Habit">
+In mobile robotics and motorized projects, always install a master power switch or accessible battery pull-plug as an emergency stop. If a motor stalls or software crashes, cutting power instantly prevents burned motors and dead batteries.
+</Callout>
+
+## 4. Preventing Floating Pins
+When connecting a button to a digital microcontroller input (like Arduino Pin 2):
+- When the button is pressed, the pin connects firmly to $5\text{ V}$ (HIGH).
+- When released, what is the pin connected to? **Nothing!** It is an open floating wire antenna that picks up stray electrostatic noise, causing erratic jumping between 0 and 1!
+
+To solve this, we add a high-value resistor ($10\,\text{k}\Omega$) called a **pull-down resistor** to gently tie the pin to $0\text{ V}$ Ground whenever the button is unpressed.

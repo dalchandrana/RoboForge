@@ -153,7 +153,7 @@ export const App: React.FC = () => {
 
         {activeTab === 'learn' && (
           <LearnView
-            isCompleted={completedLessons.has('m01-l01-what-is-electricity')}
+            completedLessons={completedLessons}
             onToggleComplete={handleToggleComplete}
             onAskCoach={() => setActiveTab('coach')}
           />

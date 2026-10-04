@@ -1,0 +1,26 @@
+id: q-m01-l05-parallel-circuits
+items:
+  - type: single
+    prompt: "What is true about the voltage across parallel branches connected to a 9V battery?"
+    choices:
+      - text: "Every branch experiences the full 9 Volts"
+        correct: true
+      - text: "The 9 Volts divides equally, so two branches get 4.5V each"
+        correct: false
+      - text: "Voltage drops to 0V in parallel"
+        correct: false
+    explanation: "In parallel connections, all components share the same two common nodes, so each branch experiences the full source voltage."
+
+  - type: numeric
+    prompt: "What is the equivalent resistance in Ohms (Ω) of two 200Ω resistors connected in parallel?"
+    unit: "Ω"
+    answer: 100
+    tolerance: 1
+    explanation: "Two identical resistors in parallel produce half the resistance: 200 / 2 = 100 Ohms."
+
+  - type: numeric
+    prompt: "If branch 1 carries 15 mA and branch 2 carries 35 mA, what total current in mA must the battery supply?"
+    unit: "mA"
+    answer: 50
+    tolerance: 0.5
+    explanation: "Total current equals the sum of parallel branch currents: 15 mA + 35 mA = 50 mA."

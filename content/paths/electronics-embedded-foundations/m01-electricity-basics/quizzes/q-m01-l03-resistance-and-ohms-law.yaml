@@ -1,0 +1,26 @@
+id: q-m01-l03-resistance-and-ohms-law
+items:
+  - type: single
+    prompt: "According to Ohm's law (V = I × R), what happens to current if you double the resistance while keeping voltage constant?"
+    choices:
+      - text: "The current is halved (cut by 50%)"
+        correct: true
+      - text: "The current doubles"
+        correct: false
+      - text: "The current stays exactly the same"
+        correct: false
+    explanation: "Because current I = V / R, increasing resistance decreases current proportionally."
+
+  - type: numeric
+    prompt: "A 5V microcontroller pin is connected to a 250 Ohm resistor. How many milliamps (mA) will flow? (Hint: calculate in Amperes, then multiply by 1000)"
+    unit: "mA"
+    answer: 20
+    tolerance: 0.5
+    explanation: "Current I = 5V / 250Ω = 0.02 A = 20 mA."
+
+  - type: numeric
+    prompt: "If a circuit drops 9 Volts and conducts 0.02 Amperes of current, how much power in Watts is dissipated? (P = V × I)"
+    unit: "W"
+    answer: 0.18
+    tolerance: 0.01
+    explanation: "Power P = 9 V × 0.02 A = 0.18 Watts (180 mW), well within safe 0.25W resistor limits."

@@ -1,0 +1,70 @@
+---
+id: m01-l05-parallel-circuits
+title: "Parallel Circuits and Current Branching"
+path: electronics-embedded-foundations
+module: m01-electricity-basics
+order: 5
+level: beginner
+minutes: 25
+prerequisites:
+  - m01-l04-series-circuits
+objectives:
+  - "Identify parallel circuit connections with multiple branch pathways"
+  - "Understand that voltage is equal across all parallel branches"
+  - "Calculate equivalent resistance for parallel resistors"
+keyIdeas:
+  - "In a parallel circuit, every branch connects across the full battery voltage."
+  - "Current splits at junctions: total current is the sum of branch currents."
+  - "Adding parallel branches decreases overall equivalent resistance."
+tags:
+  - parallel
+  - circuits
+  - kirchhoff
+glossary:
+  - parallel
+  - node
+  - junction
+needsHumanVerification: false
+verified: true
+sources:
+  - title: "NIST Direct-Current Parallel Circuits"
+    url: "https://physics.nist.gov/cuu/Units/index.html"
+license: CC-BY-SA-4.0
+authors:
+  - "RoboForge Team"
+locale: en
+---
+
+## 1. Hook: Independent Branches
+You switch off your bedroom lamp. Why does the fan keep spinning?
+
+In homes and robots, components connect in **parallel**. Each device gets its own independent branch.
+
+## 2. Voltage Across Parallel Branches
+In parallel circuits, both ends of every part connect to common rails. 
+
+Every parallel branch receives the exact same battery voltage:
+$$V_{\text{total}} = V_1 = V_2 = V_3$$
+
+A 9V battery provides 9V to every parallel branch.
+
+## 3. Current Splits at Forks
+Charges flow to a junction. The current splits into separate branches. 
+
+Total current equals the sum of branch currents:
+$$I_{\text{total}} = I_1 + I_2 + \dots + I_n$$
+
+Low resistance branches carry more current. High resistance branches carry less.
+
+<Callout type="safety" title="Current Accumulation Hazard">
+Parallel branches combine their currents at the battery. Too many branches draw high current. This can overheat small battery cells. Keep total current below 2 Amperes.
+</Callout>
+
+## 4. Equivalent Parallel Resistance
+Adding parallel branches creates new paths for charges. This lowers overall resistance:
+$$\frac{1}{R_{\text{eq}}} = \frac{1}{R_1} + \frac{1}{R_2}$$
+
+For two resistors, use product-over-sum:
+$$R_{\text{eq}} = \frac{R_1 \times R_2}{R_1 + R_2}$$
+
+Two equal 1000Ω resistors in parallel yield 500Ω. Parallel paths make current flow easier!

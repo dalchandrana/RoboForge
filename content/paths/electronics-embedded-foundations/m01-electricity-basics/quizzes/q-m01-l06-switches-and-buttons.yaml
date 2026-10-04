@@ -1,0 +1,23 @@
+id: q-m01-l06-switches-and-buttons
+items:
+  - type: single
+    prompt: "What does a Normally Open (NO) momentary pushbutton do when unpressed?"
+    choices:
+      - text: "It remains disconnected (open circuit), allowing zero current to pass"
+        correct: true
+      - text: "It conducts full current continuously"
+        correct: false
+      - text: "It reverses the battery polarity"
+        correct: false
+    explanation: "Normally Open switches only conduct when physically held down by the user."
+
+  - type: single
+    prompt: "Why do digital input pins on microcontrollers require pull-up or pull-down resistors?"
+    choices:
+      - text: "To prevent floating pins from picking up random electromagnetic noise when the switch is open"
+        correct: true
+      - text: "To make the microcontroller run at double speed"
+        correct: false
+      - text: "To charge the battery backwards"
+        correct: false
+    explanation: "An unconnected input pin acts like a miniature radio antenna. Pull-up/pull-down resistors ensure a stable default logic level."

@@ -1,0 +1,72 @@
+---
+id: m02-l10-integrated-circuits-555
+title: "Integrated Circuits: The 555 Timer"
+path: electronics-embedded-foundations
+module: m02-discrete-circuits
+order: 10
+level: intermediate
+minutes: 30
+prerequisites:
+  - m02-l08-capacitors-and-timing
+  - m02-l09-transistors-as-switches
+objectives:
+  - "Understand how integrated circuits combine dozens of transistors onto a single microchip"
+  - "Read DIP package pinout markings (notch and Pin 1 dot)"
+  - "Configure a 555 timer in astable mode to blink an LED without code"
+keyIdeas:
+  - "Integrated circuits (ICs) miniaturize complex circuits into microscopic silicon dies."
+  - "The 555 timer is the most popular IC in history, generating precision pulses and oscillations."
+  - "Astable mode produces a continuous square wave determined by two resistors and one capacitor."
+tags:
+  - ic
+  - 555-timer
+  - oscillator
+  - integrated-circuits
+glossary:
+  - integrated-circuit
+  - dip
+  - astable
+  - duty-cycle
+needsHumanVerification: false
+verified: true
+sources:
+  - title: "IEEE Milestone: Signetics NE555 Timer Integrated Circuit"
+    url: "https://physics.nist.gov/cuu/Units/index.html"
+license: CC-BY-SA-4.0
+authors:
+  - "RoboForge Team"
+locale: en
+---
+
+## 1. Hook: 25 Transistors in a Tiny Black Box
+In earlier lessons, we wired single resistors, LEDs, and transistors one by one. But what if you wanted to build an automatic flasher or robot heartbeat generator? Wiring 25 discrete transistors and 15 resistors by hand would fill an entire breadboard!
+
+In 1971, engineer Hans Camenzind etched all of those components onto a piece of silicon smaller than a grain of rice, creating the **NE555 Timer** — the most popular microchip in human history!
+
+## 2. Reading Integrated Circuit Pins
+Most hobbyist chips use a **Dual In-line Package (DIP)** with two parallel rows of pins spaced at standard breadboard pitch ($0.1\text{ inches}$ / $2.54\text{ mm}$).
+
+### How to Find Pin 1:
+1. Look at the top face of the chip for a **small semicircular notch** or an **embossed circular dot**.
+2. Hold the chip so the notch faces upward or left.
+3. **Pin 1** is immediately to the left of the notch.
+4. Count counter-clockwise around the chip:
+   - Pins 1 to 4 go down the left side.
+   - Pins 5 to 8 go up the right side.
+
+## 3. The 555 Astable Multivibrator (Heartbeat Mode)
+In **astable mode**, the 555 timer oscillates continuously between HIGH ($5\text{ V}$) and LOW ($0\text{ V}$), producing a steady square-wave clock pulse.
+
+- A timing capacitor ($C_1$) slowly charges through resistors $R_1$ and $R_2$.
+- When voltage across $C_1$ reaches two-thirds of the supply ($2/3\,V_{cc}$), an internal comparator triggers, driving Output Pin 3 LOW and discharging the capacitor through Pin 7.
+- When voltage drops to one-third ($1/3\,V_{cc}$), the output flips back HIGH, repeating the cycle forever!
+
+The oscillation frequency in Hertz is calculated by:
+$$f = \frac{1.44}{(R_1 + 2R_2) \times C_1}$$
+
+<Callout type="safety" title="Safe Prototyping Practice">
+Integrated circuits are sensitive to static electricity and can heat up if plugged in backward (reversing VCC Pin 8 and GND Pin 1). Always verify the orientation notch before switching on your battery power.
+</Callout>
+
+## 4. You Have Mastered Discrete Electronics!
+Congratulations! With resistors, diodes, capacitors, transistors, and integrated circuits in your toolkit, you are now ready to progress into programmable embedded microcontrollers (Arduino) and build intelligent autonomous robots!

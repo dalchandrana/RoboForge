@@ -1,0 +1,73 @@
+---
+id: m02-l07-diodes-and-leds
+title: "Diodes and LEDs: One-Way Valves"
+path: electronics-embedded-foundations
+module: m02-discrete-circuits
+order: 7
+level: beginner
+minutes: 25
+prerequisites:
+  - m01-l03-resistance-and-ohms-law
+objectives:
+  - "Explain how a semiconductor PN junction allows current in only one direction"
+  - "Identify LED polarity (Anode vs Cathode)"
+  - "Calculate current-limiting resistors for safe LED operation"
+keyIdeas:
+  - "A diode is an electronic one-way valve: conducts in forward bias, blocks in reverse."
+  - "LEDs emit light when electrons recombine across the semiconductor junction."
+  - "LEDs have negligible internal resistance and MUST always have a current-limiting resistor."
+tags:
+  - diodes
+  - leds
+  - semiconductors
+glossary:
+  - diode
+  - led
+  - anode
+  - cathode
+  - forward-voltage
+needsHumanVerification: false
+verified: true
+sources:
+  - title: "NIST Semiconductor Devices and Light-Emitting Diodes"
+    url: "https://physics.nist.gov/cuu/Units/index.html"
+license: CC-BY-SA-4.0
+authors:
+  - "RoboForge Team"
+locale: en
+---
+
+## 1. Hook: The One-Way Gate
+Have you ever tried pedaling a bicycle backward? The pedals spin freely without moving the wheels. A ratcheting mechanism ensures mechanical force only drives the bicycle forward.
+
+In electronics, **diodes** are electrical one-way valves that allow current to flow in only one direction!
+
+## 2. Polarity: Anode and Cathode
+A diode has two terminals:
+- **Anode (+)**: Current enters here.
+- **Cathode (-)**: Current exits here.
+
+When the anode is more positive than the cathode by at least the **forward voltage drop** ($V_f \approx 0.7\text{ V}$ for silicon, $2.0\text{ V}$ for red LEDs), the diode enters **forward bias** and conducts freely. 
+
+If connected backward (**reverse bias**), the internal barrier widens and blocks current flow entirely!
+
+### How to Identify LED Pins:
+- **Longer lead:** Anode (+)
+- **Shorter lead / Flat rim on plastic dome:** Cathode (-)
+
+## 3. The Need for Current-Limiting Resistors
+Unlike resistors, which have a linear slope ($I = V/R$), LEDs have an exponential curve. Once the forward threshold (approx $2.0\text{ V}$) is exceeded, internal resistance plummets to almost zero.
+
+<Callout type="safety" title="Component Burnout Warning">
+If you connect an LED directly across a 5V or 9V battery with no resistor, hundreds of milliamps surge through the microscopic semiconductor die, instantly vaporizing the gold bond wire inside! In real life this produces heat and can pop the plastic lens. Always use a series limiting resistor.
+</Callout>
+
+## 4. Calculating the Resistor Value
+To calculate the perfect series resistor:
+$$R = \frac{V_{\text{source}} - V_{\text{forward}}}{I_{\text{target}}}$$
+
+### Worked Example:
+Suppose you power a Red LED ($V_f = 2.0\text{ V}$, $I = 20\text{ mA} = 0.02\text{ A}$) from a $9\text{ V}$ battery:
+$$R = \frac{9\text{ V} - 2.0\text{ V}}{0.02\text{ A}} = \frac{7.0\text{ V}}{0.02\text{ A}} = 350\,\Omega$$
+
+A standard, readily available $330\,\Omega$ or $470\,\Omega$ resistor will keep the LED bright, efficient, and completely protected!

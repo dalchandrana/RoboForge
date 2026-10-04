@@ -1,0 +1,78 @@
+---
+id: m01-l03-resistance-and-ohms-law
+title: "Resistance and Ohm's Law"
+path: electronics-embedded-foundations
+module: m01-electricity-basics
+order: 3
+level: beginner
+minutes: 25
+prerequisites:
+  - m01-l02-voltage-and-current
+objectives:
+  - "Define electrical resistance in Ohms (Ω)"
+  - "Apply Ohm's law: V = I × R"
+  - "Read 4-band EIA resistor color codes"
+  - "Calculate power dissipation: P = V × I"
+keyIdeas:
+  - "Resistance opposes current flow, turning excess electrical energy into heat."
+  - "Ohm's law relates voltage, current, and resistance: V = I × R."
+  - "Resistor color bands encode the resistance value in Ohms."
+tags:
+  - resistance
+  - ohms-law
+  - resistors
+glossary:
+  - resistance
+  - ohm
+  - ohms-law
+  - power
+needsHumanVerification: false
+verified: true
+sources:
+  - title: "NIST Ohm's Law and SI Electrical Units"
+    url: "https://physics.nist.gov/cuu/Units/index.html"
+license: CC-BY-SA-4.0
+authors:
+  - "RoboForge Team"
+locale: en
+---
+
+## 1. Hook: Why Do We Need Obstacles?
+If electric current does useful work (like lighting bulbs and spinning motors), why would we deliberately insert a component whose sole job is to **restrict** current?
+
+Without resistance, an unlimited rush of electrons would surge through delicate semiconductors, overheating battery cells and instantly destroying LEDs! Resistors are the traffic controllers of physical electronics.
+
+## 2. Resistance: Opposing the Flow
+Resistance (symbol $R$) measures how strongly a material opposes the flow of electric charges. It is measured in **Ohms** (symbol $\Omega$).
+- A thick copper wire has very low resistance (almost $0\,\Omega$).
+- A carbon or metal-film resistor has precise resistance (e.g. $220\,\Omega$, $1\,\text{k}\Omega$, $10\,\text{k}\Omega$).
+- Air and plastic have immense resistance (billions of Ohms), acting as insulators.
+
+## 3. Ohm's Law: The Fundamental Equation
+In 1827, German physicist Georg Ohm discovered that current is directly proportional to voltage and inversely proportional to resistance:
+$$V = I \times R$$
+
+From this single relationship, we can derive any missing parameter:
+- **Find Voltage:** $V = I \times R$
+- **Find Current:** $I = \frac{V}{R}$
+- **Find Resistance:** $R = \frac{V}{I}$
+
+### Worked Example:
+Suppose a $9\text{ V}$ battery powers a circuit with a $300\,\Omega$ resistor. How much current flows?
+$$I = \frac{9\text{ V}}{300\,\Omega} = 0.03\text{ A} = 30\text{ mA}$$
+
+<Callout type="safety" title="Component Overheating Rule">
+When current flows through a resistor, electrical power is dissipated as heat:
+$$P = V \times I$$
+Standard small resistors in our robotics kits are rated for $0.25\text{ W}$ (quarter-watt). If you put too much current through a tiny resistor, it will become hot to the touch. Always calculate power before wiring!
+</Callout>
+
+## 4. Reading Resistor Color Bands
+Most through-hole resistors have 4 colored rings printed around their ceramic body:
+1. **Band 1:** First significant digit (e.g., Brown = 1)
+2. **Band 2:** Second significant digit (e.g., Black = 0)
+3. **Band 3:** Multiplier decade (e.g., Red = $10^2 = 100$)
+4. **Band 4:** Tolerance (Gold = $\pm 5\%$)
+
+For example: Brown - Black - Red - Gold represents:
+$$10 \times 100 = 1000\,\Omega = 1\,\text{k}\Omega$$

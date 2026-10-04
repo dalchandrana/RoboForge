@@ -1,0 +1,70 @@
+---
+id: m01-l04-series-circuits
+title: "Series Circuits and Voltage Dividers"
+path: electronics-embedded-foundations
+module: m01-electricity-basics
+order: 4
+level: beginner
+minutes: 25
+prerequisites:
+  - m01-l03-resistance-and-ohms-law
+objectives:
+  - "Identify series circuit connections with a single current pathway"
+  - "Calculate total equivalent resistance for series resistors"
+  - "Understand voltage division across series components"
+keyIdeas:
+  - "In a series circuit, there is only one pathway: current is identical everywhere."
+  - "Resistances add up in series: Req = R1 + R2."
+  - "Voltage splits across series resistors in proportion to their resistance."
+tags:
+  - series
+  - voltage-divider
+  - circuits
+glossary:
+  - series
+  - equivalent-resistance
+  - voltage-divider
+needsHumanVerification: false
+verified: true
+sources:
+  - title: "NIST Fundamentals of DC Circuits"
+    url: "https://physics.nist.gov/cuu/Units/index.html"
+license: CC-BY-SA-4.0
+authors:
+  - "RoboForge Team"
+locale: en
+---
+
+## 1. Hook: One Single Track
+Imagine cars driving on a single-lane mountain road with no side exits or detours. Every car that enters must pass through every section of the road in exact sequence. If one bridge collapses, all traffic stops immediately!
+
+This is exactly how a **series circuit** works.
+
+## 2. The Golden Rule of Series Circuits
+In a series circuit, components are connected head-to-tail to form a single continuous loop.
+
+Because charge cannot magically appear, disappear, or leak out into the air:
+$$\text{The electric current is identical through every component in series!}$$
+$$I_{\text{total}} = I_1 = I_2 = I_3$$
+
+## 3. Equivalent Series Resistance
+When current passes through multiple resistors in series, it must fight through each obstacle one after another. Therefore, series resistances simply add together:
+$$R_{\text{eq}} = R_1 + R_2 + \dots + R_n$$
+
+### Example:
+If you place a $1000\,\Omega$ resistor and a $2000\,\Omega$ resistor in series:
+$$R_{\text{eq}} = 1000 + 2000 = 3000\,\Omega$$
+
+<Callout type="safety" title="Safe Series Resistor Habits">
+Always make sure your battery terminals are disconnected before re-arranging series components on your breadboard. A common beginner mistake is accidentally plugging both ends of a wire into the same power rail, creating an accidental battery short circuit!
+</Callout>
+
+## 4. Voltage Dividers
+While current is the same everywhere in a series loop, the total voltage from the battery splits across each resistor:
+$$V_{\text{source}} = V_1 + V_2$$
+
+The voltage dropped across each resistor is directly proportional to its resistance:
+$$V_2 = V_{\text{source}} \times \frac{R_2}{R_1 + R_2}$$
+
+### Practical Robotics Use:
+If a microcontroller pin can only handle $3.3\text{ V}$, but your sensor battery puts out $6.6\text{ V}$, two identical $10\,\text{k}\Omega$ resistors in series create a perfect midpoint $3.3\text{ V}$ tap!

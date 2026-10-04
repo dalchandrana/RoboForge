@@ -1,0 +1,26 @@
+id: q-m01-l04-series-circuits
+items:
+  - type: single
+    prompt: "In a series circuit with two light bulbs, what happens if one bulb burns out or is unscrewed?"
+    choices:
+      - text: "The entire circuit loop is broken, so both bulbs turn off"
+        correct: true
+      - text: "The other bulb stays on and burns twice as bright"
+        correct: false
+      - text: "The battery catches fire"
+        correct: false
+    explanation: "Because series components share a single continuous loop, opening any point stops current flow everywhere."
+
+  - type: numeric
+    prompt: "What is the equivalent resistance in Ohms (Ω) of three resistors in series: 220Ω, 330Ω, and 470Ω?"
+    unit: "Ω"
+    answer: 1020
+    tolerance: 1
+    explanation: "In series, resistances add directly: 220 + 330 + 470 = 1020 Ohms."
+
+  - type: numeric
+    prompt: "A 9V battery powers two equal 1000 Ohm resistors in series. What is the midpoint voltage in Volts measured across R2 to Ground?"
+    unit: "V"
+    answer: 4.5
+    tolerance: 0.1
+    explanation: "With identical resistors, the voltage divides equally in half: 9V / 2 = 4.5 Volts."

@@ -1,0 +1,30 @@
+id: q-m01-l02-voltage-and-current
+items:
+  - type: single
+    prompt: "What is voltage best described as?"
+    choices:
+      - text: "The electric pressure or potential difference pushing charges between two points"
+        correct: true
+      - text: "The physical speed of electrons measured in miles per hour"
+        correct: false
+      - text: "The weight of the battery in grams"
+        correct: false
+    explanation: "Voltage is electric potential difference, which acts like electrical pressure pushing charges through a conductive path."
+
+  - type: single
+    prompt: "Which unit is used to measure electric current?"
+    choices:
+      - text: "Amperes (A)"
+        correct: true
+      - text: "Volts (V)"
+        correct: false
+      - text: "Ohms (Ω)"
+        correct: false
+    explanation: "Current is measured in Amperes (symbol A), representing one Coulomb of charge passing per second."
+
+  - type: numeric
+    prompt: "Convert 25 milliamperes (mA) into Amperes (A). Enter the decimal number:"
+    unit: "A"
+    answer: 0.025
+    tolerance: 0.001
+    explanation: "There are 1000 milliamperes in one Ampere: 25 mA / 1000 = 0.025 A."

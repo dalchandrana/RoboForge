@@ -4,3 +4,8 @@ description: "Understand electric charge, current, voltage, resistance, Ohm's la
 order: 1
 lessons:
   - m01-l01-what-is-electricity
+  - m01-l02-voltage-and-current
+  - m01-l03-resistance-and-ohms-law
+  - m01-l04-series-circuits
+  - m01-l05-parallel-circuits
+  - m01-l06-switches-and-buttons

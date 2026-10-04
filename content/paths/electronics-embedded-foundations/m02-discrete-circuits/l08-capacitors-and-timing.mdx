@@ -1,0 +1,75 @@
+---
+id: m02-l08-capacitors-and-timing
+title: "Capacitors and RC Timing"
+path: electronics-embedded-foundations
+module: m02-discrete-circuits
+order: 8
+level: intermediate
+minutes: 25
+prerequisites:
+  - m02-l07-diodes-and-leds
+objectives:
+  - "Explain how capacitors store and release electrical energy in an electrostatic field"
+  - "Identify polarized electrolytic versus non-polarized ceramic capacitors"
+  - "Calculate the RC time constant: tau = R × C"
+keyIdeas:
+  - "Capacitors act like tiny rechargeable reservoirs that smooth voltage ripples and introduce time delays."
+  - "Capacitance (C) is measured in Farads (commonly microfarads µF or nanofarads nF)."
+  - "The RC time constant tau = R × C determines charge and discharge timing."
+tags:
+  - capacitors
+  - timing
+  - rc-circuits
+glossary:
+  - capacitor
+  - farad
+  - time-constant
+  - decoupling
+needsHumanVerification: false
+verified: true
+sources:
+  - title: "NIST Capacitance and Electrical Time Constants"
+    url: "https://physics.nist.gov/cuu/Units/index.html"
+license: CC-BY-SA-4.0
+authors:
+  - "RoboForge Team"
+locale: en
+---
+
+## 1. Hook: The Water Tower Analogy
+Have you ever seen a large municipal water tower on a hill? When water pumps pulse intermittently, the reservoir tower cushions the pressure shocks and keeps clean water flowing steadily to home faucets.
+
+In physical circuits, **capacitors** are electrical reservoirs that store charge and cushion voltage fluctuations!
+
+## 2. Anatomy of a Capacitor
+A capacitor consists of two conductive plates separated by an insulating material called a **dielectric** (like ceramic, mica, or plastic film).
+
+When connected across a voltage source:
+1. Positive charges build up on one plate, while negative electrons accumulate on the other.
+2. An electric field forms between the plates, storing potential energy.
+3. Once charged to the source voltage, current stops flowing.
+
+Capacitance ($C$) measures charge stored per volt, measured in **Farads** ($F$):
+$$1\,\mu\text{F} = 10^{-6}\text{ F} \quad\text{(microfarads)}$$
+$$1\,\text{nF} = 10^{-9}\text{ F} \quad\text{(nanofarads)}$$
+$$1\,\text{pF} = 10^{-12}\text{ F} \quad\text{(picofarads)}$$
+
+## 3. Polarized vs Ceramic Capacitors
+- **Ceramic Disc Capacitors:** Small values ($10\,\text{pF}$ to $100\,\text{nF}$), non-polarized (can be plugged into a breadboard in either orientation).
+- **Electrolytic Capacitors:** Large cylindrical cans ($1\,\mu\text{F}$ to $1000\,\mu\text{F}$) with chemical electrolyte. **Strictly polarized!** The negative terminal is marked with a broad white/silver stripe with minus signs (-).
+
+<Callout type="safety" title="Electrolytic Capacitor Polarity Rule">
+Never connect an electrolytic capacitor backward or exceed its printed voltage rating (e.g. 16V or 25V). Reverse polarity causes internal gas expansion and can rupture the safety vent on the aluminum can! Always double-check that the striped negative lead connects to 0V Ground.
+</Callout>
+
+## 4. The RC Time Constant ($\tau$)
+When a capacitor charges through a resistor, it does not fill instantly. The speed of charging depends on both the resistance (choke point) and the capacitance (bucket size):
+$$\tau = R \times C$$
+
+- In $1\tau$ (one time constant), the capacitor charges to approx **63.2%** of full voltage.
+- In $5\tau$, it reaches **99%** (fully charged).
+
+### Example:
+A $10\,\text{k}\Omega$ ($10{,}000\,\Omega$) resistor and a $100\,\mu\text{F}$ ($0.0001\text{ F}$) capacitor:
+$$\tau = 10{,}000\,\Omega \times 0.0001\text{ F} = 1.0\text{ second}$$
+This predictable delay enables timers, flashers, and debounce filters!

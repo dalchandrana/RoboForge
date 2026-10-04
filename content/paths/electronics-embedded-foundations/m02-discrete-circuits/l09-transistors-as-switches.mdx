@@ -1,0 +1,69 @@
+---
+id: m02-l09-transistors-as-switches
+title: "Transistors as Electronic Switches"
+path: electronics-embedded-foundations
+module: m02-discrete-circuits
+order: 9
+level: intermediate
+minutes: 30
+prerequisites:
+  - m02-l07-diodes-and-leds
+objectives:
+  - "Understand the three terminals of a Bipolar Junction Transistor: Base, Collector, and Emitter"
+  - "Use an NPN transistor as a low-side electronic switch"
+  - "Explain why inductive loads like DC motors require a flyback protection diode"
+keyIdeas:
+  - "Transistors allow a tiny signal (from a sensor or microcontroller) to switch heavy current."
+  - "In an NPN transistor, current into the Base turns ON the path between Collector and Emitter."
+  - "Collapsing magnetic fields in motors generate high-voltage spikes that destroy transistors without a flyback diode."
+tags:
+  - transistors
+  - switches
+  - bjt
+  - motors
+glossary:
+  - transistor
+  - bjt
+  - base
+  - collector
+  - emitter
+  - flyback-diode
+needsHumanVerification: false
+verified: true
+sources:
+  - title: "NIST Semiconductor Devices and Bipolar Transistors"
+    url: "https://physics.nist.gov/cuu/Units/index.html"
+license: CC-BY-SA-4.0
+authors:
+  - "RoboForge Team"
+locale: en
+---
+
+## 1. Hook: The Microscopic Muscle
+An Arduino microcontroller's digital output pin can only supply a tiny trickle of current — about $20\text{ mA}$ ($0.02\text{ A}$). If you plug a $500\text{ mA}$ DC robot motor directly into the pin, the chip's internal silicone will burn out immediately.
+
+How can a fragile digital pin control powerful motors, high-intensity lamps, and solenoids? With a **transistor**!
+
+## 2. The NPN Transistor (BJT)
+A common NPN transistor (like the classic 2N2222 or 2N3904) has three terminals:
+1. **Base (B):** The control gate. Injecting a tiny current here opens the main channel.
+2. **Collector (C):** Current enters from the positive load side.
+3. **Emitter (E):** Current exits toward 0V Ground.
+
+Think of it like an electrically activated water valve: a child turning a small control wheel (Base current) can open a massive pipeline (Collector current).
+
+## 3. Operating as a Saturated Switch
+In digital robotics circuits, we operate the transistor in **saturation** (fully ON):
+- When Base voltage is $0\text{ V}$ ($I_B = 0$): The switch is **OPEN** (Cutoff). The load is off.
+- When Base voltage is $> 0.7\text{ V}$ ($I_B > 1\text{ mA}$): The switch is **CLOSED** (Saturation). Full battery current flows through the load to Ground!
+
+A current-limiting resistor ($1\,\text{k}\Omega$) is always placed in series with the Base pin to protect the microcontroller.
+
+<Callout type="safety" title="Motor Flyback Voltage Spike Hazard">
+DC motors contain coiled copper wire (inductors). When you suddenly switch off a spinning motor, its collapsing magnetic field generates a violent reverse-voltage spike (up to 100V!) that can fry your transistor and microcontroller in a split second. Always place a reverse-biased **flyback diode** (like 1N4001) across the motor terminals to safely dissipate this spike.
+</Callout>
+
+## 4. Summary: The Power Multiplier
+- Microcontrollers provide logic and brainpower.
+- Transistors provide electrical muscle.
+- Base resistor protects the controller pin; flyback diode protects against motor inductive kicks.

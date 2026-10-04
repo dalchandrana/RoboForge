@@ -1,0 +1,34 @@
+id: q-m02-l09-transistors-as-switches
+items:
+  - type: single
+    prompt: "Which terminal of an NPN BJT transistor acts as the low-current control gate?"
+    choices:
+      - text: "Base (B)"
+        correct: true
+      - text: "Collector (C)"
+        correct: false
+      - text: "Emitter (E)"
+        correct: false
+    explanation: "A small control current injected into the Base controls a much larger current flowing from Collector to Emitter."
+
+  - type: single
+    prompt: "Why must you place a reverse-biased flyback diode across a DC motor controlled by a transistor?"
+    choices:
+      - text: "To safely clamp the high-voltage inductive kick generated when the motor is turned off"
+        correct: true
+      - text: "To make the motor spin in reverse"
+        correct: false
+      - text: "To convert DC into AC"
+        correct: false
+    explanation: "Inductors resist changes in current; when switched off, the collapsing magnetic field creates a destructive voltage spike that the flyback diode safely routes back through the coil."
+
+  - type: single
+    prompt: "What purpose does a 1kΩ resistor between an Arduino digital output pin and a transistor Base serve?"
+    choices:
+      - text: "It limits Base current to a safe 3 to 5 mA to prevent overloading the microcontroller pin"
+        correct: true
+      - text: "It slows down the motor"
+        correct: false
+      - text: "It makes the battery rechargeable"
+        correct: false
+    explanation: "Because the Base-Emitter junction acts like a diode with ~0.7V drop, a Base resistor is required to limit output current to safe levels."

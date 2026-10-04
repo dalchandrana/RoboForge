@@ -1,0 +1,30 @@
+id: q-m02-l08-capacitors-and-timing
+items:
+  - type: single
+    prompt: "How do you identify the negative terminal on a cylindrical electrolytic capacitor?"
+    choices:
+      - text: "It has a distinct colored stripe (usually white/silver) printed with minus (-) symbols"
+        correct: true
+      - text: "It has red polka dots"
+        correct: false
+      - text: "The negative terminal is always the longer lead"
+        correct: false
+    explanation: "Electrolytic capacitors indicate the negative cathode lead with a prominent vertical stripe showing minus signs down the side of the can."
+
+  - type: numeric
+    prompt: "Calculate the RC time constant tau (in seconds) for a 100kΩ (100,000 Ohm) resistor charging a 10µF (0.000010 Farad) capacitor:"
+    unit: "s"
+    answer: 1.0
+    tolerance: 0.05
+    explanation: "tau = R × C = 100,000 Ω × 0.000010 F = 1.0 second."
+
+  - type: single
+    prompt: "What is a primary purpose of small 100nF ceramic decoupling capacitors placed near microcontroller power pins?"
+    choices:
+      - text: "To filter out high-frequency electrical noise and voltage dips caused by rapid chip switching"
+        correct: true
+      - text: "To replace the battery entirely"
+        correct: false
+      - text: "To heat up the circuit board in winter"
+        correct: false
+    explanation: "Decoupling capacitors act as local energy buffers, supplying instant microsecond bursts of current to prevent logic glitching."

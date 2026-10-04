@@ -1,0 +1,79 @@
+---
+id: m01-l02-voltage-and-current
+title: "Voltage and Current: Push and Flow"
+path: electronics-embedded-foundations
+module: m01-electricity-basics
+order: 2
+level: beginner
+minutes: 20
+prerequisites:
+  - m01-l01-what-is-electricity
+objectives:
+  - "Define electric potential difference (voltage) in Volts"
+  - "Define electric current (rate of charge flow) in Amperes"
+  - "Explain how voltage drives current through a circuit"
+keyIdeas:
+  - "Voltage (V) is the electric pressure pushing charges."
+  - "Current (I) is the actual flow rate of charges measured in Amperes (A)."
+  - "Without voltage, charges don't flow; without a closed loop, current cannot move."
+tags:
+  - voltage
+  - current
+  - basics
+glossary:
+  - voltage
+  - current
+  - ampere
+  - volt
+needsHumanVerification: false
+verified: true
+sources:
+  - title: "NIST Guide for the Use of the International System of Units (SI)"
+    url: "https://physics.nist.gov/cuu/pdf/sp811.pdf"
+license: CC-BY-SA-4.0
+authors:
+  - "RoboForge Team"
+locale: en
+---
+
+## 1. Hook
+Have you ever wondered why a 9V rectangular battery cannot shock you when you touch its terminals with your fingers, but can instantly illuminate an LED or spin a tiny motor? 
+
+The secret lies in the difference between the **electric push** (voltage) and the **charge flow rate** (current).
+
+## 2. Voltage: The Electric Pressure
+Voltage (symbol $V$) is measured in **Volts**. Think of voltage as electric pressure created by chemical reactions inside a battery. 
+
+A battery has two terminals:
+- **Positive terminal (+)**: High electric potential.
+- **Negative terminal (-)**: Low electric potential.
+
+The voltage rating (like $1.5\text{ V}$ for an AA battery or $9\text{ V}$ for a rectangular transistor battery) measures the potential difference between these two poles. The higher the voltage, the harder charges are pushed!
+
+<Callout type="safety" title="Low-Voltage Laboratory Boundary">
+In our school robotics curriculum, all battery experiments use safe low-voltage DC power (1.5V to 12V). Human skin has high dry resistance, making voltages under 24V DC completely safe from electrical shock. Never connect anything to AC mains power.
+</Callout>
+
+## 3. Current: The Rate of Flow
+Current (symbol $I$) is measured in **Amperes** (or **milliamps**, where $1\text{ A} = 1000\text{ mA}$). 
+
+Current tells us how many Coulombs of charge pass through a wire cross-section every single second:
+$$I = \frac{Q}{t}$$
+
+In typical robotics circuits:
+- A small LED draws about $15\text{ mA}$ to $20\text{ mA}$ ($0.02\text{ A}$).
+- A micro servo motor draws about $100\text{ mA}$ to $500\text{ mA}$.
+- A tiny digital sensor draws under $5\text{ mA}$.
+
+## 4. Voltage Causes Current
+Voltage does not "flow" through a wire — **voltage exists across** two points, and this potential difference causes **current to flow through** the component.
+
+<Callout type="info" title="Think like an Engineer">
+You measure **voltage across** a component (in parallel) and **current through** a wire (in series).
+</Callout>
+
+## 5. Summary Check
+Remember:
+1. Voltage is the electrical push ($V$, in Volts).
+2. Current is the rate of charge flow ($I$, in Amperes).
+3. Current only flows when there is both an electric push (voltage) AND a complete closed circuit path.

@@ -1,0 +1,30 @@
+id: q-m02-l07-diodes-and-leds
+items:
+  - type: single
+    prompt: "Which pin of an LED is the positive Anode terminal?"
+    choices:
+      - text: "The longer physical metal lead"
+        correct: true
+      - text: "The flat notched edge on the plastic collar"
+        correct: false
+      - text: "Either pin, LEDs have no polarity"
+        correct: false
+    explanation: "Through-hole LEDs identify the positive Anode by the longer metal lead, and the negative Cathode by the shorter lead or flat edge."
+
+  - type: single
+    prompt: "Why does an LED burn out instantly if connected directly across a 9V battery without a series resistor?"
+    choices:
+      - text: "Because LEDs have very little resistance in forward bias, allowing uncontrolled current to melt the internal wire"
+        correct: true
+      - text: "Because photons are too heavy for the wire"
+        correct: false
+      - text: "Because 9V batteries produce AC electricity"
+        correct: false
+    explanation: "Without a current-limiting resistor, massive current surges through the diode junction, causing thermal destruction in milliseconds."
+
+  - type: numeric
+    prompt: "Calculate the required resistor in Ohms to power a 2.0V LED at 15 mA (0.015 A) from a 5V USB power supply: R = (5 - 2) / 0.015"
+    unit: "Ω"
+    answer: 200
+    tolerance: 1
+    explanation: "R = (5V - 2.0V) / 0.015 A = 3.0 / 0.015 = 200 Ohms."

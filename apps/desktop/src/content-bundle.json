@@ -1,12 +1,13 @@
 {
-  "builtAt": "2026-10-03T20:21:12.452Z",
+  "builtAt": "2026-10-04T00:12:58.518Z",
   "paths": {
     "electronics-embedded-foundations": {
       "id": "electronics-embedded-foundations",
       "title": "Electronics & Embedded Foundations",
       "description": "From electricity basics to programming Arduino microcontrollers and your first autonomous robot.",
       "modules": [
-        "m01-electricity-basics"
+        "m01-electricity-basics",
+        "m02-discrete-circuits"
       ]
     }
   },
@@ -17,7 +18,24 @@
       "description": "Understand electric charge, current, voltage, resistance, Ohm's law, and safe laboratory habits.",
       "order": 1,
       "lessons": [
-        "m01-l01-what-is-electricity"
+        "m01-l01-what-is-electricity",
+        "m01-l02-voltage-and-current",
+        "m01-l03-resistance-and-ohms-law",
+        "m01-l04-series-circuits",
+        "m01-l05-parallel-circuits",
+        "m01-l06-switches-and-buttons"
+      ]
+    },
+    "m02-discrete-circuits": {
+      "id": "m02-discrete-circuits",
+      "title": "Module 2: Discrete Electronic Components",
+      "description": "Explore semiconductors, diodes, LEDs, capacitors, transistor switches, and 555 timers.",
+      "order": 2,
+      "lessons": [
+        "m02-l07-diodes-and-leds",
+        "m02-l08-capacitors-and-timing",
+        "m02-l09-transistors-as-switches",
+        "m02-l10-integrated-circuits-555"
       ]
     }
   },
@@ -133,6 +151,892 @@
               }
             ],
             "explanation": "We only use low-voltage DC batteries (<= 12V DC). Mains wall power carries dangerous voltages that can cause fatal electric shocks."
+          }
+        ]
+      }
+    },
+    "m01-l02-voltage-and-current": {
+      "frontmatter": {
+        "id": "m01-l02-voltage-and-current",
+        "title": "Voltage and Current: Push and Flow",
+        "path": "electronics-embedded-foundations",
+        "module": "m01-electricity-basics",
+        "order": 2,
+        "level": "beginner",
+        "minutes": 20,
+        "prerequisites": [
+          "m01-l01-what-is-electricity"
+        ],
+        "objectives": [
+          "Define electric potential difference (voltage) in Volts",
+          "Define electric current (rate of charge flow) in Amperes",
+          "Explain how voltage drives current through a circuit"
+        ],
+        "keyIdeas": [
+          "Voltage (V) is the electric pressure pushing charges.",
+          "Current (I) is the actual flow rate of charges measured in Amperes (A).",
+          "Without voltage, charges don't flow; without a closed loop, current cannot move."
+        ],
+        "tags": [
+          "voltage",
+          "current",
+          "basics"
+        ],
+        "glossary": [
+          "voltage",
+          "current",
+          "ampere",
+          "volt"
+        ],
+        "needsHumanVerification": false,
+        "verified": true,
+        "sources": [
+          {
+            "title": "NIST Guide for the Use of the International System of Units (SI)",
+            "url": "https://physics.nist.gov/cuu/pdf/sp811.pdf"
+          }
+        ],
+        "license": "CC-BY-SA-4.0",
+        "authors": [
+          "RoboForge Team"
+        ],
+        "locale": "en"
+      },
+      "rawMarkdown": "## 1. Hook\nHave you ever wondered why a 9V rectangular battery cannot shock you when you touch its terminals with your fingers, but can instantly illuminate an LED or spin a tiny motor? \n\nThe secret lies in the difference between the **electric push** (voltage) and the **charge flow rate** (current).\n\n## 2. Voltage: The Electric Pressure\nVoltage (symbol $V$) is measured in **Volts**. Think of voltage as electric pressure created by chemical reactions inside a battery. \n\nA battery has two terminals:\n- **Positive terminal (+)**: High electric potential.\n- **Negative terminal (-)**: Low electric potential.\n\nThe voltage rating (like $1.5\\text{ V}$ for an AA battery or $9\\text{ V}$ for a rectangular transistor battery) measures the potential difference between these two poles. The higher the voltage, the harder charges are pushed!\n\n<Callout type=\"safety\" title=\"Low-Voltage Laboratory Boundary\">\nIn our school robotics curriculum, all battery experiments use safe low-voltage DC power (1.5V to 12V). Human skin has high dry resistance, making voltages under 24V DC completely safe from electrical shock. Never connect anything to AC mains power.\n</Callout>\n\n## 3. Current: The Rate of Flow\nCurrent (symbol $I$) is measured in **Amperes** (or **milliamps**, where $1\\text{ A} = 1000\\text{ mA}$). \n\nCurrent tells us how many Coulombs of charge pass through a wire cross-section every single second:\n$$I = \\frac{Q}{t}$$\n\nIn typical robotics circuits:\n- A small LED draws about $15\\text{ mA}$ to $20\\text{ mA}$ ($0.02\\text{ A}$).\n- A micro servo motor draws about $100\\text{ mA}$ to $500\\text{ mA}$.\n- A tiny digital sensor draws under $5\\text{ mA}$.\n\n## 4. Voltage Causes Current\nVoltage does not \"flow\" through a wire — **voltage exists across** two points, and this potential difference causes **current to flow through** the component.\n\n<Callout type=\"info\" title=\"Think like an Engineer\">\nYou measure **voltage across** a component (in parallel) and **current through** a wire (in series).\n</Callout>\n\n## 5. Summary Check\nRemember:\n1. Voltage is the electrical push ($V$, in Volts).\n2. Current is the rate of charge flow ($I$, in Amperes).\n3. Current only flows when there is both an electric push (voltage) AND a complete closed circuit path.",
+      "quiz": {
+        "id": "q-m01-l02-voltage-and-current",
+        "items": [
+          {
+            "type": "single",
+            "prompt": "What is voltage best described as?",
+            "choices": [
+              {
+                "text": "The electric pressure or potential difference pushing charges between two points",
+                "correct": true
+              },
+              {
+                "text": "The physical speed of electrons measured in miles per hour",
+                "correct": false
+              },
+              {
+                "text": "The weight of the battery in grams",
+                "correct": false
+              }
+            ],
+            "explanation": "Voltage is electric potential difference, which acts like electrical pressure pushing charges through a conductive path."
+          },
+          {
+            "type": "single",
+            "prompt": "Which unit is used to measure electric current?",
+            "choices": [
+              {
+                "text": "Amperes (A)",
+                "correct": true
+              },
+              {
+                "text": "Volts (V)",
+                "correct": false
+              },
+              {
+                "text": "Ohms (Ω)",
+                "correct": false
+              }
+            ],
+            "explanation": "Current is measured in Amperes (symbol A), representing one Coulomb of charge passing per second."
+          },
+          {
+            "type": "numeric",
+            "prompt": "Convert 25 milliamperes (mA) into Amperes (A). Enter the decimal number:",
+            "unit": "A",
+            "answer": 0.025,
+            "tolerance": 0.001,
+            "explanation": "There are 1000 milliamperes in one Ampere: 25 mA / 1000 = 0.025 A."
+          }
+        ]
+      }
+    },
+    "m01-l03-resistance-and-ohms-law": {
+      "frontmatter": {
+        "id": "m01-l03-resistance-and-ohms-law",
+        "title": "Resistance and Ohm's Law",
+        "path": "electronics-embedded-foundations",
+        "module": "m01-electricity-basics",
+        "order": 3,
+        "level": "beginner",
+        "minutes": 25,
+        "prerequisites": [
+          "m01-l02-voltage-and-current"
+        ],
+        "objectives": [
+          "Define electrical resistance in Ohms (Ω)",
+          "Apply Ohm's law: V = I × R",
+          "Read 4-band EIA resistor color codes",
+          "Calculate power dissipation: P = V × I"
+        ],
+        "keyIdeas": [
+          "Resistance opposes current flow, turning excess electrical energy into heat.",
+          "Ohm's law relates voltage, current, and resistance: V = I × R.",
+          "Resistor color bands encode the resistance value in Ohms."
+        ],
+        "tags": [
+          "resistance",
+          "ohms-law",
+          "resistors"
+        ],
+        "glossary": [
+          "resistance",
+          "ohm",
+          "ohms-law",
+          "power"
+        ],
+        "needsHumanVerification": false,
+        "verified": true,
+        "sources": [
+          {
+            "title": "NIST Ohm's Law and SI Electrical Units",
+            "url": "https://physics.nist.gov/cuu/Units/index.html"
+          }
+        ],
+        "license": "CC-BY-SA-4.0",
+        "authors": [
+          "RoboForge Team"
+        ],
+        "locale": "en"
+      },
+      "rawMarkdown": "## 1. Hook: Why Do We Need Obstacles?\nIf electric current does useful work (like lighting bulbs and spinning motors), why would we deliberately insert a component whose sole job is to **restrict** current?\n\nWithout resistance, an unlimited rush of electrons would surge through delicate semiconductors, overheating battery cells and instantly destroying LEDs! Resistors are the traffic controllers of physical electronics.\n\n## 2. Resistance: Opposing the Flow\nResistance (symbol $R$) measures how strongly a material opposes the flow of electric charges. It is measured in **Ohms** (symbol $\\Omega$).\n- A thick copper wire has very low resistance (almost $0\\,\\Omega$).\n- A carbon or metal-film resistor has precise resistance (e.g. $220\\,\\Omega$, $1\\,\\text{k}\\Omega$, $10\\,\\text{k}\\Omega$).\n- Air and plastic have immense resistance (billions of Ohms), acting as insulators.\n\n## 3. Ohm's Law: The Fundamental Equation\nIn 1827, German physicist Georg Ohm discovered that current is directly proportional to voltage and inversely proportional to resistance:\n$$V = I \\times R$$\n\nFrom this single relationship, we can derive any missing parameter:\n- **Find Voltage:** $V = I \\times R$\n- **Find Current:** $I = \\frac{V}{R}$\n- **Find Resistance:** $R = \\frac{V}{I}$\n\n### Worked Example:\nSuppose a $9\\text{ V}$ battery powers a circuit with a $300\\,\\Omega$ resistor. How much current flows?\n$$I = \\frac{9\\text{ V}}{300\\,\\Omega} = 0.03\\text{ A} = 30\\text{ mA}$$\n\n<Callout type=\"safety\" title=\"Component Overheating Rule\">\nWhen current flows through a resistor, electrical power is dissipated as heat:\n$$P = V \\times I$$\nStandard small resistors in our robotics kits are rated for $0.25\\text{ W}$ (quarter-watt). If you put too much current through a tiny resistor, it will become hot to the touch. Always calculate power before wiring!\n</Callout>\n\n## 4. Reading Resistor Color Bands\nMost through-hole resistors have 4 colored rings printed around their ceramic body:\n1. **Band 1:** First significant digit (e.g., Brown = 1)\n2. **Band 2:** Second significant digit (e.g., Black = 0)\n3. **Band 3:** Multiplier decade (e.g., Red = $10^2 = 100$)\n4. **Band 4:** Tolerance (Gold = $\\pm 5\\%$)\n\nFor example: Brown - Black - Red - Gold represents:\n$$10 \\times 100 = 1000\\,\\Omega = 1\\,\\text{k}\\Omega$$",
+      "quiz": {
+        "id": "q-m01-l03-resistance-and-ohms-law",
+        "items": [
+          {
+            "type": "single",
+            "prompt": "According to Ohm's law (V = I × R), what happens to current if you double the resistance while keeping voltage constant?",
+            "choices": [
+              {
+                "text": "The current is halved (cut by 50%)",
+                "correct": true
+              },
+              {
+                "text": "The current doubles",
+                "correct": false
+              },
+              {
+                "text": "The current stays exactly the same",
+                "correct": false
+              }
+            ],
+            "explanation": "Because current I = V / R, increasing resistance decreases current proportionally."
+          },
+          {
+            "type": "numeric",
+            "prompt": "A 5V microcontroller pin is connected to a 250 Ohm resistor. How many milliamps (mA) will flow? (Hint: calculate in Amperes, then multiply by 1000)",
+            "unit": "mA",
+            "answer": 20,
+            "tolerance": 0.5,
+            "explanation": "Current I = 5V / 250Ω = 0.02 A = 20 mA."
+          },
+          {
+            "type": "numeric",
+            "prompt": "If a circuit drops 9 Volts and conducts 0.02 Amperes of current, how much power in Watts is dissipated? (P = V × I)",
+            "unit": "W",
+            "answer": 0.18,
+            "tolerance": 0.01,
+            "explanation": "Power P = 9 V × 0.02 A = 0.18 Watts (180 mW), well within safe 0.25W resistor limits."
+          }
+        ]
+      }
+    },
+    "m01-l04-series-circuits": {
+      "frontmatter": {
+        "id": "m01-l04-series-circuits",
+        "title": "Series Circuits and Voltage Dividers",
+        "path": "electronics-embedded-foundations",
+        "module": "m01-electricity-basics",
+        "order": 4,
+        "level": "beginner",
+        "minutes": 25,
+        "prerequisites": [
+          "m01-l03-resistance-and-ohms-law"
+        ],
+        "objectives": [
+          "Identify series circuit connections with a single current pathway",
+          "Calculate total equivalent resistance for series resistors",
+          "Understand voltage division across series components"
+        ],
+        "keyIdeas": [
+          "In a series circuit, there is only one pathway: current is identical everywhere.",
+          "Resistances add up in series: Req = R1 + R2.",
+          "Voltage splits across series resistors in proportion to their resistance."
+        ],
+        "tags": [
+          "series",
+          "voltage-divider",
+          "circuits"
+        ],
+        "glossary": [
+          "series",
+          "equivalent-resistance",
+          "voltage-divider"
+        ],
+        "needsHumanVerification": false,
+        "verified": true,
+        "sources": [
+          {
+            "title": "NIST Fundamentals of DC Circuits",
+            "url": "https://physics.nist.gov/cuu/Units/index.html"
+          }
+        ],
+        "license": "CC-BY-SA-4.0",
+        "authors": [
+          "RoboForge Team"
+        ],
+        "locale": "en"
+      },
+      "rawMarkdown": "## 1. Hook: One Single Track\nImagine cars driving on a single-lane mountain road with no side exits or detours. Every car that enters must pass through every section of the road in exact sequence. If one bridge collapses, all traffic stops immediately!\n\nThis is exactly how a **series circuit** works.\n\n## 2. The Golden Rule of Series Circuits\nIn a series circuit, components are connected head-to-tail to form a single continuous loop.\n\nBecause charge cannot magically appear, disappear, or leak out into the air:\n$$\\text{The electric current is identical through every component in series!}$$\n$$I_{\\text{total}} = I_1 = I_2 = I_3$$\n\n## 3. Equivalent Series Resistance\nWhen current passes through multiple resistors in series, it must fight through each obstacle one after another. Therefore, series resistances simply add together:\n$$R_{\\text{eq}} = R_1 + R_2 + \\dots + R_n$$\n\n### Example:\nIf you place a $1000\\,\\Omega$ resistor and a $2000\\,\\Omega$ resistor in series:\n$$R_{\\text{eq}} = 1000 + 2000 = 3000\\,\\Omega$$\n\n<Callout type=\"safety\" title=\"Safe Series Resistor Habits\">\nAlways make sure your battery terminals are disconnected before re-arranging series components on your breadboard. A common beginner mistake is accidentally plugging both ends of a wire into the same power rail, creating an accidental battery short circuit!\n</Callout>\n\n## 4. Voltage Dividers\nWhile current is the same everywhere in a series loop, the total voltage from the battery splits across each resistor:\n$$V_{\\text{source}} = V_1 + V_2$$\n\nThe voltage dropped across each resistor is directly proportional to its resistance:\n$$V_2 = V_{\\text{source}} \\times \\frac{R_2}{R_1 + R_2}$$\n\n### Practical Robotics Use:\nIf a microcontroller pin can only handle $3.3\\text{ V}$, but your sensor battery puts out $6.6\\text{ V}$, two identical $10\\,\\text{k}\\Omega$ resistors in series create a perfect midpoint $3.3\\text{ V}$ tap!",
+      "quiz": {
+        "id": "q-m01-l04-series-circuits",
+        "items": [
+          {
+            "type": "single",
+            "prompt": "In a series circuit with two light bulbs, what happens if one bulb burns out or is unscrewed?",
+            "choices": [
+              {
+                "text": "The entire circuit loop is broken, so both bulbs turn off",
+                "correct": true
+              },
+              {
+                "text": "The other bulb stays on and burns twice as bright",
+                "correct": false
+              },
+              {
+                "text": "The battery catches fire",
+                "correct": false
+              }
+            ],
+            "explanation": "Because series components share a single continuous loop, opening any point stops current flow everywhere."
+          },
+          {
+            "type": "numeric",
+            "prompt": "What is the equivalent resistance in Ohms (Ω) of three resistors in series: 220Ω, 330Ω, and 470Ω?",
+            "unit": "Ω",
+            "answer": 1020,
+            "tolerance": 1,
+            "explanation": "In series, resistances add directly: 220 + 330 + 470 = 1020 Ohms."
+          },
+          {
+            "type": "numeric",
+            "prompt": "A 9V battery powers two equal 1000 Ohm resistors in series. What is the midpoint voltage in Volts measured across R2 to Ground?",
+            "unit": "V",
+            "answer": 4.5,
+            "tolerance": 0.1,
+            "explanation": "With identical resistors, the voltage divides equally in half: 9V / 2 = 4.5 Volts."
+          }
+        ]
+      }
+    },
+    "m01-l05-parallel-circuits": {
+      "frontmatter": {
+        "id": "m01-l05-parallel-circuits",
+        "title": "Parallel Circuits and Current Branching",
+        "path": "electronics-embedded-foundations",
+        "module": "m01-electricity-basics",
+        "order": 5,
+        "level": "beginner",
+        "minutes": 25,
+        "prerequisites": [
+          "m01-l04-series-circuits"
+        ],
+        "objectives": [
+          "Identify parallel circuit connections with multiple branch pathways",
+          "Understand that voltage is equal across all parallel branches",
+          "Calculate equivalent resistance for parallel resistors"
+        ],
+        "keyIdeas": [
+          "In a parallel circuit, every branch connects across the full battery voltage.",
+          "Current splits at junctions: total current is the sum of branch currents.",
+          "Adding parallel branches decreases overall equivalent resistance."
+        ],
+        "tags": [
+          "parallel",
+          "circuits",
+          "kirchhoff"
+        ],
+        "glossary": [
+          "parallel",
+          "node",
+          "junction"
+        ],
+        "needsHumanVerification": false,
+        "verified": true,
+        "sources": [
+          {
+            "title": "NIST Direct-Current Parallel Circuits",
+            "url": "https://physics.nist.gov/cuu/Units/index.html"
+          }
+        ],
+        "license": "CC-BY-SA-4.0",
+        "authors": [
+          "RoboForge Team"
+        ],
+        "locale": "en"
+      },
+      "rawMarkdown": "## 1. Hook: Independent Branches\nYou switch off your bedroom lamp. Why does the fan keep spinning?\n\nIn homes and robots, components connect in **parallel**. Each device gets its own independent branch.\n\n## 2. Voltage Across Parallel Branches\nIn parallel circuits, both ends of every part connect to common rails. \n\nEvery parallel branch receives the exact same battery voltage:\n$$V_{\\text{total}} = V_1 = V_2 = V_3$$\n\nA 9V battery provides 9V to every parallel branch.\n\n## 3. Current Splits at Forks\nCharges flow to a junction. The current splits into separate branches. \n\nTotal current equals the sum of branch currents:\n$$I_{\\text{total}} = I_1 + I_2 + \\dots + I_n$$\n\nLow resistance branches carry more current. High resistance branches carry less.\n\n<Callout type=\"safety\" title=\"Current Accumulation Hazard\">\nParallel branches combine their currents at the battery. Too many branches draw high current. This can overheat small battery cells. Keep total current below 2 Amperes.\n</Callout>\n\n## 4. Equivalent Parallel Resistance\nAdding parallel branches creates new paths for charges. This lowers overall resistance:\n$$\\frac{1}{R_{\\text{eq}}} = \\frac{1}{R_1} + \\frac{1}{R_2}$$\n\nFor two resistors, use product-over-sum:\n$$R_{\\text{eq}} = \\frac{R_1 \\times R_2}{R_1 + R_2}$$\n\nTwo equal 1000Ω resistors in parallel yield 500Ω. Parallel paths make current flow easier!",
+      "quiz": {
+        "id": "q-m01-l05-parallel-circuits",
+        "items": [
+          {
+            "type": "single",
+            "prompt": "What is true about the voltage across parallel branches connected to a 9V battery?",
+            "choices": [
+              {
+                "text": "Every branch experiences the full 9 Volts",
+                "correct": true
+              },
+              {
+                "text": "The 9 Volts divides equally, so two branches get 4.5V each",
+                "correct": false
+              },
+              {
+                "text": "Voltage drops to 0V in parallel",
+                "correct": false
+              }
+            ],
+            "explanation": "In parallel connections, all components share the same two common nodes, so each branch experiences the full source voltage."
+          },
+          {
+            "type": "numeric",
+            "prompt": "What is the equivalent resistance in Ohms (Ω) of two 200Ω resistors connected in parallel?",
+            "unit": "Ω",
+            "answer": 100,
+            "tolerance": 1,
+            "explanation": "Two identical resistors in parallel produce half the resistance: 200 / 2 = 100 Ohms."
+          },
+          {
+            "type": "numeric",
+            "prompt": "If branch 1 carries 15 mA and branch 2 carries 35 mA, what total current in mA must the battery supply?",
+            "unit": "mA",
+            "answer": 50,
+            "tolerance": 0.5,
+            "explanation": "Total current equals the sum of parallel branch currents: 15 mA + 35 mA = 50 mA."
+          }
+        ]
+      }
+    },
+    "m01-l06-switches-and-buttons": {
+      "frontmatter": {
+        "id": "m01-l06-switches-and-buttons",
+        "title": "Switches and Buttons: Controlling the Current",
+        "path": "electronics-embedded-foundations",
+        "module": "m01-electricity-basics",
+        "order": 6,
+        "level": "beginner",
+        "minutes": 20,
+        "prerequisites": [
+          "m01-l05-parallel-circuits"
+        ],
+        "objectives": [
+          "Understand how mechanical switches open and close electrical loops",
+          "Differentiate momentary pushbuttons (NO vs NC) from latching switches",
+          "Explain why digital input pins need pull-up or pull-down resistors"
+        ],
+        "keyIdeas": [
+          "A switch creates an intentional air gap (open circuit) or physical metal bridge (closed circuit).",
+          "Momentary switches only maintain contact while held down.",
+          "Floating inputs pick up electromagnetic noise unless tied high or low with resistors."
+        ],
+        "tags": [
+          "switches",
+          "buttons",
+          "inputs"
+        ],
+        "glossary": [
+          "switch",
+          "pushbutton",
+          "pull-up",
+          "floating"
+        ],
+        "needsHumanVerification": false,
+        "verified": true,
+        "sources": [
+          {
+            "title": "Electronics Tutorials: Switch Types and Digital Inputs",
+            "url": "https://physics.nist.gov/cuu/Units/index.html"
+          }
+        ],
+        "license": "CC-BY-SA-4.0",
+        "authors": [
+          "RoboForge Team"
+        ],
+        "locale": "en"
+      },
+      "rawMarkdown": "## 1. Hook: Taking Control\nSo far, circuits operate continuously the moment a battery is connected. But what if you want to turn on a robot headlight only in the dark, or start a motor when a bumper strikes a wall?\n\nSwitches provide human and mechanical control over electrical current.\n\n## 2. Opening and Closing the Loop\nA switch is simply a mechanical gap controller:\n- **Open (OFF):** Metal contacts are physically separated. Air between the contacts has billions of Ohms of resistance, so current stops completely ($I = 0$).\n- **Closed (ON):** Metal contacts touch firmly, creating a continuous low-resistance bridge (under $0.05\\,\\Omega$). Current flows freely.\n\n## 3. Momentary vs Latching\n- **Latching Switch:** Stays in its new position after you flip it (like your household light switch or breadboard toggle rocker).\n- **Momentary Pushbutton:** Returns to its default state as soon as you release your finger:\n  - **Normally Open (NO):** Disconnected by default; pressing closes the connection (like a doorbell or keyboard key).\n  - **Normally Closed (NC):** Connected by default; pressing breaks the connection (like an emergency stop button).\n\n<Callout type=\"safety\" title=\"Emergency Stop Habit\">\nIn mobile robotics and motorized projects, always install a master power switch or accessible battery pull-plug as an emergency stop. If a motor stalls or software crashes, cutting power instantly prevents burned motors and dead batteries.\n</Callout>\n\n## 4. Preventing Floating Pins\nWhen connecting a button to a digital microcontroller input (like Arduino Pin 2):\n- When the button is pressed, the pin connects firmly to $5\\text{ V}$ (HIGH).\n- When released, what is the pin connected to? **Nothing!** It is an open floating wire antenna that picks up stray electrostatic noise, causing erratic jumping between 0 and 1!\n\nTo solve this, we add a high-value resistor ($10\\,\\text{k}\\Omega$) called a **pull-down resistor** to gently tie the pin to $0\\text{ V}$ Ground whenever the button is unpressed.",
+      "quiz": {
+        "id": "q-m01-l06-switches-and-buttons",
+        "items": [
+          {
+            "type": "single",
+            "prompt": "What does a Normally Open (NO) momentary pushbutton do when unpressed?",
+            "choices": [
+              {
+                "text": "It remains disconnected (open circuit), allowing zero current to pass",
+                "correct": true
+              },
+              {
+                "text": "It conducts full current continuously",
+                "correct": false
+              },
+              {
+                "text": "It reverses the battery polarity",
+                "correct": false
+              }
+            ],
+            "explanation": "Normally Open switches only conduct when physically held down by the user."
+          },
+          {
+            "type": "single",
+            "prompt": "Why do digital input pins on microcontrollers require pull-up or pull-down resistors?",
+            "choices": [
+              {
+                "text": "To prevent floating pins from picking up random electromagnetic noise when the switch is open",
+                "correct": true
+              },
+              {
+                "text": "To make the microcontroller run at double speed",
+                "correct": false
+              },
+              {
+                "text": "To charge the battery backwards",
+                "correct": false
+              }
+            ],
+            "explanation": "An unconnected input pin acts like a miniature radio antenna. Pull-up/pull-down resistors ensure a stable default logic level."
+          }
+        ]
+      }
+    },
+    "m02-l07-diodes-and-leds": {
+      "frontmatter": {
+        "id": "m02-l07-diodes-and-leds",
+        "title": "Diodes and LEDs: One-Way Valves",
+        "path": "electronics-embedded-foundations",
+        "module": "m02-discrete-circuits",
+        "order": 7,
+        "level": "beginner",
+        "minutes": 25,
+        "prerequisites": [
+          "m01-l03-resistance-and-ohms-law"
+        ],
+        "objectives": [
+          "Explain how a semiconductor PN junction allows current in only one direction",
+          "Identify LED polarity (Anode vs Cathode)",
+          "Calculate current-limiting resistors for safe LED operation"
+        ],
+        "keyIdeas": [
+          "A diode is an electronic one-way valve: conducts in forward bias, blocks in reverse.",
+          "LEDs emit light when electrons recombine across the semiconductor junction.",
+          "LEDs have negligible internal resistance and MUST always have a current-limiting resistor."
+        ],
+        "tags": [
+          "diodes",
+          "leds",
+          "semiconductors"
+        ],
+        "glossary": [
+          "diode",
+          "led",
+          "anode",
+          "cathode",
+          "forward-voltage"
+        ],
+        "needsHumanVerification": false,
+        "verified": true,
+        "sources": [
+          {
+            "title": "NIST Semiconductor Devices and Light-Emitting Diodes",
+            "url": "https://physics.nist.gov/cuu/Units/index.html"
+          }
+        ],
+        "license": "CC-BY-SA-4.0",
+        "authors": [
+          "RoboForge Team"
+        ],
+        "locale": "en"
+      },
+      "rawMarkdown": "## 1. Hook: The One-Way Gate\nHave you ever tried pedaling a bicycle backward? The pedals spin freely without moving the wheels. A ratcheting mechanism ensures mechanical force only drives the bicycle forward.\n\nIn electronics, **diodes** are electrical one-way valves that allow current to flow in only one direction!\n\n## 2. Polarity: Anode and Cathode\nA diode has two terminals:\n- **Anode (+)**: Current enters here.\n- **Cathode (-)**: Current exits here.\n\nWhen the anode is more positive than the cathode by at least the **forward voltage drop** ($V_f \\approx 0.7\\text{ V}$ for silicon, $2.0\\text{ V}$ for red LEDs), the diode enters **forward bias** and conducts freely. \n\nIf connected backward (**reverse bias**), the internal barrier widens and blocks current flow entirely!\n\n### How to Identify LED Pins:\n- **Longer lead:** Anode (+)\n- **Shorter lead / Flat rim on plastic dome:** Cathode (-)\n\n## 3. The Need for Current-Limiting Resistors\nUnlike resistors, which have a linear slope ($I = V/R$), LEDs have an exponential curve. Once the forward threshold (approx $2.0\\text{ V}$) is exceeded, internal resistance plummets to almost zero.\n\n<Callout type=\"safety\" title=\"Component Burnout Warning\">\nIf you connect an LED directly across a 5V or 9V battery with no resistor, hundreds of milliamps surge through the microscopic semiconductor die, instantly vaporizing the gold bond wire inside! In real life this produces heat and can pop the plastic lens. Always use a series limiting resistor.\n</Callout>\n\n## 4. Calculating the Resistor Value\nTo calculate the perfect series resistor:\n$$R = \\frac{V_{\\text{source}} - V_{\\text{forward}}}{I_{\\text{target}}}$$\n\n### Worked Example:\nSuppose you power a Red LED ($V_f = 2.0\\text{ V}$, $I = 20\\text{ mA} = 0.02\\text{ A}$) from a $9\\text{ V}$ battery:\n$$R = \\frac{9\\text{ V} - 2.0\\text{ V}}{0.02\\text{ A}} = \\frac{7.0\\text{ V}}{0.02\\text{ A}} = 350\\,\\Omega$$\n\nA standard, readily available $330\\,\\Omega$ or $470\\,\\Omega$ resistor will keep the LED bright, efficient, and completely protected!",
+      "quiz": {
+        "id": "q-m02-l07-diodes-and-leds",
+        "items": [
+          {
+            "type": "single",
+            "prompt": "Which pin of an LED is the positive Anode terminal?",
+            "choices": [
+              {
+                "text": "The longer physical metal lead",
+                "correct": true
+              },
+              {
+                "text": "The flat notched edge on the plastic collar",
+                "correct": false
+              },
+              {
+                "text": "Either pin, LEDs have no polarity",
+                "correct": false
+              }
+            ],
+            "explanation": "Through-hole LEDs identify the positive Anode by the longer metal lead, and the negative Cathode by the shorter lead or flat edge."
+          },
+          {
+            "type": "single",
+            "prompt": "Why does an LED burn out instantly if connected directly across a 9V battery without a series resistor?",
+            "choices": [
+              {
+                "text": "Because LEDs have very little resistance in forward bias, allowing uncontrolled current to melt the internal wire",
+                "correct": true
+              },
+              {
+                "text": "Because photons are too heavy for the wire",
+                "correct": false
+              },
+              {
+                "text": "Because 9V batteries produce AC electricity",
+                "correct": false
+              }
+            ],
+            "explanation": "Without a current-limiting resistor, massive current surges through the diode junction, causing thermal destruction in milliseconds."
+          },
+          {
+            "type": "numeric",
+            "prompt": "Calculate the required resistor in Ohms to power a 2.0V LED at 15 mA (0.015 A) from a 5V USB power supply: R = (5 - 2) / 0.015",
+            "unit": "Ω",
+            "answer": 200,
+            "tolerance": 1,
+            "explanation": "R = (5V - 2.0V) / 0.015 A = 3.0 / 0.015 = 200 Ohms."
+          }
+        ]
+      }
+    },
+    "m02-l08-capacitors-and-timing": {
+      "frontmatter": {
+        "id": "m02-l08-capacitors-and-timing",
+        "title": "Capacitors and RC Timing",
+        "path": "electronics-embedded-foundations",
+        "module": "m02-discrete-circuits",
+        "order": 8,
+        "level": "intermediate",
+        "minutes": 25,
+        "prerequisites": [
+          "m02-l07-diodes-and-leds"
+        ],
+        "objectives": [
+          "Explain how capacitors store and release electrical energy in an electrostatic field",
+          "Identify polarized electrolytic versus non-polarized ceramic capacitors",
+          "Calculate the RC time constant: tau = R × C"
+        ],
+        "keyIdeas": [
+          "Capacitors act like tiny rechargeable reservoirs that smooth voltage ripples and introduce time delays.",
+          "Capacitance (C) is measured in Farads (commonly microfarads µF or nanofarads nF).",
+          "The RC time constant tau = R × C determines charge and discharge timing."
+        ],
+        "tags": [
+          "capacitors",
+          "timing",
+          "rc-circuits"
+        ],
+        "glossary": [
+          "capacitor",
+          "farad",
+          "time-constant",
+          "decoupling"
+        ],
+        "needsHumanVerification": false,
+        "verified": true,
+        "sources": [
+          {
+            "title": "NIST Capacitance and Electrical Time Constants",
+            "url": "https://physics.nist.gov/cuu/Units/index.html"
+          }
+        ],
+        "license": "CC-BY-SA-4.0",
+        "authors": [
+          "RoboForge Team"
+        ],
+        "locale": "en"
+      },
+      "rawMarkdown": "## 1. Hook: The Water Tower Analogy\nHave you ever seen a large municipal water tower on a hill? When water pumps pulse intermittently, the reservoir tower cushions the pressure shocks and keeps clean water flowing steadily to home faucets.\n\nIn physical circuits, **capacitors** are electrical reservoirs that store charge and cushion voltage fluctuations!\n\n## 2. Anatomy of a Capacitor\nA capacitor consists of two conductive plates separated by an insulating material called a **dielectric** (like ceramic, mica, or plastic film).\n\nWhen connected across a voltage source:\n1. Positive charges build up on one plate, while negative electrons accumulate on the other.\n2. An electric field forms between the plates, storing potential energy.\n3. Once charged to the source voltage, current stops flowing.\n\nCapacitance ($C$) measures charge stored per volt, measured in **Farads** ($F$):\n$$1\\,\\mu\\text{F} = 10^{-6}\\text{ F} \\quad\\text{(microfarads)}$$\n$$1\\,\\text{nF} = 10^{-9}\\text{ F} \\quad\\text{(nanofarads)}$$\n$$1\\,\\text{pF} = 10^{-12}\\text{ F} \\quad\\text{(picofarads)}$$\n\n## 3. Polarized vs Ceramic Capacitors\n- **Ceramic Disc Capacitors:** Small values ($10\\,\\text{pF}$ to $100\\,\\text{nF}$), non-polarized (can be plugged into a breadboard in either orientation).\n- **Electrolytic Capacitors:** Large cylindrical cans ($1\\,\\mu\\text{F}$ to $1000\\,\\mu\\text{F}$) with chemical electrolyte. **Strictly polarized!** The negative terminal is marked with a broad white/silver stripe with minus signs (-).\n\n<Callout type=\"safety\" title=\"Electrolytic Capacitor Polarity Rule\">\nNever connect an electrolytic capacitor backward or exceed its printed voltage rating (e.g. 16V or 25V). Reverse polarity causes internal gas expansion and can rupture the safety vent on the aluminum can! Always double-check that the striped negative lead connects to 0V Ground.\n</Callout>\n\n## 4. The RC Time Constant ($\\tau$)\nWhen a capacitor charges through a resistor, it does not fill instantly. The speed of charging depends on both the resistance (choke point) and the capacitance (bucket size):\n$$\\tau = R \\times C$$\n\n- In $1\\tau$ (one time constant), the capacitor charges to approx **63.2%** of full voltage.\n- In $5\\tau$, it reaches **99%** (fully charged).\n\n### Example:\nA $10\\,\\text{k}\\Omega$ ($10{,}000\\,\\Omega$) resistor and a $100\\,\\mu\\text{F}$ ($0.0001\\text{ F}$) capacitor:\n$$\\tau = 10{,}000\\,\\Omega \\times 0.0001\\text{ F} = 1.0\\text{ second}$$\nThis predictable delay enables timers, flashers, and debounce filters!",
+      "quiz": {
+        "id": "q-m02-l08-capacitors-and-timing",
+        "items": [
+          {
+            "type": "single",
+            "prompt": "How do you identify the negative terminal on a cylindrical electrolytic capacitor?",
+            "choices": [
+              {
+                "text": "It has a distinct colored stripe (usually white/silver) printed with minus (-) symbols",
+                "correct": true
+              },
+              {
+                "text": "It has red polka dots",
+                "correct": false
+              },
+              {
+                "text": "The negative terminal is always the longer lead",
+                "correct": false
+              }
+            ],
+            "explanation": "Electrolytic capacitors indicate the negative cathode lead with a prominent vertical stripe showing minus signs down the side of the can."
+          },
+          {
+            "type": "numeric",
+            "prompt": "Calculate the RC time constant tau (in seconds) for a 100kΩ (100,000 Ohm) resistor charging a 10µF (0.000010 Farad) capacitor:",
+            "unit": "s",
+            "answer": 1,
+            "tolerance": 0.05,
+            "explanation": "tau = R × C = 100,000 Ω × 0.000010 F = 1.0 second."
+          },
+          {
+            "type": "single",
+            "prompt": "What is a primary purpose of small 100nF ceramic decoupling capacitors placed near microcontroller power pins?",
+            "choices": [
+              {
+                "text": "To filter out high-frequency electrical noise and voltage dips caused by rapid chip switching",
+                "correct": true
+              },
+              {
+                "text": "To replace the battery entirely",
+                "correct": false
+              },
+              {
+                "text": "To heat up the circuit board in winter",
+                "correct": false
+              }
+            ],
+            "explanation": "Decoupling capacitors act as local energy buffers, supplying instant microsecond bursts of current to prevent logic glitching."
+          }
+        ]
+      }
+    },
+    "m02-l09-transistors-as-switches": {
+      "frontmatter": {
+        "id": "m02-l09-transistors-as-switches",
+        "title": "Transistors as Electronic Switches",
+        "path": "electronics-embedded-foundations",
+        "module": "m02-discrete-circuits",
+        "order": 9,
+        "level": "intermediate",
+        "minutes": 30,
+        "prerequisites": [
+          "m02-l07-diodes-and-leds"
+        ],
+        "objectives": [
+          "Understand the three terminals of a Bipolar Junction Transistor: Base, Collector, and Emitter",
+          "Use an NPN transistor as a low-side electronic switch",
+          "Explain why inductive loads like DC motors require a flyback protection diode"
+        ],
+        "keyIdeas": [
+          "Transistors allow a tiny signal (from a sensor or microcontroller) to switch heavy current.",
+          "In an NPN transistor, current into the Base turns ON the path between Collector and Emitter.",
+          "Collapsing magnetic fields in motors generate high-voltage spikes that destroy transistors without a flyback diode."
+        ],
+        "tags": [
+          "transistors",
+          "switches",
+          "bjt",
+          "motors"
+        ],
+        "glossary": [
+          "transistor",
+          "bjt",
+          "base",
+          "collector",
+          "emitter",
+          "flyback-diode"
+        ],
+        "needsHumanVerification": false,
+        "verified": true,
+        "sources": [
+          {
+            "title": "NIST Semiconductor Devices and Bipolar Transistors",
+            "url": "https://physics.nist.gov/cuu/Units/index.html"
+          }
+        ],
+        "license": "CC-BY-SA-4.0",
+        "authors": [
+          "RoboForge Team"
+        ],
+        "locale": "en"
+      },
+      "rawMarkdown": "## 1. Hook: The Microscopic Muscle\nAn Arduino microcontroller's digital output pin can only supply a tiny trickle of current — about $20\\text{ mA}$ ($0.02\\text{ A}$). If you plug a $500\\text{ mA}$ DC robot motor directly into the pin, the chip's internal silicone will burn out immediately.\n\nHow can a fragile digital pin control powerful motors, high-intensity lamps, and solenoids? With a **transistor**!\n\n## 2. The NPN Transistor (BJT)\nA common NPN transistor (like the classic 2N2222 or 2N3904) has three terminals:\n1. **Base (B):** The control gate. Injecting a tiny current here opens the main channel.\n2. **Collector (C):** Current enters from the positive load side.\n3. **Emitter (E):** Current exits toward 0V Ground.\n\nThink of it like an electrically activated water valve: a child turning a small control wheel (Base current) can open a massive pipeline (Collector current).\n\n## 3. Operating as a Saturated Switch\nIn digital robotics circuits, we operate the transistor in **saturation** (fully ON):\n- When Base voltage is $0\\text{ V}$ ($I_B = 0$): The switch is **OPEN** (Cutoff). The load is off.\n- When Base voltage is $> 0.7\\text{ V}$ ($I_B > 1\\text{ mA}$): The switch is **CLOSED** (Saturation). Full battery current flows through the load to Ground!\n\nA current-limiting resistor ($1\\,\\text{k}\\Omega$) is always placed in series with the Base pin to protect the microcontroller.\n\n<Callout type=\"safety\" title=\"Motor Flyback Voltage Spike Hazard\">\nDC motors contain coiled copper wire (inductors). When you suddenly switch off a spinning motor, its collapsing magnetic field generates a violent reverse-voltage spike (up to 100V!) that can fry your transistor and microcontroller in a split second. Always place a reverse-biased **flyback diode** (like 1N4001) across the motor terminals to safely dissipate this spike.\n</Callout>\n\n## 4. Summary: The Power Multiplier\n- Microcontrollers provide logic and brainpower.\n- Transistors provide electrical muscle.\n- Base resistor protects the controller pin; flyback diode protects against motor inductive kicks.",
+      "quiz": {
+        "id": "q-m02-l09-transistors-as-switches",
+        "items": [
+          {
+            "type": "single",
+            "prompt": "Which terminal of an NPN BJT transistor acts as the low-current control gate?",
+            "choices": [
+              {
+                "text": "Base (B)",
+                "correct": true
+              },
+              {
+                "text": "Collector (C)",
+                "correct": false
+              },
+              {
+                "text": "Emitter (E)",
+                "correct": false
+              }
+            ],
+            "explanation": "A small control current injected into the Base controls a much larger current flowing from Collector to Emitter."
+          },
+          {
+            "type": "single",
+            "prompt": "Why must you place a reverse-biased flyback diode across a DC motor controlled by a transistor?",
+            "choices": [
+              {
+                "text": "To safely clamp the high-voltage inductive kick generated when the motor is turned off",
+                "correct": true
+              },
+              {
+                "text": "To make the motor spin in reverse",
+                "correct": false
+              },
+              {
+                "text": "To convert DC into AC",
+                "correct": false
+              }
+            ],
+            "explanation": "Inductors resist changes in current; when switched off, the collapsing magnetic field creates a destructive voltage spike that the flyback diode safely routes back through the coil."
+          },
+          {
+            "type": "single",
+            "prompt": "What purpose does a 1kΩ resistor between an Arduino digital output pin and a transistor Base serve?",
+            "choices": [
+              {
+                "text": "It limits Base current to a safe 3 to 5 mA to prevent overloading the microcontroller pin",
+                "correct": true
+              },
+              {
+                "text": "It slows down the motor",
+                "correct": false
+              },
+              {
+                "text": "It makes the battery rechargeable",
+                "correct": false
+              }
+            ],
+            "explanation": "Because the Base-Emitter junction acts like a diode with ~0.7V drop, a Base resistor is required to limit output current to safe levels."
+          }
+        ]
+      }
+    },
+    "m02-l10-integrated-circuits-555": {
+      "frontmatter": {
+        "id": "m02-l10-integrated-circuits-555",
+        "title": "Integrated Circuits: The 555 Timer",
+        "path": "electronics-embedded-foundations",
+        "module": "m02-discrete-circuits",
+        "order": 10,
+        "level": "intermediate",
+        "minutes": 30,
+        "prerequisites": [
+          "m02-l08-capacitors-and-timing",
+          "m02-l09-transistors-as-switches"
+        ],
+        "objectives": [
+          "Understand how integrated circuits combine dozens of transistors onto a single microchip",
+          "Read DIP package pinout markings (notch and Pin 1 dot)",
+          "Configure a 555 timer in astable mode to blink an LED without code"
+        ],
+        "keyIdeas": [
+          "Integrated circuits (ICs) miniaturize complex circuits into microscopic silicon dies.",
+          "The 555 timer is the most popular IC in history, generating precision pulses and oscillations.",
+          "Astable mode produces a continuous square wave determined by two resistors and one capacitor."
+        ],
+        "tags": [
+          "ic",
+          "555-timer",
+          "oscillator",
+          "integrated-circuits"
+        ],
+        "glossary": [
+          "integrated-circuit",
+          "dip",
+          "astable",
+          "duty-cycle"
+        ],
+        "needsHumanVerification": false,
+        "verified": true,
+        "sources": [
+          {
+            "title": "IEEE Milestone: Signetics NE555 Timer Integrated Circuit",
+            "url": "https://physics.nist.gov/cuu/Units/index.html"
+          }
+        ],
+        "license": "CC-BY-SA-4.0",
+        "authors": [
+          "RoboForge Team"
+        ],
+        "locale": "en"
+      },
+      "rawMarkdown": "## 1. Hook: 25 Transistors in a Tiny Black Box\nIn earlier lessons, we wired single resistors, LEDs, and transistors one by one. But what if you wanted to build an automatic flasher or robot heartbeat generator? Wiring 25 discrete transistors and 15 resistors by hand would fill an entire breadboard!\n\nIn 1971, engineer Hans Camenzind etched all of those components onto a piece of silicon smaller than a grain of rice, creating the **NE555 Timer** — the most popular microchip in human history!\n\n## 2. Reading Integrated Circuit Pins\nMost hobbyist chips use a **Dual In-line Package (DIP)** with two parallel rows of pins spaced at standard breadboard pitch ($0.1\\text{ inches}$ / $2.54\\text{ mm}$).\n\n### How to Find Pin 1:\n1. Look at the top face of the chip for a **small semicircular notch** or an **embossed circular dot**.\n2. Hold the chip so the notch faces upward or left.\n3. **Pin 1** is immediately to the left of the notch.\n4. Count counter-clockwise around the chip:\n   - Pins 1 to 4 go down the left side.\n   - Pins 5 to 8 go up the right side.\n\n## 3. The 555 Astable Multivibrator (Heartbeat Mode)\nIn **astable mode**, the 555 timer oscillates continuously between HIGH ($5\\text{ V}$) and LOW ($0\\text{ V}$), producing a steady square-wave clock pulse.\n\n- A timing capacitor ($C_1$) slowly charges through resistors $R_1$ and $R_2$.\n- When voltage across $C_1$ reaches two-thirds of the supply ($2/3\\,V_{cc}$), an internal comparator triggers, driving Output Pin 3 LOW and discharging the capacitor through Pin 7.\n- When voltage drops to one-third ($1/3\\,V_{cc}$), the output flips back HIGH, repeating the cycle forever!\n\nThe oscillation frequency in Hertz is calculated by:\n$$f = \\frac{1.44}{(R_1 + 2R_2) \\times C_1}$$\n\n<Callout type=\"safety\" title=\"Safe Prototyping Practice\">\nIntegrated circuits are sensitive to static electricity and can heat up if plugged in backward (reversing VCC Pin 8 and GND Pin 1). Always verify the orientation notch before switching on your battery power.\n</Callout>\n\n## 4. You Have Mastered Discrete Electronics!\nCongratulations! With resistors, diodes, capacitors, transistors, and integrated circuits in your toolkit, you are now ready to progress into programmable embedded microcontrollers (Arduino) and build intelligent autonomous robots!",
+      "quiz": {
+        "id": "q-m02-l10-integrated-circuits-555",
+        "items": [
+          {
+            "type": "single",
+            "prompt": "How do you identify Pin 1 on a standard DIP-8 integrated circuit chip?",
+            "choices": [
+              {
+                "text": "Pin 1 is located immediately to the left of the semicircular index notch or marked by an embossed dot",
+                "correct": true
+              },
+              {
+                "text": "Pin 1 is always the bottom right pin",
+                "correct": false
+              },
+              {
+                "text": "Chips have no numbered pins",
+                "correct": false
+              }
+            ],
+            "explanation": "Looking at the chip with the index notch pointing up, Pin 1 is the top-left corner, and numbering proceeds counter-clockwise around the package."
+          },
+          {
+            "type": "single",
+            "prompt": "What does the 555 timer output in astable multivibrator mode?",
+            "choices": [
+              {
+                "text": "A continuous square-wave oscillation (alternating between HIGH and LOW)",
+                "correct": true
+              },
+              {
+                "text": "A steady DC voltage with zero change",
+                "correct": false
+              },
+              {
+                "text": "Radio waves",
+                "correct": false
+              }
+            ],
+            "explanation": "Astable mode continuously cycles between charging and discharging the timing capacitor, outputting a regular square-wave pulse."
+          },
+          {
+            "type": "single",
+            "prompt": "What determines the blinking rate (frequency) of a 555 astable flasher?",
+            "choices": [
+              {
+                "text": "The values of timing resistors R1, R2, and capacitor C1",
+                "correct": true
+              },
+              {
+                "text": "The color of the wires on the breadboard",
+                "correct": false
+              },
+              {
+                "text": "The ambient air pressure in the room",
+                "correct": false
+              }
+            ],
+            "explanation": "The oscillation frequency f = 1.44 / ((R1 + 2*R2) * C1) is set entirely by the passive timing components."
           }
         ]
       }

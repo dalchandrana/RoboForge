@@ -1,0 +1,9 @@
+id: m02-discrete-circuits
+title: "Module 2: Discrete Electronic Components"
+description: "Explore semiconductors, diodes, LEDs, capacitors, transistor switches, and 555 timers."
+order: 2
+lessons:
+  - m02-l07-diodes-and-leds
+  - m02-l08-capacitors-and-timing
+  - m02-l09-transistors-as-switches
+  - m02-l10-integrated-circuits-555
