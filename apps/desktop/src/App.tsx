@@ -230,7 +230,12 @@ export const App: React.FC = () => {
         )}
 
         {activeTab === 'projects' && (
-          <ProjectsView onNavigate={setActiveTab} onProjectComplete={handleProjectComplete} />
+          <ProjectsView
+            onNavigate={setActiveTab}
+            onProjectComplete={handleProjectComplete}
+            storage={storage}
+            learnerNickname={settings.learnerNickname}
+          />
         )}
 
         {activeTab === 'library' && <LibraryView />}

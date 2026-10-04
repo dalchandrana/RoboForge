@@ -38,6 +38,17 @@ export const DEFAULT_SETTINGS: SettingsRecord = {
   learnerLevel: 'beginner',
 };
 
+export interface ProjectLog {
+  id: string;
+  projectId: string;
+  title: string;
+  notes: string;
+  observations: string;
+  photoUrl?: string;
+  createdAt: string;
+  completed: boolean;
+}
+
 export interface RoboforgeExportBundle {
   version: 1;
   exportedAt: string;
@@ -46,6 +57,7 @@ export interface RoboforgeExportBundle {
     profile?: Record<string, unknown>;
     settings: SettingsRecord;
     lessonProgress: LessonProgressRecord[];
+    projectLogs?: ProjectLog[];
     exerciseAttempts?: Record<string, unknown>[];
     quizAttempts?: Record<string, unknown>[];
     circuits?: Record<string, unknown>[];
@@ -65,6 +77,26 @@ export class StorageService {
   private activeDays = new Set<string>();
   private badges = new Map<string, string>();
   private milestones = new Set<string>();
+  private projectLogs = new Map<string, ProjectLog>();
+
+  /** Save or update a workshop build log entry (FR-PRJ-05). */
+  public async saveProjectLog(log: ProjectLog): Promise<void> {
+    this.projectLogs.set(log.id, { ...log });
+  }
+
+  /** Retrieve all workshop build logs, optionally filtered by projectId. */
+  public async getProjectLogs(projectId?: string): Promise<ProjectLog[]> {
+    const logs = Array.from(this.projectLogs.values());
+    if (projectId) {
+      return logs.filter(l => l.projectId === projectId);
+    }
+    return logs.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  }
+
+  /** Delete a workshop build log entry. */
+  public async deleteProjectLog(id: string): Promise<boolean> {
+    return this.projectLogs.delete(id);
+  }
 
   /** Record learner activity for a YYYY-MM-DD day (used for streaks). */
   public async recordActivity(day: string): Promise<void> {
@@ -133,6 +165,7 @@ export class StorageService {
     this.activeDays.clear();
     this.badges.clear();
     this.milestones.clear();
+    this.projectLogs.clear();
   }
 
   public async exportBundle(): Promise<RoboforgeExportBundle> {
@@ -143,6 +176,7 @@ export class StorageService {
       data: {
         settings: await this.getSettings(),
         lessonProgress: await this.getAllProgress(),
+        projectLogs: await this.getProjectLogs(),
         streaks: (await this.getActiveDays()).map(day => ({ day })),
         badges: await this.getBadges(),
         profile: { milestones: await this.getMilestones() },
@@ -161,6 +195,14 @@ export class StorageService {
       this.progress.clear();
       for (const item of bundle.data.lessonProgress) {
         this.progress.set(item.lessonId, item);
+      }
+    }
+    this.projectLogs.clear();
+    if (Array.isArray(bundle.data.projectLogs)) {
+      for (const log of bundle.data.projectLogs) {
+        if (log && typeof log.id === 'string') {
+          this.projectLogs.set(log.id, log);
+        }
       }
     }
     this.activeDays.clear();

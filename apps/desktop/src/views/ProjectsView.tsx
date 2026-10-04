@@ -1,7 +1,11 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Card, Badge, Callout } from '@roboforge/ui';
 import type { Project, Kit } from '@roboforge/content-schema';
+import type { StorageService, ProjectLog } from '@roboforge/storage';
 import bundleData from '../content-bundle.json';
+import { CommunityShareModal } from '../components/projects/CommunityShareModal';
+import { CompletionCertificateModal } from '../components/projects/CompletionCertificateModal';
+import { WorkshopBuildLogs } from '../components/projects/WorkshopBuildLogs';
 
 interface ContentBundleWithProjectsAndKits {
   projects?: Record<string, Project>;
@@ -16,17 +20,53 @@ interface ProjectsViewProps {
   onNavigate?: (tab: string) => void;
   /** Called when every build step of a project has been checked off. */
   onProjectComplete?: (projectId: string) => void;
+  storage?: StorageService;
+  learnerNickname?: string;
 }
 
-type MainTab = 'projects' | 'kits';
+type MainTab = 'projects' | 'kits' | 'logs';
 type ProjectSubTab = 'overview' | 'wiring' | 'steps' | 'code' | 'troubleshooting' | 'bom';
 
-export const ProjectsView: React.FC<ProjectsViewProps> = ({ onNavigate, onProjectComplete }) => {
+export const ProjectsView: React.FC<ProjectsViewProps> = ({
+  onNavigate,
+  onProjectComplete,
+  storage,
+  learnerNickname,
+}) => {
   const [mainTab, setMainTab] = useState<MainTab>('projects');
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
   const [projectSubTab, setProjectSubTab] = useState<ProjectSubTab>('overview');
   const [kitFilter, setKitFilter] = useState<'all' | 'starter' | 'builder'>('all');
   const [searchQuery, setSearchQuery] = useState('');
+
+  // Workshop Build Logs & Modals state
+  const [buildLogs, setBuildLogs] = useState<ProjectLog[]>([]);
+  const [sharingLog, setSharingLog] = useState<ProjectLog | null>(null);
+  const [isCertificateOpen, setIsCertificateOpen] = useState(false);
+
+  useEffect(() => {
+    if (storage) {
+      void storage.getProjectLogs().then(setBuildLogs);
+    }
+  }, [storage]);
+
+  const handleSaveLog = async (log: ProjectLog) => {
+    if (storage) {
+      await storage.saveProjectLog(log);
+      const updated = await storage.getProjectLogs();
+      setBuildLogs(updated);
+      showCopyFeedback('Build entry saved to your workshop log!');
+    }
+  };
+
+  const handleDeleteLog = async (id: string) => {
+    if (storage) {
+      await storage.deleteProjectLog(id);
+      const updated = await storage.getProjectLogs();
+      setBuildLogs(updated);
+      showCopyFeedback('Build log entry deleted.');
+    }
+  };
 
   // Selected kit for Kits & BOM tab
   const [selectedKitTier, setSelectedKitTier] = useState<'starter' | 'builder'>('starter');
@@ -208,12 +248,13 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ onNavigate, onProjec
         </div>
 
         {/* Tab switcher */}
-        <div className="flex items-center gap-2 bg-muted/60 p-1.5 rounded-xl border border-border shrink-0">
+        <div className="flex flex-wrap items-center gap-2 bg-muted/60 p-1.5 rounded-xl border border-border shrink-0">
           <button
             onClick={() => {
               setMainTab('projects');
               setSelectedProjectId(null);
             }}
+            id="tab-projects-guided"
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
               mainTab === 'projects'
                 ? 'bg-primary text-primary-foreground shadow-sm'
@@ -224,6 +265,7 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ onNavigate, onProjec
           </button>
           <button
             onClick={() => setMainTab('kits')}
+            id="tab-projects-kits"
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
               mainTab === 'kits'
                 ? 'bg-primary text-primary-foreground shadow-sm'
@@ -231,6 +273,25 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ onNavigate, onProjec
             }`}
           >
             📦 Official Kits & BOM ({ALL_KITS.length})
+          </button>
+          <button
+            onClick={() => setMainTab('logs')}
+            id="tab-projects-logs"
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+              mainTab === 'logs'
+                ? 'bg-primary text-primary-foreground shadow-sm'
+                : 'text-muted-foreground hover:text-foreground'
+            }`}
+          >
+            🔨 My Workshop Logs ({buildLogs.length})
+          </button>
+          <button
+            type="button"
+            onClick={() => setIsCertificateOpen(true)}
+            id="btn-open-certificate"
+            className="px-3.5 py-2 rounded-lg text-sm font-bold transition-all bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center gap-1.5"
+          >
+            <span>🏅 Capstone Certificate</span>
           </button>
         </div>
       </div>
@@ -1029,6 +1090,37 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ onNavigate, onProjec
           </div>
         </div>
       )}
+
+      {/* ============================================================ */}
+      {/* MAIN TAB 3: MY WORKSHOP BUILD LOGS (FR-PRJ-05)              */}
+      {/* ============================================================ */}
+      {mainTab === 'logs' && (
+        <WorkshopBuildLogs
+          logs={buildLogs}
+          projects={ALL_PROJECTS}
+          onSaveLog={handleSaveLog}
+          onDeleteLog={handleDeleteLog}
+          onShareLog={setSharingLog}
+        />
+      )}
+
+      {/* Community Gallery PR Template Exporter Modal (FR-PRJ-06) */}
+      {sharingLog && (
+        <CommunityShareModal
+          isOpen={true}
+          onClose={() => setSharingLog(null)}
+          log={sharingLog}
+          learnerNickname={learnerNickname}
+          projectName={ALL_PROJECTS.find(p => p.id === sharingLog.projectId)?.title}
+        />
+      )}
+
+      {/* Capstone Certificate Modal (FR-COM-04) */}
+      <CompletionCertificateModal
+        isOpen={isCertificateOpen}
+        onClose={() => setIsCertificateOpen(false)}
+        learnerNickname={learnerNickname}
+      />
     </div>
   );
 };
