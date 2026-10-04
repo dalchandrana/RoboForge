@@ -1,6 +1,6 @@
 [package]
 name = "roboforge-desktop"
-version = "0.1.0"
+version = "1.0.0"
 description = "Free, offline-first desktop robotics learning platform"
 authors = ["RoboForge Contributors"]
 edition = "2021"
