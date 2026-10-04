@@ -9,6 +9,7 @@ import { ToolsView } from './views/ToolsView';
 import { SimulatorView } from './views/SimulatorView';
 import { CoachView } from './views/CoachView';
 import { PlaceholderView } from './views/PlaceholderView';
+import { OnboardingWizard } from './components/onboarding/OnboardingWizard';
 
 const storage = new StorageService();
 
@@ -239,6 +240,17 @@ export const App: React.FC = () => {
 
         {activeTab === 'coach' && <CoachView />}
       </main>
+
+      {/* First-Run Onboarding Wizard (FR-APP-03) */}
+      <OnboardingWizard
+        isOpen={!settings.onboardingCompleted}
+        onComplete={async completedSettings => {
+          await handleUpdateSettings(completedSettings);
+          setToastMessage(
+            `Welcome aboard, ${completedSettings.learnerNickname || 'Cadet'}! Setup complete.`,
+          );
+        }}
+      />
 
       {/* Toast Notification */}
       {toastMessage && <Toast message={toastMessage} onDismiss={() => setToastMessage(null)} />}

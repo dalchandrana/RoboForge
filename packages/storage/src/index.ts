@@ -18,6 +18,9 @@ export interface SettingsRecord {
   aiTier: 'small' | 'balanced' | 'best';
   aiOffMode: boolean;
   lowSpecMode: boolean;
+  onboardingCompleted?: boolean;
+  learnerNickname?: string;
+  learnerLevel?: 'beginner' | 'intermediate' | 'advanced';
 }
 
 export const DEFAULT_SETTINGS: SettingsRecord = {
@@ -28,6 +31,9 @@ export const DEFAULT_SETTINGS: SettingsRecord = {
   aiTier: 'balanced',
   aiOffMode: false,
   lowSpecMode: false,
+  onboardingCompleted: false,
+  learnerNickname: 'Cadet Spark',
+  learnerLevel: 'beginner',
 };
 
 export interface RoboforgeExportBundle {
