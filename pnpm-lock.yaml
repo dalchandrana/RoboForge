@@ -74,6 +74,9 @@ importers:
       '@roboforge/sim-circuit':
         specifier: workspace:*
         version: link:../../packages/sim-circuit
+      '@roboforge/sim-robot':
+        specifier: workspace:*
+        version: link:../../packages/sim-robot
       '@roboforge/storage':
         specifier: workspace:*
         version: link:../../packages/storage

@@ -55,6 +55,10 @@ export const App: React.FC = () => {
     void markMilestone('ran-arduino-sim');
   }, [markMilestone]);
 
+  const handleRobotRan = useCallback(() => {
+    void markMilestone('ran-robot-sim');
+  }, [markMilestone]);
+
   const handleProjectComplete = useCallback(
     (projectId: string) => {
       void markMilestone(`project:${projectId}`);
@@ -221,7 +225,9 @@ export const App: React.FC = () => {
           />
         )}
 
-        {activeTab === 'simulate' && <SimulatorView onArduinoRan={handleArduinoRan} />}
+        {activeTab === 'simulate' && (
+          <SimulatorView onArduinoRan={handleArduinoRan} onRobotRan={handleRobotRan} />
+        )}
 
         {activeTab === 'projects' && (
           <ProjectsView onNavigate={setActiveTab} onProjectComplete={handleProjectComplete} />

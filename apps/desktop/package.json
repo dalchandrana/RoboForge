@@ -19,6 +19,7 @@
     "@roboforge/i18n": "workspace:*",
     "@roboforge/sim-avr": "workspace:*",
     "@roboforge/sim-circuit": "workspace:*",
+    "@roboforge/sim-robot": "workspace:*",
     "@roboforge/storage": "workspace:*",
     "@roboforge/ui": "workspace:*",
     "clsx": "^2.1.1",

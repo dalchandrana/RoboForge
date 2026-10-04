@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { CircuitSimulator } from '../components/circuit/CircuitSimulator';
 import { ArduinoSimulator } from '../components/arduino/ArduinoSimulator';
+import { RobotSimulator } from '../components/robot/RobotSimulator';
 
 interface SimulatorViewProps {
   onArduinoRan?: () => void;
+  onRobotRan?: () => void;
 }
 
-export const SimulatorView: React.FC<SimulatorViewProps> = ({ onArduinoRan }) => {
-  const [activeSim, setActiveSim] = useState<'circuit' | 'arduino'>('circuit');
+export const SimulatorView: React.FC<SimulatorViewProps> = ({ onArduinoRan, onRobotRan }) => {
+  const [activeSim, setActiveSim] = useState<'circuit' | 'arduino' | 'robot'>('circuit');
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
@@ -23,8 +25,8 @@ export const SimulatorView: React.FC<SimulatorViewProps> = ({ onArduinoRan }) =>
             </h1>
           </div>
           <p className="text-sm text-text-muted">
-            100% offline interactive simulation: analog/digital circuits with SPICE bridge, and
-            Arduino Uno AVR microcontroller.
+            100% offline interactive simulation: analog/digital circuits with SPICE bridge, Arduino
+            Uno AVR, and 2D mobile robot physics.
           </p>
         </div>
 
@@ -34,7 +36,7 @@ export const SimulatorView: React.FC<SimulatorViewProps> = ({ onArduinoRan }) =>
             type="button"
             onClick={() => setActiveSim('circuit')}
             id="tab-circuit-sim"
-            className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${
+            className={`px-3.5 py-2 rounded-lg text-xs font-bold transition-all ${
               activeSim === 'circuit'
                 ? 'bg-sky-500 text-white shadow-md'
                 : 'text-text-muted hover:text-text-main'
@@ -47,7 +49,7 @@ export const SimulatorView: React.FC<SimulatorViewProps> = ({ onArduinoRan }) =>
             type="button"
             onClick={() => setActiveSim('arduino')}
             id="tab-arduino-sim"
-            className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${
+            className={`px-3.5 py-2 rounded-lg text-xs font-bold transition-all ${
               activeSim === 'arduino'
                 ? 'bg-sky-500 text-white shadow-md'
                 : 'text-text-muted hover:text-text-main'
@@ -55,14 +57,29 @@ export const SimulatorView: React.FC<SimulatorViewProps> = ({ onArduinoRan }) =>
           >
             🤖 Arduino Simulator
           </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveSim('robot')}
+            id="tab-robot-sim"
+            className={`px-3.5 py-2 rounded-lg text-xs font-bold transition-all ${
+              activeSim === 'robot'
+                ? 'bg-sky-500 text-white shadow-md'
+                : 'text-text-muted hover:text-text-main'
+            }`}
+          >
+            🏎️ 2D Robot Simulator
+          </button>
         </div>
       </div>
 
       {/* Simulator Content */}
       {activeSim === 'circuit' ? (
         <CircuitSimulator />
-      ) : (
+      ) : activeSim === 'arduino' ? (
         <ArduinoSimulator onSimulationRan={onArduinoRan} />
+      ) : (
+        <RobotSimulator onRobotRan={onRobotRan} />
       )}
     </div>
   );

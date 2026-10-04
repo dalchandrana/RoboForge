@@ -153,7 +153,15 @@
     - Reactive ultrasonic obstacle avoidance finite state machine (`FORWARD` -> `BACKUP` -> `TURN`).
     - Manual keyboard/joystick teleoperation controller.
   - Implemented standard educational track and arena presets in `packages/sim-robot/src/arena.ts` (Oval Track, Figure-8 Lemniscate, Obstacle Course).
-  - Authored 18 unit tests in `packages/sim-robot/src/index.test.ts` (100% pass rate).
+- **Slice 2: 2D Robot Arena UI & Interactive Simulator (`apps/desktop`)**
+  - Implemented interactive 2D simulation workbench components in `apps/desktop/src/components/robot/`:
+    - `RobotArenaCanvas.tsx`: HTML5 canvas rendering 2D differential drive robot, chassis body, rotating wheels, front caster ball, HC-SR04 sonar module, conical sonar raycast beam with distance contact point, dual TCRT5000 IR sensor probes with live floor/line states, track lines with edge borders, and draggable/interactive obstacle boxes.
+    - `RobotTelemetryHUD.tsx`: Digital readouts for linear velocity, heading angle with compass directions, ultrasonic range with danger alerts, dual IR reflectance percentages, encoder tick counts, and collision indicator.
+    - `RobotControls.tsx`: Navigation mode switcher (🎮 Manual Drive, 〰️ Line Follower, 🦇 Obstacle Avoider), arena presets (Oval, Figure-8, Obstacle Maze), run/pause/reset buttons, and on-screen manual D-pad.
+    - `RobotSimulator.tsx`: Master coordinator with 60 fps `requestAnimationFrame` loop, keyboard shortcuts (Space, R, WASD, Arrow keys), and milestone integration.
+  - Updated `SimulatorView.tsx` with top tab switcher for `🏎️ 2D Robot Simulator`.
+  - Wired `onRobotRan` milestone in `App.tsx` marking `'ran-robot-sim'`.
+  - Browser verification recording: `robot_simulator_demo`.
 
 ## Test & Coverage Status
 - **Unit Test Suite:** 147 tests passing across 12 test files (100% pass rate).
@@ -171,14 +179,13 @@
   - `component_library_demo`
   - `hardware_projects_demo`
   - `practice_engine_demo`
+  - `robot_simulator_demo`
 
 ## In progress
-- Phase 3, Slice 2: 2D Robot Arena UI & Interactive Simulator (`apps/desktop/src/components/robot/`).
+- Phase 3, Slice 3: Curriculum Completion (Module 5: Lessons 27–30 & Capstone).
 
 ## Next (Phase 3 Milestones)
-1. **Slice 2: 2D Robot Arena UI & Interactive Simulator (`apps/desktop`):**
-   - 2D Canvas arena renderer, live telemetry HUD, manual driving & autonomous modes.
-2. **Slice 3: Curriculum Completion (Module 5: Lessons 27–30 & Capstone):**
+1. **Slice 3: Curriculum Completion (Module 5: Lessons 27–30 & Capstone):**
    - L27 differential drive, L28 line follower, L29 obstacle car, L30 capstone robot.
 3. **Slice 4: Project Build Logs & Community Sharing (FR-PRJ-05, FR-PRJ-06):**
    - SQLite `project_logs`, export PR template, completion certificate.
