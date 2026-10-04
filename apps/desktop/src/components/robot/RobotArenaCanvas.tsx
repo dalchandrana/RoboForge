@@ -16,6 +16,7 @@ interface RobotArenaCanvasProps {
   isCollision: boolean;
   onMoveObstacle?: (id: string, x: number, y: number) => void;
   onAddObstacle?: (x: number, y: number) => void;
+  lowSpecMode?: boolean;
 }
 
 export const RobotArenaCanvas: React.FC<RobotArenaCanvasProps> = ({
@@ -26,6 +27,7 @@ export const RobotArenaCanvas: React.FC<RobotArenaCanvasProps> = ({
   isCollision,
   onMoveObstacle,
   onAddObstacle,
+  lowSpecMode = false,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const draggingObstacleRef = useRef<string | null>(null);
@@ -62,21 +64,23 @@ export const RobotArenaCanvas: React.FC<RobotArenaCanvasProps> = ({
     ctx.fillStyle = '#0f172a'; // Deep slate dark arena
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // 1. Draw arena floor grid
-    ctx.strokeStyle = '#1e293b';
-    ctx.lineWidth = 1;
-    const gridSizeCm = 20; // 20cm grid squares
-    for (let x = 0; x <= arena.width; x += gridSizeCm) {
-      ctx.beginPath();
-      ctx.moveTo(toCanvasX(x), toCanvasY(0));
-      ctx.lineTo(toCanvasX(x), toCanvasY(arena.height));
-      ctx.stroke();
-    }
-    for (let y = 0; y <= arena.height; y += gridSizeCm) {
-      ctx.beginPath();
-      ctx.moveTo(toCanvasX(0), toCanvasY(y));
-      ctx.lineTo(toCanvasX(arena.width), toCanvasY(y));
-      ctx.stroke();
+    // 1. Draw arena floor grid (skipped in lowSpecMode to save hundreds of draw ops per frame)
+    if (!lowSpecMode) {
+      ctx.strokeStyle = '#1e293b';
+      ctx.lineWidth = 1;
+      const gridSizeCm = 20; // 20cm grid squares
+      for (let x = 0; x <= arena.width; x += gridSizeCm) {
+        ctx.beginPath();
+        ctx.moveTo(toCanvasX(x), toCanvasY(0));
+        ctx.lineTo(toCanvasX(x), toCanvasY(arena.height));
+        ctx.stroke();
+      }
+      for (let y = 0; y <= arena.height; y += gridSizeCm) {
+        ctx.beginPath();
+        ctx.moveTo(toCanvasX(0), toCanvasY(y));
+        ctx.lineTo(toCanvasX(arena.width), toCanvasY(y));
+        ctx.stroke();
+      }
     }
 
     // 2. Draw arena boundary walls
@@ -93,22 +97,24 @@ export const RobotArenaCanvas: React.FC<RobotArenaCanvasProps> = ({
     for (const track of arena.tracks) {
       if (track.points.length < 2) continue;
       const pts = track.points;
+      const firstPt = pts[0]!;
       const lineWidthPx = toCanvasDist(track.width);
 
-      // Outer glow / edge border
-      ctx.strokeStyle = '#334155';
-      ctx.lineWidth = lineWidthPx + 2;
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
-      ctx.beginPath();
-      const firstPt = pts[0]!;
-      ctx.moveTo(toCanvasX(firstPt.x), toCanvasY(firstPt.y));
-      for (let i = 1; i < pts.length; i++) {
-        const p = pts[i]!;
-        ctx.lineTo(toCanvasX(p.x), toCanvasY(p.y));
+      // Outer glow / edge border (skipped in lowSpecMode)
+      if (!lowSpecMode) {
+        ctx.strokeStyle = '#334155';
+        ctx.lineWidth = lineWidthPx + 2;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.beginPath();
+        ctx.moveTo(toCanvasX(firstPt.x), toCanvasY(firstPt.y));
+        for (let i = 1; i < pts.length; i++) {
+          const p = pts[i]!;
+          ctx.lineTo(toCanvasX(p.x), toCanvasY(p.y));
+        }
+        if (track.closed) ctx.closePath();
+        ctx.stroke();
       }
-      if (track.closed) ctx.closePath();
-      ctx.stroke();
 
       // Main dark electrical tape line
       ctx.strokeStyle = '#020617';
@@ -307,7 +313,7 @@ export const RobotArenaCanvas: React.FC<RobotArenaCanvasProps> = ({
 
     drawIrProbe(lineReading.leftPos, lineReading.leftOnLine, 'L');
     drawIrProbe(lineReading.rightPos, lineReading.rightOnLine, 'R');
-  }, [robotState, arena, sonarReading, lineReading, isCollision, getScale]);
+  }, [robotState, arena, sonarReading, lineReading, isCollision, getScale, lowSpecMode]);
 
   // Handle canvas mouse interaction (click-to-add obstacle, drag obstacle)
   const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {

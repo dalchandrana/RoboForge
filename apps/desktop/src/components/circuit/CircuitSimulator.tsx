@@ -181,12 +181,14 @@ export interface CircuitSimulatorProps {
   initialPreset?: keyof typeof PRESETS;
   embedded?: boolean;
   onNetlistChange?: (netlist: CircuitNetlist) => void;
+  lowSpecMode?: boolean;
 }
 
 export const CircuitSimulator: React.FC<CircuitSimulatorProps> = ({
   initialPreset = 'led_safe',
   embedded: _embedded = false,
   onNetlistChange,
+  lowSpecMode: _lowSpecMode = false,
 }) => {
   const [netlist, setNetlist] = useState<CircuitNetlist>(() =>
     JSON.parse(JSON.stringify(PRESETS[initialPreset] || PRESETS.led_safe)),
@@ -311,8 +313,61 @@ export const CircuitSimulator: React.FC<CircuitSimulatorProps> = ({
   const selectedComp = netlist.components.find(c => c.id === selectedCompId);
   const spiceNetlist = useMemo(() => exportToSPICE(netlist), [netlist]);
 
+  // Screen-reader accessible netlist description (FR-ACC-01)
+  const accessibleNetlistDescription = useMemo(() => {
+    const lines = [
+      `Circuit netlist: ${netlist.title || 'Untitled Circuit'}.`,
+      `Solver status: Live. Ground node is ${netlist.groundNodeId}.`,
+      `Components (${netlist.components.length}):`,
+      ...netlist.components.map(c => {
+        const pinDesc = c.pins.map(p => `${p.name} on node ${p.nodeId}`).join(', ');
+        let valDesc = '';
+        if (c.properties.resistance_Ohm)
+          valDesc = `, resistance ${c.properties.resistance_Ohm} ohms`;
+        if (c.properties.voltage_V) valDesc = `, voltage ${c.properties.voltage_V} volts`;
+        if (c.properties.color) valDesc = `, ${c.properties.color} color`;
+        return `${c.label || c.type} ID ${c.id} with ${pinDesc}${valDesc}.`;
+      }),
+    ];
+    if (simResult.success) {
+      lines.push('Simulation solution solved successfully.');
+      if (burnedComponent) {
+        lines.push(
+          `Warning: Burned out component: ${burnedComponent.comp.label || burnedComponent.comp.id}.`,
+        );
+      }
+    }
+    return lines.join(' ');
+  }, [netlist, simResult, burnedComponent]);
+
+  // Keyboard shortcut listener: R to reset probes
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (
+        e.target instanceof HTMLInputElement ||
+        e.target instanceof HTMLTextAreaElement ||
+        e.target instanceof HTMLSelectElement
+      ) {
+        return;
+      }
+      if (e.code === 'KeyR') {
+        e.preventDefault();
+        setRedProbeNode('VCC');
+        setBlackProbeNode('0');
+        setSelectedCompId(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   return (
     <div className="flex flex-col gap-6 w-full">
+      {/* Screen Reader Accessible Netlist Live Region */}
+      <div id="circuit-screen-reader-summary" aria-live="polite" className="sr-only">
+        {accessibleNetlistDescription}
+      </div>
+
       {/* Top Header & Presets Bar */}
       <div className="flex flex-wrap items-center justify-between gap-4 bg-surface p-4 rounded-2xl border border-border-subtle">
         <div className="flex items-center gap-3">

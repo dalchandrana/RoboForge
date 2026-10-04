@@ -20,9 +20,13 @@ import { RobotControls, ControllerMode, ArenaPreset } from './RobotControls';
 
 interface RobotSimulatorProps {
   onRobotRan?: () => void;
+  lowSpecMode?: boolean;
 }
 
-export const RobotSimulator: React.FC<RobotSimulatorProps> = ({ onRobotRan }) => {
+export const RobotSimulator: React.FC<RobotSimulatorProps> = ({
+  onRobotRan,
+  lowSpecMode = false,
+}) => {
   // Preset arena configurations
   const [arenaPreset, setArenaPreset] = useState<ArenaPreset>('oval');
   const [arena, setArena] = useState<ArenaEnvironment>(() => createOvalTrackArena());
@@ -157,6 +161,12 @@ export const RobotSimulator: React.FC<RobotSimulatorProps> = ({ onRobotRan }) =>
 
   useEffect(() => {
     const simLoop = (now: number) => {
+      // In low-spec mode, throttle execution to ~30 FPS (>= 33ms between frames)
+      if (lowSpecMode && now - lastTimeRef.current < 33) {
+        animFrameIdRef.current = requestAnimationFrame(simLoop);
+        return;
+      }
+
       const rawDt = (now - lastTimeRef.current) / 1000;
       lastTimeRef.current = now;
 
@@ -225,7 +235,7 @@ export const RobotSimulator: React.FC<RobotSimulatorProps> = ({ onRobotRan }) =>
         cancelAnimationFrame(animFrameIdRef.current);
       }
     };
-  }, [isRunning, simSpeed, controllerMode, arena, onRobotRan]);
+  }, [isRunning, simSpeed, controllerMode, arena, onRobotRan, lowSpecMode]);
 
   // Read current sensors for rendering HUD and Canvas
   const sonarReading = readUltrasonicSonar(robotState, arena);
@@ -276,6 +286,7 @@ export const RobotSimulator: React.FC<RobotSimulatorProps> = ({ onRobotRan }) =>
         isCollision={isCollision}
         onMoveObstacle={handleMoveObstacle}
         onAddObstacle={handleAddObstacle}
+        lowSpecMode={lowSpecMode}
       />
 
       {/* 3. Controls & Navigation Bar */}

@@ -17,3 +17,44 @@ body {
   min-width: 1024px;
   min-height: 600px;
 }
+
+/* Low-Spec Performance Mode (FR-SET-04, ARCHITECTURE.md §10) */
+[data-low-spec='true'],
+.low-spec {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+[data-low-spec='true'] *,
+.low-spec * {
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+
+/* Reduced Motion Accessibility (FR-ACC-01) */
+[data-reduced-motion='true'] *,
+.reduced-motion * {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* Accessible high-contrast focus rings */
+:focus-visible {
+  outline: 2px solid var(--accent, #0284c7) !important;
+  outline-offset: 2px !important;
+}
+
+/* Screen-reader accessible hidden utility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}

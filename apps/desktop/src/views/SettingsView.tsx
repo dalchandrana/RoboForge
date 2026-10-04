@@ -112,7 +112,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
           </select>
         </div>
 
-        <div className="flex items-center justify-between py-2">
+        <div className="flex items-center justify-between py-2 border-b border-border-subtle">
           <div>
             <label htmlFor="reduced-motion-toggle" className="font-medium text-sm block">
               {t('settings.reducedMotion')}
@@ -124,6 +124,25 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             type="checkbox"
             checked={settings.reducedMotion}
             onChange={e => onUpdateSettings({ reducedMotion: e.target.checked })}
+            className="w-5 h-5 text-sky-500 rounded cursor-pointer"
+          />
+        </div>
+
+        <div className="flex items-center justify-between py-2">
+          <div>
+            <label htmlFor="low-spec-toggle" className="font-medium text-sm block">
+              {t('settings.lowSpecMode')}
+            </label>
+            <span className="text-xs text-text-muted">
+              Optimizes performance for dual-core CPUs & older laptops. Disables blurs, shadows, and
+              throttles canvas framerate.
+            </span>
+          </div>
+          <input
+            id="low-spec-toggle"
+            type="checkbox"
+            checked={settings.lowSpecMode}
+            onChange={e => onUpdateSettings({ lowSpecMode: e.target.checked })}
             className="w-5 h-5 text-sky-500 rounded cursor-pointer"
           />
         </div>

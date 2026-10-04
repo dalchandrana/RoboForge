@@ -66,22 +66,6 @@ export const App: React.FC = () => {
     [markMilestone],
   );
 
-  // Load storage state on mount
-  useEffect(() => {
-    async function loadData() {
-      const s = await storage.getSettings();
-      setSettings(s);
-      applyTheme(s.theme);
-
-      const allProgress = await storage.getAllProgress();
-      const completed = new Set(
-        allProgress.filter(p => p.status === 'completed').map(p => p.lessonId),
-      );
-      setCompletedLessons(completed);
-    }
-    loadData();
-  }, []);
-
   const applyTheme = (theme: 'dark' | 'light' | 'system') => {
     const root = document.documentElement;
     if (theme === 'system') {
@@ -92,12 +76,85 @@ export const App: React.FC = () => {
     }
   };
 
+  const applyAccessibilitySettings = useCallback((s: SettingsRecord) => {
+    const root = document.documentElement;
+
+    // Low-Spec Performance Mode (FR-SET-04, ARCHITECTURE.md §10)
+    if (s.lowSpecMode) {
+      root.setAttribute('data-low-spec', 'true');
+      root.classList.add('low-spec');
+    } else {
+      root.removeAttribute('data-low-spec');
+      root.classList.remove('low-spec');
+    }
+
+    // Reduced Motion (FR-ACC-01)
+    if (s.reducedMotion) {
+      root.setAttribute('data-reduced-motion', 'true');
+      root.classList.add('reduced-motion');
+    } else {
+      root.removeAttribute('data-reduced-motion');
+      root.classList.remove('reduced-motion');
+    }
+
+    // Font size scaling
+    if (s.fontSize === 'sm') {
+      root.style.fontSize = '14px';
+    } else if (s.fontSize === 'lg') {
+      root.style.fontSize = '18px';
+    } else {
+      root.style.fontSize = '16px';
+    }
+  }, []);
+
+  // Load storage state on mount
+  useEffect(() => {
+    async function loadData() {
+      const s = await storage.getSettings();
+      setSettings(s);
+      applyTheme(s.theme);
+      applyAccessibilitySettings(s);
+
+      const allProgress = await storage.getAllProgress();
+      const completed = new Set(
+        allProgress.filter(p => p.status === 'completed').map(p => p.lessonId),
+      );
+      setCompletedLessons(completed);
+    }
+    loadData();
+  }, [applyAccessibilitySettings]);
+
+  // Global Keyboard Shortcuts (Ctrl/Cmd + 1..9 for tabs)
+  useEffect(() => {
+    const handleGlobalKeyDown = (e: KeyboardEvent) => {
+      if (
+        e.target instanceof HTMLInputElement ||
+        e.target instanceof HTMLTextAreaElement ||
+        e.target instanceof HTMLSelectElement
+      ) {
+        return;
+      }
+
+      if ((e.ctrlKey || e.metaKey) && e.key >= '1' && e.key <= '9') {
+        const index = parseInt(e.key, 10) - 1;
+        if (NAV_ITEMS[index]) {
+          e.preventDefault();
+          setActiveTab(NAV_ITEMS[index].id);
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleGlobalKeyDown);
+    return () => window.removeEventListener('keydown', handleGlobalKeyDown);
+  }, []);
+
   const handleUpdateSettings = async (partial: Partial<SettingsRecord>) => {
     const next = await storage.updateSettings(partial);
     setSettings(next);
     if (partial.theme) {
       applyTheme(next.theme);
     }
+    applyAccessibilitySettings(next);
     setToastMessage('Settings updated.');
   };
 
@@ -116,7 +173,14 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-app text-text-main font-sans">
+    <div className="flex min-h-screen bg-app text-text-main font-sans relative">
+      {/* Skip to Content Link (A11y FR-ACC-01) */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-50 focus:px-4 focus:py-2 focus:bg-sky-600 focus:text-white focus:font-bold focus:rounded-lg focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-white"
+      >
+        Skip to main content
+      </a>
       {/* Sidebar Navigation (FR-APP-02) */}
       <nav
         aria-label="Main Navigation"
@@ -176,7 +240,11 @@ export const App: React.FC = () => {
       </nav>
 
       {/* Main Content Area */}
-      <main className="flex-1 overflow-y-auto p-8 lg:p-12">
+      <main
+        id="main-content"
+        tabIndex={-1}
+        className="flex-1 overflow-y-auto p-8 lg:p-12 focus:outline-none"
+      >
         {activeTab === 'home' && (
           <HomeView onNavigate={setActiveTab} completedCount={completedLessons.size} />
         )}
@@ -199,6 +267,7 @@ export const App: React.FC = () => {
               const reloaded = await storage.getSettings();
               setSettings(reloaded);
               applyTheme(reloaded.theme);
+              applyAccessibilitySettings(reloaded);
               const all = await storage.getAllProgress();
               setCompletedLessons(
                 new Set(all.filter(p => p.status === 'completed').map(p => p.lessonId)),
@@ -209,6 +278,7 @@ export const App: React.FC = () => {
               await storage.resetAll();
               setSettings(DEFAULT_SETTINGS);
               applyTheme('dark');
+              applyAccessibilitySettings(DEFAULT_SETTINGS);
               setCompletedLessons(new Set());
               setToastMessage('All progress reset.');
             }}
@@ -226,7 +296,11 @@ export const App: React.FC = () => {
         )}
 
         {activeTab === 'simulate' && (
-          <SimulatorView onArduinoRan={handleArduinoRan} onRobotRan={handleRobotRan} />
+          <SimulatorView
+            onArduinoRan={handleArduinoRan}
+            onRobotRan={handleRobotRan}
+            lowSpecMode={settings.lowSpecMode}
+          />
         )}
 
         {activeTab === 'projects' && (

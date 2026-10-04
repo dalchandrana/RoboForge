@@ -6,9 +6,14 @@ import { RobotSimulator } from '../components/robot/RobotSimulator';
 interface SimulatorViewProps {
   onArduinoRan?: () => void;
   onRobotRan?: () => void;
+  lowSpecMode?: boolean;
 }
 
-export const SimulatorView: React.FC<SimulatorViewProps> = ({ onArduinoRan, onRobotRan }) => {
+export const SimulatorView: React.FC<SimulatorViewProps> = ({
+  onArduinoRan,
+  onRobotRan,
+  lowSpecMode = false,
+}) => {
   const [activeSim, setActiveSim] = useState<'circuit' | 'arduino' | 'robot'>('circuit');
 
   return (
@@ -31,12 +36,19 @@ export const SimulatorView: React.FC<SimulatorViewProps> = ({ onArduinoRan, onRo
         </div>
 
         {/* Tab Buttons */}
-        <div className="flex items-center gap-1.5 p-1 bg-surface-subtle border border-border-subtle rounded-xl self-start sm:self-auto">
+        <div
+          role="tablist"
+          aria-label="Simulation Workbench Tabs"
+          className="flex items-center gap-1.5 p-1 bg-surface-subtle border border-border-subtle rounded-xl self-start sm:self-auto"
+        >
           <button
             type="button"
+            role="tab"
+            aria-selected={activeSim === 'circuit'}
+            aria-controls="sim-panel-circuit"
             onClick={() => setActiveSim('circuit')}
             id="tab-circuit-sim"
-            className={`px-3.5 py-2 rounded-lg text-xs font-bold transition-all ${
+            className={`px-3.5 py-2 rounded-lg text-xs font-bold transition-all focus:outline-none focus:ring-2 focus:ring-sky-500 ${
               activeSim === 'circuit'
                 ? 'bg-sky-500 text-white shadow-md'
                 : 'text-text-muted hover:text-text-main'
@@ -47,9 +59,12 @@ export const SimulatorView: React.FC<SimulatorViewProps> = ({ onArduinoRan, onRo
 
           <button
             type="button"
+            role="tab"
+            aria-selected={activeSim === 'arduino'}
+            aria-controls="sim-panel-arduino"
             onClick={() => setActiveSim('arduino')}
             id="tab-arduino-sim"
-            className={`px-3.5 py-2 rounded-lg text-xs font-bold transition-all ${
+            className={`px-3.5 py-2 rounded-lg text-xs font-bold transition-all focus:outline-none focus:ring-2 focus:ring-sky-500 ${
               activeSim === 'arduino'
                 ? 'bg-sky-500 text-white shadow-md'
                 : 'text-text-muted hover:text-text-main'
@@ -60,9 +75,12 @@ export const SimulatorView: React.FC<SimulatorViewProps> = ({ onArduinoRan, onRo
 
           <button
             type="button"
+            role="tab"
+            aria-selected={activeSim === 'robot'}
+            aria-controls="sim-panel-robot"
             onClick={() => setActiveSim('robot')}
             id="tab-robot-sim"
-            className={`px-3.5 py-2 rounded-lg text-xs font-bold transition-all ${
+            className={`px-3.5 py-2 rounded-lg text-xs font-bold transition-all focus:outline-none focus:ring-2 focus:ring-sky-500 ${
               activeSim === 'robot'
                 ? 'bg-sky-500 text-white shadow-md'
                 : 'text-text-muted hover:text-text-main'
@@ -74,13 +92,15 @@ export const SimulatorView: React.FC<SimulatorViewProps> = ({ onArduinoRan, onRo
       </div>
 
       {/* Simulator Content */}
-      {activeSim === 'circuit' ? (
-        <CircuitSimulator />
-      ) : activeSim === 'arduino' ? (
-        <ArduinoSimulator onSimulationRan={onArduinoRan} />
-      ) : (
-        <RobotSimulator onRobotRan={onRobotRan} />
-      )}
+      <div id={`sim-panel-${activeSim}`} role="tabpanel" aria-labelledby={`tab-${activeSim}-sim`}>
+        {activeSim === 'circuit' ? (
+          <CircuitSimulator lowSpecMode={lowSpecMode} />
+        ) : activeSim === 'arduino' ? (
+          <ArduinoSimulator onSimulationRan={onArduinoRan} />
+        ) : (
+          <RobotSimulator onRobotRan={onRobotRan} lowSpecMode={lowSpecMode} />
+        )}
+      </div>
     </div>
   );
 };
