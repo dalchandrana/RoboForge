@@ -1,7 +1,7 @@
 # PROJECT-STATE (agents: update this at the end of every task)
 
 **Last updated:** 2026-10-04
-**Phase:** 1 — Circuits + Coach (Completed)
+**Phase:** 2 — Arduino Emulation + Microcontroller Projects + Tools (In Progress)
 
 ## Done
 
@@ -44,49 +44,57 @@
   - Integrated with SQLite settings persistence in `@roboforge/storage`.
 - **Slice 6: Complete Module 1 & Module 2 Curriculum Authoring**
   - Path: `electronics-embedded-foundations`
-  - Module 1 (`m01-electricity-basics`): 6 authored lessons & quizzes:
-    - L1: What is Electricity? Charges in Motion
-    - L2: Voltage and Current: Push and Flow
-    - L3: Resistance and Ohm's Law: The Grand Equation
-    - L4: Series Circuits: One Path for Current
-    - L5: Parallel Circuits: Multiple Branches
-    - L6: Switches and Buttons: Controlling Current
-  - Module 2 (`m02-discrete-circuits`): 4 authored lessons & quizzes:
-    - L7: Diodes and Light-Emitting Diodes (LEDs): One-Way Valves
-    - L8: Capacitors: Storing Charge and Timing
-    - L9: Transistors as Electronic Switches: Amplifying Control
-    - L10: Integrated Circuits: The 555 Timer in Astable Mode
+  - Module 1 (`m01-electricity-basics`): 6 authored lessons & quizzes (L1–L6).
+  - Module 2 (`m02-discrete-circuits`): 4 authored lessons & quizzes (L7–L10).
   - Dynamic `LearnView` curriculum navigation dropdown, next/previous lesson controls, and dynamic quiz submission.
   - Automated `content:check` passing with 0 warnings, 0 errors.
 
+### Phase 2: Arduino Emulation + Microcontroller Projects + Tools (In Progress)
+- **Slice 1: AVR Simulator Engine & ADR-004 (`packages/sim-avr`)**
+  - Authored and accepted `docs/adr/004-arduino-simulation-compilation.md` (avr8js CPU core + pre-compiled Intel HEX pipeline + interactive C++ code viewer).
+  - Integrated `avr8js` (v0.21.1, MIT license audited).
+  - Implemented Intel HEX parser (`hex-loader.ts`) for record types 00, 01, 02, 04 with checksum verification.
+  - Implemented `AvrRunner` (`runner.ts`): CPU lifecycle, Port B/C/D I/O registers, Timer0/1/2 overflow/PWM, 10-bit ADC channel reading, USART serial Tx/Rx byte streaming.
+  - Authored 5 standard verified sample sketches (`sample-sketches.ts`): Blink, Serial Echo/Hello, Button Interrupt, Analog Read / PWM, Traffic Light Controller.
+  - 13 unit tests passing in `packages/sim-avr/src/index.test.ts` (87.37% statements, 100% functions).
+- **Slice 2: Embedded Arduino UI & Virtual Peripherals (`apps/desktop`)**
+  - `ArduinoBoardView.tsx`: Realistic SVG Arduino Uno R3 board layout (teal PCB, DIP-28 ATmega328P IC, 16MHz crystal, header sockets with live state dots, built-in Pin 13 LED, TX/RX activity LEDs, interactive tactile button on Pin 2, interactive potentiometer on A0).
+  - `SerialMonitor.tsx`: Bi-directional UART terminal console with baud selector, command prompt, autoscroll toggle, clear and copy.
+  - `ArduinoCodeEditor.tsx`: Offline C++ code editor with syntax formatting, sample sketch selector, run/pause/reset controls, speed multiplier ($0.25\times, 0.5\times, 1\times, 2\times$), and clock cycle counter.
+  - `ArduinoSimulator.tsx`: Master coordinator managing `AvrRunner` simulation loop (`requestAnimationFrame` 50,000 cycles/frame), pin state sync, and serial streaming.
+  - `SimulatorView.tsx`: Integrated top-level tab switcher (`⚡ Circuit Simulator` vs `🤖 Arduino Simulator`).
+  - Browser verification recording: `arduino_sim_demo`.
+
 ## Test & Coverage Status
-- **Unit Test Suite:** 67 tests passing (100% pass rate).
-- **Code Coverage:** 96.34% statements, 100% functions across all workspace packages.
+- **Unit Test Suite:** 80 tests passing (100% pass rate).
+- **Code Coverage:** 94.67% statements, 100% functions across all workspace packages.
 - **Lint & Types:** ESLint (0 errors, 0 warnings), TypeScript strict mode (0 errors).
-- **Browser Verifications:** Verified in browser with WebP recording and PNG screenshot artifacts:
+- **Browser Verifications:**
   - `circuit_sim_demo`
   - `mdx_challenge_demo`
   - `coach_ui_demo`
   - `onboarding_wizard_demo`
   - `curriculum_nav_demo`
+  - `arduino_sim_demo`
 
 ## In progress
-- Phase 1 complete. Ready for Phase 2 (Arduino Emulation + Microcontroller Projects).
+- Phase 2, Slice 3: 12 Engineering Calculators (`packages/calculators` and `apps/desktop/src/views/ToolsView.tsx`).
 
 ## Next (Phase 2 Milestones)
-1. **FR-SIM-07-10 (Arduino AVR Simulation):**
-   - Package `packages/sim-avr` wrapping `avr8js`.
-   - Virtual peripherals: ATmega328P GPIO, Timer0, ADC, UART console.
-   - Monaco/CodeMirror C++ code editor with pre-compiled standard sketches (Blink, Button Read, Analog Read).
-2. **FR-PRJ-01-05 (Guided Hardware Projects & Starter BOM):**
-   - Author 5 guided projects with kit Bill of Materials and interactive breadboard twins.
-3. **FR-LIB-01-04 (Component Library & Cheat Sheets):**
-   - Visual component pinout diagrams, absolute maximum ratings, and protocol cheat sheets.
+1. **Slice 3: All 12 Engineering Calculators (`packages/calculators` & `ToolsView.tsx`):**
+   - Pure calculator functions with mathematical explanations & step-by-step formulas.
+   - Upgraded interactive UI with category tabs and live calculations.
+2. **Slice 4: 20-Part Component Library & Cheat Sheets (`content/components/` & `LibraryView.tsx`):**
+   - Absolute maximum ratings, pinouts, and communication protocols.
+3. **Slice 5: MVP Hardware Projects P1–P5 & Starter Kit BOM (`content/projects/` & `ProjectsView.tsx`):**
+   - 5 guided projects with starter kit BOM and offline guides.
+4. **Slice 6: Curriculum Expansion (Modules 2, 3, 4: Lessons 11–26):**
+   - Microcontrollers, digital logic, actuators, and sensors.
+5. **Slice 7: Learning Motivation & Practice Engine (`PracticeView.tsx`):**
+   - Daily challenges, streak tracking, formula flashcards, and achievement badges.
 
 ## Open questions (for the maintainer)
-1. Preferred in-app code editor for Phase 2: Monaco Editor (rich features, larger bundle) vs. CodeMirror 6 (lightweight, highly extensible)?
-2. Arduino compilation pipeline: Pre-compile sketch binaries at content build time vs. bundling a WebAssembly AVR-GCC compiler?
-3. Recommended reference hardware kit supplier for Phase 2 starter kit verification.
+1. Recommended reference hardware kit supplier for Phase 2 starter kit verification.
 
 ## Decisions log
 | Date | Decision | Where |
@@ -95,6 +103,7 @@
 | 2026-10-04 | Adopt Tauri 2 + React 19 + TypeScript + Vite + Tailwind for desktop shell | ADR-001 |
 | 2026-10-04 | Adopt pnpm monorepo with build-time MDX compilation to static JSON | ADR-002 |
 | 2026-10-04 | Adopt hybrid MNA Gaussian solver + SPICE netlist exporter | ADR-003 |
+| 2026-10-04 | Adopt avr8js + pre-compiled Intel HEX pipeline + interactive C++ code viewer | ADR-004 |
 | 2026-10-04 | Use Apache-2.0 code license and CC BY-SA 4.0 content license | LICENSE / CONTENT_LICENSE.md |
 
 ## Known issues / risks
