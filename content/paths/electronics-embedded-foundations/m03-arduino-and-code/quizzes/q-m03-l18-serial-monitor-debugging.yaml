@@ -1,0 +1,38 @@
+id: q-m03-l18-serial-monitor-debugging
+items:
+  - type: single
+    prompt: "What happens if an Arduino transmits serial data at 9600 baud, but the terminal monitor is set to 115200 baud?"
+    choices:
+      - text: "The received text appears as garbled symbols or unreadable characters"
+        correct: true
+      - text: "The Arduino catches fire"
+        correct: false
+      - text: "The text prints in reverse order"
+        correct: false
+      - text: "The USB cable disconnects automatically"
+        correct: false
+    explanation: "Because UART is asynchronous, the receiver samples bits at the specified baud rate interval. A speed mismatch misaligns the bit boundaries, decoding invalid ASCII characters."
+  - type: single
+    prompt: "Which two pins on the Arduino Uno header are physically dedicated to the primary hardware UART serial port?"
+    choices:
+      - text: "Pin 0 (RX) and Pin 1 (TX)"
+        correct: true
+      - text: "Pin 12 and Pin 13"
+        correct: false
+      - text: "A4 (SDA) and A5 (SCL)"
+        correct: false
+      - text: "Pin 3 and Pin 5"
+        correct: false
+    explanation: "Hardware USART0 on the ATmega328P is routed to digital pins 0 (RX) and 1 (TX), and also connected to the USB interface bridge."
+  - type: single
+    prompt: "What is the difference between Serial.print() and Serial.println()?"
+    choices:
+      - text: "Serial.println() automatically appends a newline character (advancing to the next line)"
+        correct: true
+      - text: "Serial.print() can only print numbers, never text"
+        correct: false
+      - text: "Serial.println() prints in bold font"
+        correct: false
+      - text: "There is no difference"
+        correct: false
+    explanation: "Serial.println() writes data and terminates the line with carriage return ('\\r') and newline ('\\n')."

@@ -1,0 +1,122 @@
+---
+id: m03-l19-code-logic-and-state-machines
+title: "Robot Logic, Non-Blocking Timers, and Finite State Machines"
+path: electronics-embedded-foundations
+module: m03-arduino-and-code
+order: 19
+level: intermediate
+minutes: 25
+prerequisites:
+  - m03-l14-first-sketch-blink
+  - m03-l15-digital-io-and-pullups
+objectives:
+  - "Eliminate freezing bugs caused by delay() using millis() non-blocking timers"
+  - "Represent robot behavior using enums and switch-case statements"
+  - "Construct a Finite State Machine (FSM) for multi-tasking robotics control"
+keyIdeas:
+  - "delay() halts the CPU, preventing the robot from reading collision sensors or emergency buttons."
+  - "millis() returns elapsed milliseconds since boot without pausing execution."
+  - "A Finite State Machine organizes robot logic into discrete modes (IDLE, SEARCH, EVADE)."
+tags:
+  - state-machine
+  - millis
+  - non-blocking
+  - c-plus-plus
+glossary:
+  - fsm
+  - millis
+  - enum
+  - switch-case
+  - non-blocking
+needsHumanVerification: false
+verified: true
+sources:
+  - title: "Arduino Tutorial: Blink Without Delay"
+    url: "https://docs.arduino.cc/built-in-examples/digital/BlinkWithoutDelay"
+license: CC-BY-SA-4.0
+authors:
+  - "RoboForge Team"
+locale: en
+---
+
+## 1. The Danger of `delay()`
+In early lessons, we used `delay(1000)` to pause our sketch.
+
+Imagine an autonomous robot driving toward a staircase. Your code is currently running `delay(2000)` for a turn. During those two full seconds, the CPU is completely frozen in a busy loop!
+- It cannot read the cliff sensor.
+- It cannot detect the emergency stop button.
+- The robot tumbles off the edge!
+
+Roboticists replace blocking delays with **non-blocking cooperative timers** using `millis()`.
+
+<Callout type="safety" title="Fail-Safe State Machine Design">
+  Always include an explicit emergency stop state (e.g. STATE_EMERGENCY_STOP) in your robot's state machine. In unhandled edge cases or unexpected sensor timeouts, the default fail-safe behavior must immediately kill motor power and stop mechanical motion.
+</Callout>
+
+## 2. The `millis()` Stopwatch
+`millis()` returns the number of milliseconds that have elapsed since the Arduino board powered on or was reset:
+- Returns an `unsigned long` (rolls over after approximately 50 days of continuous operation).
+- Like checking your wristwatch: instead of standing still waiting for an alarm, you check the current time against your target time while continuing other work!
+
+```cpp
+unsigned long previousMillis = 0;
+const long interval = 1000;
+int ledState = LOW;
+
+void loop() {
+  unsigned long currentMillis = millis();
+
+  // Has 1 second elapsed since the last toggle?
+  if (currentMillis - previousMillis >= interval) {
+    previousMillis = currentMillis; // Reset stopwatch marker
+    ledState = (ledState == LOW) ? HIGH : LOW;
+    digitalWrite(13, ledState);
+  }
+
+  // The CPU can read sensors and process buttons HERE without waiting!
+}
+```
+
+## 3. Finite State Machines (FSM)
+A robot cannot perform every action at once. It moves through distinct **states**:
+1. `STATE_PATROL`: Drive forward in search of targets.
+2. `STATE_OBSTACLE`: Stop, reverse, and steer clear of a wall.
+3. `STATE_LOW_BATTERY`: Halt motors and sound a warning beeper.
+
+### Building an FSM with `enum` and `switch`:
+```cpp
+enum RobotState {
+  STATE_PATROL,
+  STATE_OBSTACLE,
+  STATE_CELEBRATE
+};
+
+RobotState currentState = STATE_PATROL;
+
+void loop() {
+  switch (currentState) {
+    case STATE_PATROL:
+      // Drive motors forward
+      if (checkWallSensor() < 15) {
+        currentState = STATE_OBSTACLE; // State transition
+      }
+      break;
+
+    case STATE_OBSTACLE:
+      // Pivot turn left
+      if (turnCompleted()) {
+        currentState = STATE_PATROL;   // Return to patrol
+      }
+      break;
+
+    case STATE_CELEBRATE:
+      // Spin in a victory circle
+      break;
+  }
+}
+```
+
+## 4. Summary & Engineering Wisdom
+- Never use `delay()` in production robotics code.
+- Use `millis() - previousTime >= interval` for periodic tasks.
+- Structure complex autonomous behavior using an explicit state machine with named `enum` states.

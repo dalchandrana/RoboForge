@@ -1,0 +1,34 @@
+id: q-m02-l12-switches-and-breadboarding
+items:
+  - type: single
+    prompt: "On a standard breadboard terminal row, which holes are connected together internally?"
+    choices:
+      - text: "The 5 holes in the same lettered column (A-B-C-D-E in Row 10)"
+        correct: true
+      - text: "All holes in column A from Row 1 down to Row 30"
+        correct: false
+      - text: "Every single hole on the entire breadboard"
+        correct: false
+      - text: "Holes across the center trough (Row 10-A to Row 10-J)"
+        correct: false
+    explanation: "Breadboards group holes in 5-terminal vertical spring clips per row (A through E). The center trough separates the top and bottom banks."
+  - type: single
+    prompt: "Why does a breadboard have a central trough groove running down its length?"
+    choices:
+      - text: "To allow Dual In-Line Package (DIP) IC chips to be inserted without shorting opposing pins together"
+        correct: true
+      - text: "To store spare jumper wires"
+        correct: false
+      - text: "To allow air circulation for high-temperature mains heaters"
+        correct: false
+    explanation: "DIP integrated circuits have pins on opposite sides. The center trench isolates the left pins from the right pins."
+  - type: single
+    prompt: "What is the difference between a momentary pushbutton and a latching switch?"
+    choices:
+      - text: "A momentary pushbutton only conducts while physically pressed, whereas a latching switch stays on after release"
+        correct: true
+      - text: "A momentary button only works with AC current"
+        correct: false
+      - text: "A latching switch can only be turned on once in its lifetime"
+        correct: false
+    explanation: "Momentary switches use an internal spring that returns the contacts to their open state the moment external pressure is removed."

@@ -1,0 +1,94 @@
+---
+id: m04-l25-robot-power-and-current-budgets
+title: "Powering Robots: Battery Chemistries, Current Budgets, and Common Ground"
+path: electronics-embedded-foundations
+module: m04-motion-and-actuators
+order: 25
+level: intermediate
+minutes: 25
+prerequisites:
+  - m01-l05-power-and-energy
+  - m04-l21-dc-motors-and-back-emf
+objectives:
+  - "Calculate total mobile robot current consumption across motors, sensors, and microcontrollers"
+  - "Explain internal battery resistance and voltage sag under sudden acceleration loads"
+  - "Enforce strict common ground bonding across independent logic and motor power rails"
+keyIdeas:
+  - "A power budget sums peak and average currents across all robotic subsystems."
+  - "When motors pull sudden surge currents, battery internal resistance causes voltage to sag, resetting the MCU."
+  - "Separate power rails (logic vs motors) sharing a common ground wire solve motor brownout resets."
+tags:
+  - power-budget
+  - batteries
+  - common-ground
+  - brownout
+glossary:
+  - power-budget
+  - voltage-sag
+  - brownout
+  - internal-resistance
+  - common-ground
+needsHumanVerification: false
+verified: true
+sources:
+  - title: "Linden's Handbook of Batteries 4th Edition (Electrochemical Power Sources)"
+    url: "https://www.accessengineeringlibrary.com/content/book/9780071624213"
+license: CC-BY-SA-4.0
+authors:
+  - "RoboForge Team"
+locale: en
+---
+
+## 1. Hook: The Robot That Freezes on Takeoff
+You finish assembling your two-wheel autonomous robot car. It sits on your desk, blinking its LEDs happily.
+
+You turn on the drive motors. The wheels twitch forward for a fraction of a second, the robot dies, and the Arduino boots up from the beginning again! Why does the robot reboot every single time the motors start?
+
+You have encountered **Voltage Sag and Brownout**!
+
+<Callout type="safety" title="Battery & Power Safety">
+  School-path robotics strictly uses safe low-voltage battery packs (4xAA alkaline or NiMH cells producing 4.8V to 6V DC, ≤ 2A). Never attempt to charge bare Lithium-Polymer (LiPo) or Lithium-Ion pouch cells without specialized balance chargers and dedicated fire-safe enclosures. Disconnect battery packs when leaving the laboratory bench.
+</Callout>
+
+## 2. Battery Internal Resistance ($R_{\text{int}}$) & Voltage Sag
+A real battery is not an ideal infinite voltage source. It behaves like an ideal voltage source in series with an internal resistance ($R_{\text{int}}$):
+
+$$V_{\text{terminal}} = V_{\text{battery}} - (I_{\text{load}} \times R_{\text{int}})$$
+
+- In resting mode, current is tiny ($50\text{ mA}$): voltage drop is negligible.
+- When two TT gearmotors suddenly accelerate, their stall surge current pulls $1.5\text{ A}$!
+- The $1.5\text{ A}$ current through $R_{\text{int}}$ causes the battery terminal voltage to plummet from $6.0\text{ V}$ down to $3.5\text{ V}$!
+- The Arduino's on-chip Brown-Out Detection (BOD) circuit detects the voltage drop and forces an immediate CPU hardware reset!
+
+## 3. The Power Budget
+To design a reliable robot, calculate your maximum and average current requirements:
+
+| Subsystem | Idle Current | Peak / Operating Current |
+|---|---|---|
+| Arduino Uno (ATmega328P) | $45\text{ mA}$ | $50\text{ mA}$ |
+| Ultrasonic Sensor (HC-SR04) | $2\text{ mA}$ | $15\text{ mA}$ |
+| Line Tracking IR Modules (x2) | $20\text{ mA}$ | $40\text{ mA}$ |
+| Two TT DC Gearmotors | $0\text{ mA}$ | $400\text{ mA}$ (running) / $1400\text{ mA}$ (stall) |
+| SG90 Pan Servo | $10\text{ mA}$ | $500\text{ mA}$ (moving) |
+| **Total Current Demand** | **$77\text{ mA}$** | **$2005\text{ mA}$ (Peak Peak)** |
+
+Your power supply must be capable of delivering this peak surge current without dropping below the operating voltage threshold.
+
+## 4. The Golden Rule of Robotics: Common Ground
+To isolate heavy motor surges from delicate logic chips, roboticists often use **two power sources** (e.g. a USB power bank for the Arduino and a 4xAA battery pack for the motor driver).
+
+When using separate supplies, you **MUST connect their Ground wires together**:
+```
+  [ Battery 1 (Motors) ]              [ Battery 2 (Logic) ]
+       (+)      (-)                        (+)      (-)
+        |        |                          |        |
+        |        +--------------------------+--------+
+        |                    |                       |
+   Motors +6V        SHARED COMMON GROUND        Arduino GND (0V)
+```
+Without a shared common ground, control signals have no reference voltage and float erratically!
+
+## 5. Summary
+- Always calculate a full subsystem current budget.
+- Account for motor stall surges and battery voltage sag.
+- Always bond all power supply negative leads into a shared common ground.

@@ -4,3 +4,5 @@ description: "From electricity basics to programming Arduino microcontrollers an
 modules:
   - m01-electricity-basics
   - m02-discrete-circuits
+  - m03-arduino-and-code
+  - m04-motion-and-actuators

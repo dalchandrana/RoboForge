@@ -1,0 +1,32 @@
+id: q-m04-l23-servo-motors-position-control
+items:
+  - type: numeric
+    prompt: "What pulse width in microseconds (µs) commands a standard RC servo to its 90-degree center position?"
+    unit: "µs"
+    answer: 1500
+    tolerance: 50
+    explanation: "Standard RC servos map 1000 µs (1.0 ms) to 0 degrees, 1500 µs (1.5 ms) to 90 degrees center, and 2000 µs (2.0 ms) to 180 degrees."
+  - type: single
+    prompt: "How does a standard RC hobby servo know its current physical shaft angle?"
+    choices:
+      - text: "An internal rotary potentiometer is mechanically geared directly to the output shaft"
+        correct: true
+      - text: "By listening to acoustic sonar pings"
+        correct: false
+      - text: "By counting GPS satellites"
+        correct: false
+      - text: "It guesses randomly based on temperature"
+        correct: false
+    explanation: "A potentiometer acts as an internal analog angle sensor, allowing the internal control chip to run closed-loop negative feedback."
+  - type: single
+    prompt: "Why should you avoid powering three SG90 micro servos directly from the 5V pin of an Arduino Uno?"
+    choices:
+      - text: "The servos' combined peak stall current exceeds the thermal current rating of the Arduino onboard 5V linear regulator, causing brownouts"
+        correct: true
+      - text: "The Arduino will explode"
+        correct: false
+      - text: "Servos only run on alternating current (AC)"
+        correct: false
+      - text: "The servos will spin in the wrong direction"
+        correct: false
+    explanation: "The Arduino onboard 5V regulator can only output 500-800mA safely. Multiple loaded servos drawing 500mA each will drag down the 5V line and reset the processor."

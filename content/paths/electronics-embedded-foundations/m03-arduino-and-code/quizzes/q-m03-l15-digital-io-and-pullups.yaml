@@ -1,0 +1,38 @@
+id: q-m03-l15-digital-io-and-pullups
+items:
+  - type: single
+    prompt: "What behavior occurs when a digital input pin is left floating without any pull-up or pull-down resistor?"
+    choices:
+      - text: "The pin acts like an antenna and randomly alternates between HIGH and LOW due to environmental noise"
+        correct: true
+      - text: "The microcontroller instantly burns out"
+        correct: false
+      - text: "The pin permanently locks at 0V"
+        correct: false
+      - text: "The Arduino Uno shuts down"
+        correct: false
+    explanation: "Because CMOS inputs have massive input impedance, tiny stray electrostatic fields charge and discharge the pin gate, causing erratic readings."
+  - type: single
+    prompt: "When a pushbutton is wired between Pin 2 and GND with pinMode(2, INPUT_PULLUP), what value does digitalRead(2) return when the button is actively pressed down?"
+    choices:
+      - text: "LOW (0)"
+        correct: true
+      - text: "HIGH (1)"
+        correct: false
+      - text: "1023"
+        correct: false
+      - text: "Negative 1"
+        correct: false
+    explanation: "Pressing the button connects the pin directly to the 0V GND rail, forcing the digital reading to LOW (Active-LOW architecture)."
+  - type: single
+    prompt: "What is the approximate resistance value of the internal pull-up resistor inside the ATmega328P?"
+    choices:
+      - text: "20kΩ to 50kΩ"
+        correct: true
+      - text: "1 ohm"
+        correct: false
+      - text: "10 Megaohms"
+        correct: false
+      - text: "Zero ohms (pure short)"
+        correct: false
+    explanation: "The ATmega328P datasheet specifies an internal pull-up resistance between 20kΩ and 50kΩ, perfect for low-power, noise-immune switch sensing."

@@ -1,0 +1,38 @@
+id: q-m04-l21-dc-motors-and-back-emf
+items:
+  - type: single
+    prompt: "Why is a flyback diode connected in reverse across DC motor terminals?"
+    choices:
+      - text: "To suppress and recirculate dangerous high-voltage inductive spikes generated when the motor coil field collapses"
+        correct: true
+      - text: "To make the motor spin twice as fast"
+        correct: false
+      - text: "To convert DC into AC current"
+        correct: false
+      - text: "To recharge the battery"
+        correct: false
+    explanation: "When a driver turns off, coil inductance produces a reverse voltage spike (V = -L*dI/dt). The diode provides a safe return path, clamping the voltage."
+  - type: single
+    prompt: "When does a DC motor draw its maximum possible current?"
+    choices:
+      - text: "At stall (when the motor shaft is completely prevented from rotating)"
+        correct: true
+      - text: "When spinning freely in the air with no load"
+        correct: false
+      - text: "When disconnected from the power supply"
+        correct: false
+      - text: "When running at top speed"
+        correct: false
+    explanation: "When stalled, back-EMF is zero and current is limited solely by the tiny resistance of the copper winding, causing current to reach peak stall values."
+  - type: single
+    prompt: "Why should you never connect a DC motor directly between an Arduino digital output pin and ground?"
+    choices:
+      - text: "Motors draw hundreds of milliamps, far exceeding the 20mA maximum limit of the ATmega328P output driver"
+        correct: true
+      - text: "Arduino pins only support light bulbs"
+        correct: false
+      - text: "The motor will spin backwards"
+        correct: false
+      - text: "The ATmega328P only works with solar panels"
+        correct: false
+    explanation: "Drawing more than 20-40mA from an Arduino GPIO pin overheats and burns out the internal silicon output drivers."

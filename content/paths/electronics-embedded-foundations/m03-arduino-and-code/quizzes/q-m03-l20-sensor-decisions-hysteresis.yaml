@@ -1,0 +1,38 @@
+id: q-m03-l20-sensor-decisions-hysteresis
+items:
+  - type: single
+    prompt: "What is 'hunting' or 'chatter' in a sensor-driven control system?"
+    choices:
+      - text: "Rapid, destructive oscillation back and forth between two states when an input signal hovers right on a single decision threshold"
+        correct: true
+      - text: "When a robot searches for food"
+        correct: false
+      - text: "A battery losing its chemistry permanently"
+        correct: false
+      - text: "An error in the C++ compiler syntax"
+        correct: false
+    explanation: "Small noise fluctuations crossing a single threshold trigger frantic on-off transitions, creating mechanical wear and excessive heat."
+  - type: single
+    prompt: "How does hysteresis solve the threshold chatter problem?"
+    choices:
+      - text: "By using two distinct thresholds (upper and lower), creating a deadband where state changes cannot occur"
+        correct: true
+      - text: "By increasing CPU clock speed to 10 GHz"
+        correct: false
+      - text: "By turning off the sensor completely"
+        correct: false
+      - text: "By using thicker copper wires"
+        correct: false
+    explanation: "Hysteresis introduces memory into the system: the turn-on point is intentionally lower than the turn-off point, ensuring noise inside the deadband is ignored."
+  - type: single
+    prompt: "In an Exponential Moving Average filter Y[n] = (1 - alpha)*Y[n-1] + alpha*X[n], what happens if alpha is set very close to 0 (e.g. 0.02)?"
+    choices:
+      - text: "The output becomes extremely smooth and immune to noise, but reacts more sluggishly to sudden real-world changes"
+        correct: true
+      - text: "The filter turns into an oscillator"
+        correct: false
+      - text: "The reading instantly jumps to 1023"
+        correct: false
+      - text: "The microcontroller freezes"
+        correct: false
+    explanation: "Smaller alpha weights previous history heavily over the newest measurement, providing high noise filtering at the cost of transient phase delay."

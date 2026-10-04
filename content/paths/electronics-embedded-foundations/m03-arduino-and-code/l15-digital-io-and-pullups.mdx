@@ -1,0 +1,102 @@
+---
+id: m03-l15-digital-io-and-pullups
+title: "Digital Inputs, Floating Pins, and Pull-up Resistors"
+path: electronics-embedded-foundations
+module: m03-arduino-and-code
+order: 15
+level: beginner
+minutes: 20
+prerequisites:
+  - m03-l14-first-sketch-blink
+  - m02-l12-switches-and-breadboarding
+objectives:
+  - "Read binary logic states from external pushbuttons using digitalRead()"
+  - "Explain why an unconnected input pin 'floats' unpredictably due to electrostatic noise"
+  - "Utilize the internal 20k pull-up resistor (INPUT_PULLUP) for clean, reliable switch reading"
+keyIdeas:
+  - "A digital input pin has immense resistance (>100 MΩ) and acts like an electrostatic antenna when disconnected."
+  - "A pull-up resistor guarantees a known HIGH (5V) state when the switch is open."
+  - "Using INPUT_PULLUP requires connecting the pushbutton between the pin and GND (active-LOW logic)."
+tags:
+  - digital-input
+  - input-pullup
+  - buttons
+  - floating-pin
+glossary:
+  - digitalread
+  - input-pullup
+  - floating-pin
+  - active-low
+  - debounce
+needsHumanVerification: false
+verified: true
+sources:
+  - title: "Arduino Tutorial: Digital Input Pull-up Resistors"
+    url: "https://docs.arduino.cc/tutorials/generic/digital-input-pullup"
+license: CC-BY-SA-4.0
+authors:
+  - "RoboForge Team"
+locale: en
+---
+
+## 1. The Mystery of the Phantom Button
+Imagine wiring a pushbutton between $5\text{ V}$ and digital pin 2. When you press the button, pin 2 reads `HIGH` ($5\text{ V}$).
+
+What does pin 2 read when you let go?
+
+You might guess `LOW` ($0\text{ V}$). But if you test it, the pin rapidly and erratically flickers between 0 and 1! Even waving your hand near the wire changes the reading. Why?
+
+<Callout type="safety" title="GPIO Voltage Protection">
+  Digital input pins must never be exposed to voltages higher than VCC (+5.5V) or negative voltages below GND. Excessive external voltage blows the internal clamping diodes and damages the chip. Operate exclusively at low-voltage 5V DC logic levels.
+</Callout>
+
+## 2. The Floating Pin Phenomenon
+Microcontroller input pins have enormous internal input impedance (over $100\text{ M}\Omega$). When the switch is open, the pin is connected to **nothing**—it is **floating**.
+
+Just like static electricity on a balloon attracts your hair, electromagnetic waves from mains wiring, fluorescent lights, and static charge in the air induce tiny voltages on the floating pin, causing unpredictable false triggers!
+
+## 3. The Solution: Pull-up and Pull-down Resistors
+To guarantee a stable reading when the switch is open, we must tie the pin to a known voltage rail through a weak resistor:
+- **Pull-down Resistor (External 10k to GND):** Pin defaults to 0V (`LOW`). Pressing button brings it to 5V (`HIGH`).
+- **Pull-up Resistor (Weak Resistor to 5V):** Pin defaults to 5V (`HIGH`). Pressing button shorts the pin to GND (`LOW`).
+
+## 4. Secret Hardware Superpower: `INPUT_PULLUP`
+Wiring external 10k resistors on a breadboard takes up space and wires. The designers of the ATmega328P included internal $20\text{ k}\Omega$ to $50\text{ k}\Omega$ pull-up resistors inside the silicon chip itself!
+
+You can turn them on with a single line of code:
+```cpp
+pinMode(2, INPUT_PULLUP);
+```
+
+### Wiring with `INPUT_PULLUP`:
+Connect one terminal of your momentary button to **Pin 2**, and the other terminal directly to **GND**. No external resistors needed!
+
+### Active-LOW Logic:
+- **Button Released (Open):** Internal pull-up pulls pin to $5\text{ V}$ $\rightarrow$ `digitalRead(2) == HIGH`
+- **Button Pressed (Closed):** Current flows to ground $\rightarrow$ `digitalRead(2) == LOW`
+
+```cpp
+const int BUTTON_PIN = 2;
+const int LED_PIN = 13;
+
+void setup() {
+  pinMode(BUTTON_PIN, INPUT_PULLUP);
+  pinMode(LED_PIN, OUTPUT);
+}
+
+void loop() {
+  int buttonState = digitalRead(BUTTON_PIN);
+
+  if (buttonState == LOW) {
+    // Button is physically pressed!
+    digitalWrite(LED_PIN, HIGH);
+  } else {
+    digitalWrite(LED_PIN, LOW);
+  }
+}
+```
+
+## 5. Summary & Best Practices
+- Never leave a digital input pin floating.
+- Standard robotics practice is using `INPUT_PULLUP` with buttons wired to GND.
+- Remember the inverted logic: `LOW` means PRESSED, `HIGH` means RELEASED.

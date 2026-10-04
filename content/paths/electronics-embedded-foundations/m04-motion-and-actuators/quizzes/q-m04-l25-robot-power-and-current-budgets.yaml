@@ -1,0 +1,32 @@
+id: q-m04-l25-robot-power-and-current-budgets
+items:
+  - type: single
+    prompt: "What causes an Arduino to reset when DC motors abruptly start spinning from the same battery?"
+    choices:
+      - text: "Motor inrush current drops the battery terminal voltage below the microcontroller's Brown-Out Detection (BOD) reset threshold"
+        correct: true
+      - text: "The Arduino runs out of Flash memory"
+        correct: false
+      - text: "Motors erase the C++ code from SRAM"
+        correct: false
+      - text: "The USB cable emits radio static"
+        correct: false
+    explanation: "Because batteries have internal impedance, sudden motor stall or start current causes a transient voltage sag that triggers the MCU's brown-out detector."
+  - type: single
+    prompt: "When powering the microcontroller from a USB power bank and motors from a 4xAA battery pack, what wire connection is mandatory between both systems?"
+    choices:
+      - text: "A Common Ground (GND) wire connecting the negative terminals of both supplies together"
+        correct: true
+      - text: "A high-voltage bridge wire connecting 5V directly to 12V"
+        correct: false
+      - text: "No connection at all"
+        correct: false
+      - text: "A series capacitor"
+        correct: false
+    explanation: "Voltage is a relative potential difference between two points. Without a shared common ground, control signals cannot be referenced to 0V."
+  - type: numeric
+    prompt: "A mobile robot consumes an average current of 500mA from a 2000mAh battery pack. Neglecting Peukert derating, estimate the theoretical operating runtime in hours."
+    unit: "hours"
+    answer: 4
+    tolerance: 0.1
+    explanation: "Runtime = Capacity / Current = 2000 mAh / 500 mA = 4.0 hours."

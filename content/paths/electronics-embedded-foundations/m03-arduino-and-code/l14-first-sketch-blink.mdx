@@ -1,0 +1,104 @@
+---
+id: m03-l14-first-sketch-blink
+title: "Your First Sketch: Blink & Firmware Structure"
+path: electronics-embedded-foundations
+module: m03-arduino-and-code
+order: 14
+level: beginner
+minutes: 20
+prerequisites:
+  - m03-l13-what-is-a-microcontroller
+objectives:
+  - "Understand the two core phases of embedded firmware: setup() and loop()"
+  - "Configure a GPIO pin for output using pinMode()"
+  - "Drive high and low digital voltage levels using digitalWrite()"
+keyIdeas:
+  - "setup() runs once on boot to initialize hardware pins."
+  - "loop() executes continuously in an infinite cycle until power is disconnected."
+  - "digitalWrite(pin, HIGH) asserts 5V; digitalWrite(pin, LOW) asserts 0V."
+tags:
+  - arduino
+  - c-plus-plus
+  - blink
+  - gpio
+glossary:
+  - setup
+  - loop
+  - pinmode
+  - digitalwrite
+  - delay
+needsHumanVerification: false
+verified: true
+sources:
+  - title: "Arduino Language Reference: Core Functions"
+    url: "https://www.arduino.cc/reference/en/"
+license: CC-BY-SA-4.0
+authors:
+  - "RoboForge Team"
+locale: en
+---
+
+## 1. The Anatomy of an Arduino Sketch
+In desktop software, a program has a `main()` function that starts, runs a task, and exits to the operating system.
+
+In embedded robotics, **a microcontroller never exits!** If the code stopped, your robot would stop steering or regulating motor power.
+
+Every Arduino program (called a **sketch**) is written in C++ and organized around two mandatory functions:
+
+```cpp
+void setup() {
+  // Runs ONCE when board powers on or resets
+}
+
+void loop() {
+  // Runs REPEATEDLY forever
+}
+```
+
+<Callout type="safety" title="Pin Current Limit Safety">
+  Each ATmega328P output pin can supply a maximum of 20mA safely (absolute max 40mA). Never connect an LED or motor directly to a digital pin without a current-limiting resistor or driver transistor. Exceeding current limits overheats and permanently burns the internal silicon driver.
+</Callout>
+
+## 2. Configuring Pins with `pinMode()`
+By default, microcontroller pins wake up as high-impedance inputs to protect connected circuits. Before sending electricity out to an LED or transistor, we must configure the pin driver:
+
+```cpp
+pinMode(13, OUTPUT);
+```
+- Pin 13 is tied to an onboard amber LED (marked **L**) on the Arduino Uno PCB.
+- `OUTPUT` switches the internal CMOS transistor pair so the pin can source or sink current.
+
+## 3. Driving Voltages with `digitalWrite()`
+Digital pins on the ATmega328P can only output two states:
+- `HIGH`: Connects the pin to $+5\text{ V}$.
+- `LOW`: Connects the pin to $\text{GND}$ ($0\text{ V}$).
+
+```cpp
+digitalWrite(13, HIGH); // 5V -> LED turns ON
+delay(1000);            // Pause execution for 1000 milliseconds (1 second)
+digitalWrite(13, LOW);  // 0V -> LED turns OFF
+delay(1000);            // Pause for 1 second
+```
+
+## 4. The Complete Blink Sketch
+```cpp
+const int LED_PIN = 13;
+
+void setup() {
+  pinMode(LED_PIN, OUTPUT);
+}
+
+void loop() {
+  digitalWrite(LED_PIN, HIGH);
+  delay(1000);
+  digitalWrite(LED_PIN, LOW);
+  delay(1000);
+}
+```
+
+When `loop()` reaches the closing brace `}`, the MCU immediately restarts at the first line of `loop()`, creating a steady 0.5 Hz blink!
+
+## 5. Summary & Best Practices
+- Define pin numbers as `const int` at the top of your file to prevent typos.
+- Only run one-time hardware configuration inside `setup()`.
+- `delay(ms)` stops the CPU completely; in later lessons, we will learn non-blocking timers using `millis()`.

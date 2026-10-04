@@ -1,0 +1,88 @@
+---
+id: m02-l11-sensors-and-voltage-dividers
+title: "Sensors and Voltage Dividers: Reading the Physical World"
+path: electronics-embedded-foundations
+module: m02-discrete-circuits
+order: 11
+level: beginner
+minutes: 20
+prerequisites:
+  - m01-l03-resistance-and-ohms-law
+  - m01-l04-series-and-parallel
+objectives:
+  - "Explain how variable resistance sensors translate physical phenomena into electrical resistance"
+  - "Construct a voltage divider circuit to convert variable resistance into measurable voltage"
+  - "Calculate output voltage for LDR and NTC thermistor sensor networks"
+keyIdeas:
+  - "Environmental sensors (LDRs, thermistors) change resistance in response to light or temperature."
+  - "Microcontrollers cannot measure resistance directly; they measure voltage."
+  - "A voltage divider uses a fixed reference resistor to translate resistance change into voltage change."
+tags:
+  - sensors
+  - voltage-divider
+  - ldr
+  - thermistor
+glossary:
+  - sensor
+  - voltage-divider
+  - ldr
+  - thermistor
+  - analog-signal
+needsHumanVerification: false
+verified: true
+sources:
+  - title: "Horowitz and Hill, The Art of Electronics 3rd Ed. (Voltage Dividers)"
+    url: "https://artofelectronics.net/"
+license: CC-BY-SA-4.0
+authors:
+  - "RoboForge Team"
+locale: en
+---
+
+## 1. Hook: How Does a Robot 'Feel'?
+How does your eye sense daylight, or a thermostat detect the cold? They use materials whose physical properties shift when exposed to external energy.
+
+In electronics, **sensors** act as sensory organs. Many fundamental sensors work by changing their electrical resistance!
+
+## 2. Resistive Sensors
+Two common examples found in robotics kits:
+- **Light Dependent Resistor (LDR / Photoresistor):** Made of cadmium sulfide (CdS). In pitch darkness, resistance exceeds $100\text{ k}\Omega$. Under bright light, photons free electrons, dropping resistance to under $1\text{ k}\Omega$.
+- **Thermistor (NTC):** A negative temperature coefficient resistor. As ambient temperature rises, thermal agitation frees carriers and resistance drops.
+
+## 3. The Core Challenge: Measuring Resistance
+A microcontroller cannot directly measure resistance. Its analog input pins only measure **voltage** ($0\text{ V}$ to $5\text{ V}$).
+
+How do we turn a changing resistance into a changing voltage? With a **Voltage Divider**!
+
+```
+         +5V (Vcc)
+           |
+          [R1] (e.g. 10k Fixed Resistor)
+           |
+           +-----> V_out (To Microcontroller Analog Pin)
+           |
+          [R2] (e.g. LDR Sensor to Ground)
+           |
+          GND (0V)
+```
+
+## 4. The Voltage Divider Equation
+When two resistors are placed in series across a voltage source $V_{\text{in}}$, the current through both is:
+$$I = \frac{V_{\text{in}}}{R_1 + R_2}$$
+
+The voltage dropped across the bottom resistor $R_2$ is:
+$$V_{\text{out}} = I \times R_2 = V_{\text{in}} \times \frac{R_2}{R_1 + R_2}$$
+
+### Worked Example:
+Assume $V_{\text{in}} = 5\text{ V}$, fixed resistor $R_1 = 10\text{ k}\Omega$, and an LDR for $R_2$:
+1. **In Bright Sunlight ($R_2 = 1\text{ k}\Omega$):**
+   $$V_{\text{out}} = 5\text{ V} \times \frac{1\text{ k}\Omega}{10\text{ k}\Omega + 1\text{ k}\Omega} = 5 \times \frac{1}{11} \approx 0.45\text{ V}$$
+2. **In Dark Shadow ($R_2 = 90\text{ k}\Omega$):**
+   $$V_{\text{out}} = 5\text{ V} \times \frac{90\text{ k}\Omega}{10\text{ k}\Omega + 90\text{ k}\Omega} = 5 \times \frac{90}{100} = 4.5\text{ V}$$
+
+By monitoring $V_{\text{out}}$, our robot instantly knows whether it is in shadow or bright sunlight!
+
+## 5. Summary & Key Takeaways
+- Sensors convert environmental stimuli into electrical signals.
+- Resistive sensors need a series partner to form a voltage divider.
+- Choosing a fixed resistor close to the sensor's mid-range resistance maximizes measurement sensitivity.

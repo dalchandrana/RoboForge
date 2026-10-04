@@ -1,0 +1,83 @@
+---
+id: m04-l24-stepper-motors-basics
+title: "Stepper Motors: Digital Step Angles and Open-Loop Precision"
+path: electronics-embedded-foundations
+module: m04-motion-and-actuators
+order: 24
+level: intermediate
+minutes: 20
+prerequisites:
+  - m04-l21-dc-motors-and-back-emf
+  - m04-l22-h-bridge-motor-drivers
+objectives:
+  - "Understand how multi-phase stator coils rotate a toothed rotor by exact angular increments"
+  - "Calculate steps-per-revolution and angular resolution from step angle (e.g., 1.8° = 200 steps/rev)"
+  - "Compare open-loop stepper motion with closed-loop servo systems in 3D printers and CNC machines"
+keyIdeas:
+  - "A stepper motor moves in discrete digital increments called steps when phase coils are pulsed."
+  - "Standard hybrid steppers have 200 steps per revolution (1.8° per step)."
+  - "Steppers offer immense holding torque at zero speed but draw constant current even while stationary."
+tags:
+  - stepper-motor
+  - step-angle
+  - cnc
+  - motion-control
+glossary:
+  - stepper-motor
+  - step-angle
+  - holding-torque
+  - full-step
+  - microstepping
+needsHumanVerification: false
+verified: true
+sources:
+  - title: "Jones on Stepping Motors (University of Iowa)"
+    url: "https://homepage.divms.uiowa.edu/~jones/step/"
+license: CC-BY-SA-4.0
+authors:
+  - "RoboForge Team"
+locale: en
+---
+
+## 1. Hook: How Does a 3D Printer Move with Micrometer Precision?
+Look at a 3D printer extruding plastic layers thinner than a human hair ($0.1\text{ mm}$). There are no position sensors on the nozzle carriage!
+
+How does the machine know its exact location after four hours of printing?
+
+It uses **Stepper Motors**!
+
+<Callout type="safety" title="Stepper Thermal & Current Safety">
+  Unlike DC motors which draw near-zero current at rest, stepper motors draw maximum current when stopped to maintain holding torque! Stepper motor casings can become hot to the touch during normal operation. Always operate with proper driver current-limiting (A4988/TMC2208 VREF) and low-voltage DC supplies ≤ 12V and ≤ 2A.
+</Callout>
+
+## 2. Operating Principle: Teeth and Coils
+A stepper motor contains:
+- **Toothed Permanent Magnet Rotor:** A cylindrical shaft with alternating magnetic teeth.
+- **Multi-Phase Stator Coils:** Coils of wire arranged symmetrically around the outer housing.
+
+When electromagnetic Phase A is energized, the rotor's teeth snap into magnetic alignment with Phase A's poles. When Phase B is energized and Phase A de-energized, the rotor snaps forward by one exact angular increment: a **step**!
+
+## 3. Step Angle & Resolution
+The smallest angular increment of motion is the **step angle** ($\theta_s$):
+$$\text{Steps per Revolution} = \frac{360^\circ}{\theta_s}$$
+
+Common configurations:
+- **$1.8^\circ$ Step Angle (NEMA 17 standard):**
+  $$\frac{360^\circ}{1.8^\circ} = 200\text{ steps per full revolution}$$
+- **$7.5^\circ$ Step Angle (Toy/Can-stack steppers):**
+  $$\frac{360^\circ}{7.5^\circ} = 48\text{ steps per full revolution}$$
+
+By commanding exactly 100 electrical pulses, the shaft rotates exactly half a turn ($180^\circ$) without needing any sensor feedback! This is called **open-loop precision**.
+
+## 4. Steppers vs DC Motors vs Servos
+| Feature | DC Motor | RC Servo | Stepper Motor |
+|---|---|---|---|
+| **Motion** | Continuous rotation | $0^\circ$ to $180^\circ$ bounded | Incremental steps ($360^\circ$ continuous) |
+| **Feedback** | Open-loop (blind) | Closed-loop (internal pot) | Open-loop (step counting) |
+| **Holding Torque** | Zero at rest | Moderate | Very High |
+| **Best Application** | Drive wheels, fans | Grippers, steering arms | 3D printers, CNC, robot joints |
+
+## 5. Summary
+- Stepper motors convert digital electrical pulses into precise mechanical steps.
+- Standard industrial steppers have $200\text{ steps/rev}$ ($1.8^\circ/\text{step}$).
+- Steppers draw holding current continuously, keeping joints locked firmly in place.

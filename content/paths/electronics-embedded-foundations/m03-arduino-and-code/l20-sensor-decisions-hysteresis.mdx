@@ -1,0 +1,109 @@
+---
+id: m03-l20-sensor-decisions-hysteresis
+title: "Sensor Decisions, Noise Filtering, and Hysteresis"
+path: electronics-embedded-foundations
+module: m03-arduino-and-code
+order: 20
+level: intermediate
+minutes: 25
+prerequisites:
+  - m03-l16-analog-input-and-adc
+  - m03-l19-code-logic-and-state-machines
+objectives:
+  - "Identify how electrical noise causes high-frequency threshold chatter (hunting)"
+  - "Implement an Exponential Moving Average (EMA) software low-pass filter"
+  - "Apply dual-threshold hysteresis (Schmitt trigger principle) for rock-solid robot decisions"
+keyIdeas:
+  - "Raw analog sensor signals always contain electrical and thermal noise."
+  - "A single threshold creates violent oscillating chatter when readings hover near the decision boundary."
+  - "Hysteresis separates the turn-on threshold from the turn-off threshold, creating a stable deadband."
+tags:
+  - hysteresis
+  - filtering
+  - threshold
+  - closed-loop
+glossary:
+  - hysteresis
+  - deadband
+  - low-pass-filter
+  - chatter
+  - schmitt-trigger
+needsHumanVerification: false
+verified: true
+sources:
+  - title: "Horowitz and Hill, The Art of Electronics 3rd Ed. (Comparators & Hysteresis)"
+    url: "https://artofelectronics.net/"
+license: CC-BY-SA-4.0
+authors:
+  - "RoboForge Team"
+locale: en
+---
+
+## 1. The Chattering Headlight Problem
+Suppose you program an automated night-light robot:
+```cpp
+if (lightReading < 500) {
+  turnLightON();
+} else {
+  turnLightOFF();
+}
+```
+
+At dusk, as ambient daylight hovers right around $500$, random electrical noise in the sensor wire causes readings like:
+`499, 501, 498, 502, 500, 499...`
+
+Your light will rapidly flicker on and off dozens of times per second! In a motor system, this rapid switching (called **hunting** or **chatter**) causes violent mechanical shuddering, wasted power, and burned motor coils.
+
+<Callout type="safety" title="Chatter & Thermal Hazard Prevention">
+  Rapidly toggling high-current loads (like DC motors, solenoids, or mechanical relays) on and off due to sensor noise creates massive voltage transients and excessive coil heating. Always implement hysteresis and rate-limiting delays to protect hardware from thermal runaway.
+</Callout>
+
+## 2. Solution 1: Software Low-Pass Filtering (EMA)
+Before making decisions on a raw ADC reading, smooth out the high-frequency noise spikes with an **Exponential Moving Average (EMA)** filter:
+
+$$Y_n = (1 - \alpha) \cdot Y_{n-1} + \alpha \cdot X_n$$
+- $X_n$: New raw sensor reading.
+- $Y_n$: Filtered output.
+- $\alpha$: Smoothing factor ($0.1$ is very smooth, $0.5$ is more responsive).
+
+```cpp
+float filteredLight = 500.0;
+const float ALPHA = 0.15;
+
+void loop() {
+  int raw = analogRead(A0);
+  filteredLight = (1.0 - ALPHA) * filteredLight + ALPHA * raw;
+}
+```
+
+## 3. Solution 2: Hysteresis (Dual Thresholds)
+The definitive cure for chatter is **hysteresis** (the operating principle behind the hardware Schmitt Trigger and home thermostats):
+
+Instead of a single threshold at $500$, use **two separate thresholds**:
+- **Upper Threshold ($550$):** Light turns OFF only when ambient light climbs safely above 550.
+- **Lower Threshold ($450$):** Light turns ON only when ambient light drops cleanly below 450.
+- **Deadband ($450$ to $550$):** The system holds its previous state and ignores fluctuations!
+
+```cpp
+const int THRESHOLD_LOW = 450;
+const int THRESHOLD_HIGH = 550;
+bool headlightActive = false;
+
+void loop() {
+  int light = analogRead(A0);
+
+  if (headlightActive && light > THRESHOLD_HIGH) {
+    headlightActive = false;
+    digitalWrite(LED_PIN, LOW); // It is definitely bright daylight
+  } 
+  else if (!headlightActive && light < THRESHOLD_LOW) {
+    headlightActive = true;
+    digitalWrite(LED_PIN, HIGH); // It is definitely dark
+  }
+}
+```
+
+## 4. Summary & Best Practices
+- Never use a single sharp cutoff boundary for noisy physical sensors.
+- Use an exponential filter ($\alpha \approx 0.1$) to eliminate ADC jitter.
+- Always implement a hysteresis band to prevent motor and relay chatter.

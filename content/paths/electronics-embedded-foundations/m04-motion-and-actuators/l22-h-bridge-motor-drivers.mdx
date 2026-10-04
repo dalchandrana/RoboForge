@@ -1,0 +1,111 @@
+---
+id: m04-l22-h-bridge-motor-drivers
+title: "H-Bridge Drivers: Bi-directional Motor Control"
+path: electronics-embedded-foundations
+module: m04-motion-and-actuators
+order: 22
+level: intermediate
+minutes: 25
+prerequisites:
+  - m04-l21-dc-motors-and-back-emf
+  - m03-l17-pwm-analog-output
+objectives:
+  - "Understand the 4-transistor H-Bridge topology for reversing motor direction without swapping wires"
+  - "Identify the four operating modes: Forward, Reverse, Coast (Freewheel), and Active Brake"
+  - "Control motor speed and direction using an L298N dual driver module"
+keyIdeas:
+  - "An H-bridge uses 4 solid-state switches arranged in an 'H' shape around a motor."
+  - "Closing diagonal switch pairs reverses the polarity of voltage across the motor terminals."
+  - "Never close both switches on the same vertical leg simultaneously (shoot-through short circuit)."
+tags:
+  - h-bridge
+  - motor-driver
+  - l298n
+  - bidirectional
+glossary:
+  - h-bridge
+  - shoot-through
+  - active-braking
+  - coasting
+  - l298n
+needsHumanVerification: false
+verified: true
+sources:
+  - title: "STMicroelectronics L298 Dual Full-Bridge Driver Datasheet"
+    url: "https://www.st.com/resource/en/datasheet/l298.pdf"
+license: CC-BY-SA-4.0
+authors:
+  - "RoboForge Team"
+locale: en
+---
+
+## 1. The Reverse Problem
+A single transistor switch can turn a motor ON and OFF.
+
+However, to reverse a DC motor, you must reverse the polarity of the voltage applied across its two terminals! How can an autonomous robot reverse without a human manually swapping wires?
+
+The solution is the **H-Bridge**.
+
+<Callout type="safety" title="Motor Driver & Power Safety">
+  Always operate mobile robot motor drivers on low voltage (6V to 12V DC battery packs, under 2A). L298N heatsinks can become warm during extended heavy loads; do not touch heatsink surfaces immediately after high-speed runs. Always connect battery negative to Arduino GND to prevent erratic floating gate states.
+</Callout>
+
+## 2. The H-Bridge Circuit Architecture
+Four electronic switches ($S_1, S_2, S_3, S_4$) surround the motor in an "H" configuration:
+
+```
+            +V_Motor (+6V to +12V)
+               |             |
+             [S1]           [S3]
+               |             |
+               +---[MOTOR]---+
+               |             |
+             [S2]           [S4]
+               |             |
+              GND           GND
+```
+
+### The Four Operating States:
+1. **Forward:** Close $S_1$ and $S_4$. Current flows Left-to-Right through the motor $\rightarrow$ Motor spins Forward.
+2. **Reverse:** Close $S_3$ and $S_2$. Current flows Right-to-Left through the motor $\rightarrow$ Motor spins Backward.
+3. **Coast (Freewheel):** All switches OPEN ($S_1, S_2, S_3, S_4 = 0$). Current ceases; motor coasts to a gradual stop.
+4. **Brake:** Close $S_2$ and $S_4$ (both low-side switches). The motor terminals are shorted together! Rotating momentum generates back-EMF, dynamically fighting rotation and locking the shaft quickly.
+
+## 3. The Deadly "Shoot-Through" Short Circuit
+What happens if you accidentally close $S_1$ and $S_2$ at the same time?
+Current bypasses the motor entirely, rushing straight from $+V_{\text{motor}}$ to $\text{GND}$ in a dead short circuit! This "shoot-through" condition incinerates driver transistors in milliseconds.
+
+Integrated driver ICs (like the `L298N` and `TB6612FNG`) contain internal lockout logic preventing shoot-through.
+
+## 4. Driving the L298N Module with Arduino
+The popular L298N dual H-bridge module has direction inputs (IN1, IN2) and an optional speed enable pin (ENA):
+
+| IN1 | IN2 | Motor Action |
+|---|---|---|
+| HIGH | LOW | Spin Forward |
+| LOW | HIGH | Spin Reverse |
+| LOW | LOW | Coast (Stop) |
+| HIGH | HIGH | Active Brake |
+
+```cpp
+const int IN1 = 5; // Connected to PWM pin for speed control
+const int IN2 = 6;
+
+void setMotorSpeed(int speed) {
+  if (speed > 0) {
+    analogWrite(IN1, speed);
+    digitalWrite(IN2, LOW);
+  } else if (speed < 0) {
+    digitalWrite(IN1, LOW);
+    analogWrite(IN2, -speed);
+  } else {
+    digitalWrite(IN1, LOW);
+    digitalWrite(IN2, LOW);
+  }
+}
+```
+
+## 5. Summary
+- An H-bridge enables full bi-directional motion and active braking.
+- Diagonal switch pairs determine polarity.
+- Combining PWM on direction inputs provides smooth proportional speed control.

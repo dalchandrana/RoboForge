@@ -1,0 +1,74 @@
+---
+id: m03-l13-what-is-a-microcontroller
+title: "What is a Microcontroller? Silicon Brains"
+path: electronics-embedded-foundations
+module: m03-arduino-and-code
+order: 13
+level: beginner
+minutes: 20
+prerequisites:
+  - m01-l01-what-is-electricity
+  - m02-l10-integrated-circuits-555
+objectives:
+  - "Differentiate a microprocessor (PC) from an embedded microcontroller (MCU)"
+  - "Identify the four pillars of an MCU: CPU, Flash memory, SRAM, and I/O Peripherals"
+  - "Understand the ATmega328P specifications on the Arduino Uno"
+keyIdeas:
+  - "A microcontroller integrates CPU, memory, and peripheral hardware onto a single silicon die."
+  - "Flash memory holds firmware permanently; SRAM stores running variables."
+  - "The ATmega328P runs at 16 MHz with 32 KB Flash and 2 KB SRAM on 5V DC."
+tags:
+  - microcontroller
+  - cpu
+  - memory
+  - arduino
+glossary:
+  - microcontroller
+  - mcu
+  - cpu
+  - flash-memory
+  - sram
+  - gpio
+needsHumanVerification: false
+verified: true
+sources:
+  - title: "Microchip ATmega328P Complete Datasheet"
+    url: "https://www.microchip.com/en-us/product/ATmega328P"
+license: CC-BY-SA-4.0
+authors:
+  - "RoboForge Team"
+locale: en
+---
+
+## 1. Hook: The Computer in Your Microwave
+When you think of a computer, you likely envision a laptop with high-definition screens, gigabytes of RAM, fans, and an operating system like Windows, macOS, or Linux.
+
+Yet your microwave oven, washing machine, digital wristwatch, and anti-lock brakes also contain computers! How can a $2 chip control a complex machine?
+
+They use a **Microcontroller Unit (MCU)**!
+
+<Callout type="safety" title="Microcontroller Voltage Safety">
+  Operate microcontrollers strictly from regulated low-voltage sources (5V USB or 7V–12V DC into the barrel jack). Never short the 5V power pin to GND, and never connect AC mains or batteries exceeding 12V to the board.
+</Callout>
+
+## 2. Microprocessor vs Microcontroller
+- **Microprocessor (e.g., Intel Core i7, Apple M3):** A pure processing brain (CPU). It requires external RAM chips, SSD storage, power management ICs, and motherboards to operate.
+- **Microcontroller (e.g., ATmega328P, ESP32, RP2040):** An entire self-contained computer on a single chip. It contains the CPU, memory, timers, and input/output pins inside one package!
+
+## 3. The Four Pillars of a Microcontroller
+1. **CPU (Central Processing Unit):** Fetches instructions from memory, decodes them, and executes mathematical and logical operations.
+2. **Flash Memory (ROM):** Non-volatile storage where your compiled program code lives. Stays preserved even when power is turned off! (ATmega328P has $32\text{ KB}$).
+3. **SRAM (Static RAM):** Volatile fast memory holding your running variables and call stack. Erased when power is cut! (ATmega328P has $2\text{ KB}$).
+4. **GPIO (General Purpose Input/Output):** Physical pins that read electrical voltages from the outside world or assert control signals to LEDs, transistors, and motors.
+
+## 4. The Arduino Uno: A Friendly ATmega328P Carrier
+The Arduino Uno is not the microcontroller itself; it is a development board designed to make using the **ATmega328P** chip convenient:
+- **16 MHz Crystal Oscillator:** Provides a steady clock heartbeat (16 million cycles per second).
+- **5V Voltage Regulator:** Allows powering via 7V–12V DC barrel jack or 5V USB.
+- **USB-to-Serial Bridge:** Lets your computer upload code without needing an external programmer.
+- **Female Pin Headers:** Allows plugging jumper wires directly without soldering.
+
+## 5. Summary
+- Microcontrollers are dedicated computers built for real-time control.
+- Code is stored in Flash; variables live in SRAM.
+- The Arduino Uno packages the ATmega328P for simple prototyping.

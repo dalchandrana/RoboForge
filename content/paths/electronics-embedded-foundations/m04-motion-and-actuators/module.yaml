@@ -1,0 +1,11 @@
+id: m04-motion-and-actuators
+title: "Module 4: Motion, Actuators & Power Systems"
+description: "Master DC gearmotors, H-bridge drivers, RC servo actuation, stepper motors, robot power distribution, and encoder feedback."
+order: 4
+lessons:
+  - m04-l21-dc-motors-and-back-emf
+  - m04-l22-h-bridge-motor-drivers
+  - m04-l23-servo-motors-position-control
+  - m04-l24-stepper-motors-basics
+  - m04-l25-robot-power-and-current-budgets
+  - m04-l26-rotary-encoders-motion-feedback

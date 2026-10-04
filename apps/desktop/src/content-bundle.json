@@ -1,5 +1,5 @@
 {
-  "builtAt": "2026-10-04T08:35:43.261Z",
+  "builtAt": "2026-10-04T08:50:53.788Z",
   "paths": {
     "electronics-embedded-foundations": {
       "id": "electronics-embedded-foundations",
@@ -7,7 +7,9 @@
       "description": "From electricity basics to programming Arduino microcontrollers and your first autonomous robot.",
       "modules": [
         "m01-electricity-basics",
-        "m02-discrete-circuits"
+        "m02-discrete-circuits",
+        "m03-arduino-and-code",
+        "m04-motion-and-actuators"
       ]
     }
   },
@@ -28,14 +30,46 @@
     },
     "m02-discrete-circuits": {
       "id": "m02-discrete-circuits",
-      "title": "Module 2: Discrete Electronic Components",
-      "description": "Explore semiconductors, diodes, LEDs, capacitors, transistor switches, and 555 timers.",
+      "title": "Module 2: Discrete Electronic Components & Prototyping",
+      "description": "Explore semiconductors, diodes, LEDs, capacitors, transistor switches, 555 timers, sensors, and breadboards.",
       "order": 2,
       "lessons": [
         "m02-l07-diodes-and-leds",
         "m02-l08-capacitors-and-timing",
         "m02-l09-transistors-as-switches",
-        "m02-l10-integrated-circuits-555"
+        "m02-l10-integrated-circuits-555",
+        "m02-l11-sensors-and-voltage-dividers",
+        "m02-l12-switches-and-breadboarding"
+      ]
+    },
+    "m03-arduino-and-code": {
+      "id": "m03-arduino-and-code",
+      "title": "Module 3: Arduino & Embedded Programming",
+      "description": "Master microcontroller architecture, C++ firmware basics, digital and analog I/O, PWM, UART communication, and state machine algorithms.",
+      "order": 3,
+      "lessons": [
+        "m03-l13-what-is-a-microcontroller",
+        "m03-l14-first-sketch-blink",
+        "m03-l15-digital-io-and-pullups",
+        "m03-l16-analog-input-and-adc",
+        "m03-l17-pwm-analog-output",
+        "m03-l18-serial-monitor-debugging",
+        "m03-l19-code-logic-and-state-machines",
+        "m03-l20-sensor-decisions-hysteresis"
+      ]
+    },
+    "m04-motion-and-actuators": {
+      "id": "m04-motion-and-actuators",
+      "title": "Module 4: Motion, Actuators & Power Systems",
+      "description": "Master DC gearmotors, H-bridge drivers, RC servo actuation, stepper motors, robot power distribution, and encoder feedback.",
+      "order": 4,
+      "lessons": [
+        "m04-l21-dc-motors-and-back-emf",
+        "m04-l22-h-bridge-motor-drivers",
+        "m04-l23-servo-motors-position-control",
+        "m04-l24-stepper-motors-basics",
+        "m04-l25-robot-power-and-current-budgets",
+        "m04-l26-rotary-encoders-motion-feedback"
       ]
     }
   },
@@ -1037,6 +1071,1886 @@
               }
             ],
             "explanation": "The oscillation frequency f = 1.44 / ((R1 + 2*R2) * C1) is set entirely by the passive timing components."
+          }
+        ]
+      }
+    },
+    "m02-l11-sensors-and-voltage-dividers": {
+      "frontmatter": {
+        "id": "m02-l11-sensors-and-voltage-dividers",
+        "title": "Sensors and Voltage Dividers: Reading the Physical World",
+        "path": "electronics-embedded-foundations",
+        "module": "m02-discrete-circuits",
+        "order": 11,
+        "level": "beginner",
+        "minutes": 20,
+        "prerequisites": [
+          "m01-l03-resistance-and-ohms-law",
+          "m01-l04-series-and-parallel"
+        ],
+        "objectives": [
+          "Explain how variable resistance sensors translate physical phenomena into electrical resistance",
+          "Construct a voltage divider circuit to convert variable resistance into measurable voltage",
+          "Calculate output voltage for LDR and NTC thermistor sensor networks"
+        ],
+        "keyIdeas": [
+          "Environmental sensors (LDRs, thermistors) change resistance in response to light or temperature.",
+          "Microcontrollers cannot measure resistance directly; they measure voltage.",
+          "A voltage divider uses a fixed reference resistor to translate resistance change into voltage change."
+        ],
+        "tags": [
+          "sensors",
+          "voltage-divider",
+          "ldr",
+          "thermistor"
+        ],
+        "glossary": [
+          "sensor",
+          "voltage-divider",
+          "ldr",
+          "thermistor",
+          "analog-signal"
+        ],
+        "needsHumanVerification": false,
+        "verified": true,
+        "sources": [
+          {
+            "title": "Horowitz and Hill, The Art of Electronics 3rd Ed. (Voltage Dividers)",
+            "url": "https://artofelectronics.net/"
+          }
+        ],
+        "license": "CC-BY-SA-4.0",
+        "authors": [
+          "RoboForge Team"
+        ],
+        "locale": "en"
+      },
+      "rawMarkdown": "## 1. Hook: How Does a Robot 'Feel'?\nHow does your eye sense daylight, or a thermostat detect the cold? They use materials whose physical properties shift when exposed to external energy.\n\nIn electronics, **sensors** act as sensory organs. Many fundamental sensors work by changing their electrical resistance!\n\n## 2. Resistive Sensors\nTwo common examples found in robotics kits:\n- **Light Dependent Resistor (LDR / Photoresistor):** Made of cadmium sulfide (CdS). In pitch darkness, resistance exceeds $100\\text{ k}\\Omega$. Under bright light, photons free electrons, dropping resistance to under $1\\text{ k}\\Omega$.\n- **Thermistor (NTC):** A negative temperature coefficient resistor. As ambient temperature rises, thermal agitation frees carriers and resistance drops.\n\n## 3. The Core Challenge: Measuring Resistance\nA microcontroller cannot directly measure resistance. Its analog input pins only measure **voltage** ($0\\text{ V}$ to $5\\text{ V}$).\n\nHow do we turn a changing resistance into a changing voltage? With a **Voltage Divider**!\n\n```\n         +5V (Vcc)\n           |\n          [R1] (e.g. 10k Fixed Resistor)\n           |\n           +-----> V_out (To Microcontroller Analog Pin)\n           |\n          [R2] (e.g. LDR Sensor to Ground)\n           |\n          GND (0V)\n```\n\n## 4. The Voltage Divider Equation\nWhen two resistors are placed in series across a voltage source $V_{\\text{in}}$, the current through both is:\n$$I = \\frac{V_{\\text{in}}}{R_1 + R_2}$$\n\nThe voltage dropped across the bottom resistor $R_2$ is:\n$$V_{\\text{out}} = I \\times R_2 = V_{\\text{in}} \\times \\frac{R_2}{R_1 + R_2}$$\n\n### Worked Example:\nAssume $V_{\\text{in}} = 5\\text{ V}$, fixed resistor $R_1 = 10\\text{ k}\\Omega$, and an LDR for $R_2$:\n1. **In Bright Sunlight ($R_2 = 1\\text{ k}\\Omega$):**\n   $$V_{\\text{out}} = 5\\text{ V} \\times \\frac{1\\text{ k}\\Omega}{10\\text{ k}\\Omega + 1\\text{ k}\\Omega} = 5 \\times \\frac{1}{11} \\approx 0.45\\text{ V}$$\n2. **In Dark Shadow ($R_2 = 90\\text{ k}\\Omega$):**\n   $$V_{\\text{out}} = 5\\text{ V} \\times \\frac{90\\text{ k}\\Omega}{10\\text{ k}\\Omega + 90\\text{ k}\\Omega} = 5 \\times \\frac{90}{100} = 4.5\\text{ V}$$\n\nBy monitoring $V_{\\text{out}}$, our robot instantly knows whether it is in shadow or bright sunlight!\n\n## 5. Summary & Key Takeaways\n- Sensors convert environmental stimuli into electrical signals.\n- Resistive sensors need a series partner to form a voltage divider.\n- Choosing a fixed resistor close to the sensor's mid-range resistance maximizes measurement sensitivity.",
+      "quiz": {
+        "id": "q-m02-l11-sensors-and-voltage-dividers",
+        "items": [
+          {
+            "type": "numeric",
+            "prompt": "In a voltage divider with Vin = 5V, R1 = 10kΩ, and an LDR R2 = 10kΩ in normal room light, what is Vout across R2?",
+            "unit": "V",
+            "answer": 2.5,
+            "tolerance": 0.1,
+            "explanation": "Vout = Vin * (R2 / (R1 + R2)) = 5V * (10k / (10k + 10k)) = 5V * 0.5 = 2.5V."
+          },
+          {
+            "type": "single",
+            "prompt": "What happens to the resistance of a standard LDR (photoresistor) when bright light shines on it?",
+            "choices": [
+              {
+                "text": "Resistance decreases dramatically",
+                "correct": true
+              },
+              {
+                "text": "Resistance increases dramatically",
+                "correct": false
+              },
+              {
+                "text": "Resistance stays completely constant",
+                "correct": false
+              },
+              {
+                "text": "Resistance drops to negative ohms",
+                "correct": false
+              }
+            ],
+            "explanation": "Photons impart energy into the semiconductor material, freeing charge carriers and causing resistance to decrease."
+          },
+          {
+            "type": "single",
+            "prompt": "Why cannot an Arduino analog input pin measure a solitary two-terminal LDR directly without an accompanying fixed resistor?",
+            "choices": [
+              {
+                "text": "Microcontroller ADC input channels measure voltage potential differences, not pure resistance",
+                "correct": true
+              },
+              {
+                "text": "LDR sensors require high AC mains voltage to function",
+                "correct": false
+              },
+              {
+                "text": "An LDR emits light that blinds the processor",
+                "correct": false
+              }
+            ],
+            "explanation": "An ADC (Analog-to-Digital Converter) samples voltage. Placing the LDR in a voltage divider transforms changing resistance into a readable 0V-5V signal."
+          }
+        ]
+      }
+    },
+    "m02-l12-switches-and-breadboarding": {
+      "frontmatter": {
+        "id": "m02-l12-switches-and-breadboarding",
+        "title": "Switches, Buttons, and Breadboard Prototyping",
+        "path": "electronics-embedded-foundations",
+        "module": "m02-discrete-circuits",
+        "order": 12,
+        "level": "beginner",
+        "minutes": 20,
+        "prerequisites": [
+          "m01-l01-what-is-electricity",
+          "m01-l06-multimeter-and-schematics"
+        ],
+        "objectives": [
+          "Understand internal spring clip bus rows and power distribution rails on a solderless breadboard",
+          "Differentiate momentary pushbuttons from latching toggle switches",
+          "Identify contact pairs and internal bridging on standard 4-pin tactile buttons"
+        ],
+        "keyIdeas": [
+          "Solderless breadboards use spring metal clips to join component leads without heat or solder.",
+          "Power rails run horizontally along the edges; tie-point rows run vertically across the center divide.",
+          "Standard 4-pin tactile switches have 2 internal permanent pairs that connect when the plunger is pressed."
+        ],
+        "tags": [
+          "breadboard",
+          "switches",
+          "buttons",
+          "prototyping"
+        ],
+        "glossary": [
+          "breadboard",
+          "momentary-switch",
+          "spst",
+          "tie-point",
+          "bus-strip"
+        ],
+        "needsHumanVerification": false,
+        "verified": true,
+        "sources": [
+          {
+            "title": "Adafruit Breadboard Anatomy & Usage Guide",
+            "url": "https://learn.adafruit.com/breadboards"
+          }
+        ],
+        "license": "CC-BY-SA-4.0",
+        "authors": [
+          "RoboForge Team"
+        ],
+        "locale": "en"
+      },
+      "rawMarkdown": "## 1. Hook: Rapid Prototyping Without Solder\nBefore solderless breadboards were invented in the 1970s, engineers wrapped bare wires around brass nails hammered into wooden bread-cutting boards!\n\nToday, solderless breadboards allow you to assemble, test, modify, and disassemble electronic circuits in seconds with zero soldering.\n\n<Callout type=\"safety\" title=\"Prototyping Safety\">\n  Always disconnect the battery or USB power cable before inserting or moving jumper wires on a breadboard. Accidentally bridging adjacent rows with power on can cause a short circuit that damages components or overheats wiring. Keep circuit voltage strictly under 12V DC.\n</Callout>\n\n## 2. Anatomy of a Solderless Breadboard\nIf you peel back the adhesive backing of a breadboard, you will find rows of nickel-silver spring clips:\n1. **Power Bus Rails (+ and -):**\n   - Run along the top and bottom outer edges.\n   - Long continuous horizontal strips distributing $+5\\text{ V}$ (Red rail) and Ground $0\\text{ V}$ (Blue or Black rail).\n2. **Terminal Tie-Point Rows (Rows 1 to 30 or 60):**\n   - Run vertically in 5-hole groups (A-B-C-D-E and F-G-H-J-K).\n   - All 5 holes in a lettered column share one internal metallic clip.\n3. **The Center Trough (DIP Divide):**\n   - Separates the top half (A-E) from the bottom half (F-K).\n   - Designed to straddle Dual In-Line Package (DIP) integrated circuits so opposing IC pins do not short together.\n\n## 3. Switches and Pushbuttons\nA switch physically makes or breaks electrical continuity:\n- **Latching Switch (Toggle / Slide):** Remains in its new state after being toggled (like a room light switch).\n- **Momentary Pushbutton (Tactile Switch):** Only completes the circuit while mechanical pressure is applied, springing open as soon as released.\n\n### The 4-Pin Tactile Button Mystery:\nLearners are often confused by 4-pin tactile buttons. Why four pins for a simple switch?\n- Pins on the same side across the center trough are internally linked in pairs ($1\\leftrightarrow 2$ and $3\\leftrightarrow 4$).\n- Pressing the button connects pair $(1,2)$ to pair $(3,4)$.\n- **Best Practice:** Mount the button straddling the center trough!\n\n## 4. Summary & Prototyping Rules\n- Never connect $+5\\text{ V}$ and $\\text{GND}$ rails together directly.\n- Component leads sharing the same 5-hole numbered row are electrically joined.\n- Keep jumper wires flat and color-coded: Red for power, Black for ground, Yellow/Green/Blue for signals.",
+      "quiz": {
+        "id": "q-m02-l12-switches-and-breadboarding",
+        "items": [
+          {
+            "type": "single",
+            "prompt": "On a standard breadboard terminal row, which holes are connected together internally?",
+            "choices": [
+              {
+                "text": "The 5 holes in the same lettered column (A-B-C-D-E in Row 10)",
+                "correct": true
+              },
+              {
+                "text": "All holes in column A from Row 1 down to Row 30",
+                "correct": false
+              },
+              {
+                "text": "Every single hole on the entire breadboard",
+                "correct": false
+              },
+              {
+                "text": "Holes across the center trough (Row 10-A to Row 10-J)",
+                "correct": false
+              }
+            ],
+            "explanation": "Breadboards group holes in 5-terminal vertical spring clips per row (A through E). The center trough separates the top and bottom banks."
+          },
+          {
+            "type": "single",
+            "prompt": "Why does a breadboard have a central trough groove running down its length?",
+            "choices": [
+              {
+                "text": "To allow Dual In-Line Package (DIP) IC chips to be inserted without shorting opposing pins together",
+                "correct": true
+              },
+              {
+                "text": "To store spare jumper wires",
+                "correct": false
+              },
+              {
+                "text": "To allow air circulation for high-temperature mains heaters",
+                "correct": false
+              }
+            ],
+            "explanation": "DIP integrated circuits have pins on opposite sides. The center trench isolates the left pins from the right pins."
+          },
+          {
+            "type": "single",
+            "prompt": "What is the difference between a momentary pushbutton and a latching switch?",
+            "choices": [
+              {
+                "text": "A momentary pushbutton only conducts while physically pressed, whereas a latching switch stays on after release",
+                "correct": true
+              },
+              {
+                "text": "A momentary button only works with AC current",
+                "correct": false
+              },
+              {
+                "text": "A latching switch can only be turned on once in its lifetime",
+                "correct": false
+              }
+            ],
+            "explanation": "Momentary switches use an internal spring that returns the contacts to their open state the moment external pressure is removed."
+          }
+        ]
+      }
+    },
+    "m03-l13-what-is-a-microcontroller": {
+      "frontmatter": {
+        "id": "m03-l13-what-is-a-microcontroller",
+        "title": "What is a Microcontroller? Silicon Brains",
+        "path": "electronics-embedded-foundations",
+        "module": "m03-arduino-and-code",
+        "order": 13,
+        "level": "beginner",
+        "minutes": 20,
+        "prerequisites": [
+          "m01-l01-what-is-electricity",
+          "m02-l10-integrated-circuits-555"
+        ],
+        "objectives": [
+          "Differentiate a microprocessor (PC) from an embedded microcontroller (MCU)",
+          "Identify the four pillars of an MCU: CPU, Flash memory, SRAM, and I/O Peripherals",
+          "Understand the ATmega328P specifications on the Arduino Uno"
+        ],
+        "keyIdeas": [
+          "A microcontroller integrates CPU, memory, and peripheral hardware onto a single silicon die.",
+          "Flash memory holds firmware permanently; SRAM stores running variables.",
+          "The ATmega328P runs at 16 MHz with 32 KB Flash and 2 KB SRAM on 5V DC."
+        ],
+        "tags": [
+          "microcontroller",
+          "cpu",
+          "memory",
+          "arduino"
+        ],
+        "glossary": [
+          "microcontroller",
+          "mcu",
+          "cpu",
+          "flash-memory",
+          "sram",
+          "gpio"
+        ],
+        "needsHumanVerification": false,
+        "verified": true,
+        "sources": [
+          {
+            "title": "Microchip ATmega328P Complete Datasheet",
+            "url": "https://www.microchip.com/en-us/product/ATmega328P"
+          }
+        ],
+        "license": "CC-BY-SA-4.0",
+        "authors": [
+          "RoboForge Team"
+        ],
+        "locale": "en"
+      },
+      "rawMarkdown": "## 1. Hook: The Computer in Your Microwave\nWhen you think of a computer, you likely envision a laptop with high-definition screens, gigabytes of RAM, fans, and an operating system like Windows, macOS, or Linux.\n\nYet your microwave oven, washing machine, digital wristwatch, and anti-lock brakes also contain computers! How can a $2 chip control a complex machine?\n\nThey use a **Microcontroller Unit (MCU)**!\n\n<Callout type=\"safety\" title=\"Microcontroller Voltage Safety\">\n  Operate microcontrollers strictly from regulated low-voltage sources (5V USB or 7V–12V DC into the barrel jack). Never short the 5V power pin to GND, and never connect AC mains or batteries exceeding 12V to the board.\n</Callout>\n\n## 2. Microprocessor vs Microcontroller\n- **Microprocessor (e.g., Intel Core i7, Apple M3):** A pure processing brain (CPU). It requires external RAM chips, SSD storage, power management ICs, and motherboards to operate.\n- **Microcontroller (e.g., ATmega328P, ESP32, RP2040):** An entire self-contained computer on a single chip. It contains the CPU, memory, timers, and input/output pins inside one package!\n\n## 3. The Four Pillars of a Microcontroller\n1. **CPU (Central Processing Unit):** Fetches instructions from memory, decodes them, and executes mathematical and logical operations.\n2. **Flash Memory (ROM):** Non-volatile storage where your compiled program code lives. Stays preserved even when power is turned off! (ATmega328P has $32\\text{ KB}$).\n3. **SRAM (Static RAM):** Volatile fast memory holding your running variables and call stack. Erased when power is cut! (ATmega328P has $2\\text{ KB}$).\n4. **GPIO (General Purpose Input/Output):** Physical pins that read electrical voltages from the outside world or assert control signals to LEDs, transistors, and motors.\n\n## 4. The Arduino Uno: A Friendly ATmega328P Carrier\nThe Arduino Uno is not the microcontroller itself; it is a development board designed to make using the **ATmega328P** chip convenient:\n- **16 MHz Crystal Oscillator:** Provides a steady clock heartbeat (16 million cycles per second).\n- **5V Voltage Regulator:** Allows powering via 7V–12V DC barrel jack or 5V USB.\n- **USB-to-Serial Bridge:** Lets your computer upload code without needing an external programmer.\n- **Female Pin Headers:** Allows plugging jumper wires directly without soldering.\n\n## 5. Summary\n- Microcontrollers are dedicated computers built for real-time control.\n- Code is stored in Flash; variables live in SRAM.\n- The Arduino Uno packages the ATmega328P for simple prototyping.",
+      "quiz": {
+        "id": "q-m03-l13-what-is-a-microcontroller",
+        "items": [
+          {
+            "type": "single",
+            "prompt": "What is the primary difference between a microprocessor (like an Intel Core i9) and a microcontroller (like the ATmega328P)?",
+            "choices": [
+              {
+                "text": "A microcontroller integrates CPU, Flash program memory, SRAM, and I/O pins into a single standalone chip",
+                "correct": true
+              },
+              {
+                "text": "A microcontroller has no CPU inside",
+                "correct": false
+              },
+              {
+                "text": "A microprocessor can only run on AA batteries",
+                "correct": false
+              },
+              {
+                "text": "Microcontrollers can only perform additions, never subtractions",
+                "correct": false
+              }
+            ],
+            "explanation": "Microcontrollers are self-contained systems-on-chip with on-die memory and peripherals tailored for dedicated physical hardware control."
+          },
+          {
+            "type": "single",
+            "prompt": "Where does your compiled Arduino program code stay stored when the power cord is disconnected?",
+            "choices": [
+              {
+                "text": "Non-volatile Flash memory",
+                "correct": true
+              },
+              {
+                "text": "Volatile SRAM",
+                "correct": false
+              },
+              {
+                "text": "In the copper traces of the breadboard",
+                "correct": false
+              },
+              {
+                "text": "In the USB cable",
+                "correct": false
+              }
+            ],
+            "explanation": "Flash memory retains its stored binary data without electrical power, whereas SRAM variables vanish when power is cut."
+          },
+          {
+            "type": "single",
+            "prompt": "What is the clock speed of the ATmega328P crystal on a standard Arduino Uno R3?",
+            "choices": [
+              {
+                "text": "16 MHz (16 million cycles per second)",
+                "correct": true
+              },
+              {
+                "text": "3.5 GHz",
+                "correct": false
+              },
+              {
+                "text": "60 Hz",
+                "correct": false
+              },
+              {
+                "text": "1 kHz",
+                "correct": false
+              }
+            ],
+            "explanation": "The Arduino Uno uses a 16 MHz quartz crystal resonator, executing most single-cycle RISC instructions in 62.5 nanoseconds."
+          }
+        ]
+      }
+    },
+    "m03-l14-first-sketch-blink": {
+      "frontmatter": {
+        "id": "m03-l14-first-sketch-blink",
+        "title": "Your First Sketch: Blink & Firmware Structure",
+        "path": "electronics-embedded-foundations",
+        "module": "m03-arduino-and-code",
+        "order": 14,
+        "level": "beginner",
+        "minutes": 20,
+        "prerequisites": [
+          "m03-l13-what-is-a-microcontroller"
+        ],
+        "objectives": [
+          "Understand the two core phases of embedded firmware: setup() and loop()",
+          "Configure a GPIO pin for output using pinMode()",
+          "Drive high and low digital voltage levels using digitalWrite()"
+        ],
+        "keyIdeas": [
+          "setup() runs once on boot to initialize hardware pins.",
+          "loop() executes continuously in an infinite cycle until power is disconnected.",
+          "digitalWrite(pin, HIGH) asserts 5V; digitalWrite(pin, LOW) asserts 0V."
+        ],
+        "tags": [
+          "arduino",
+          "c-plus-plus",
+          "blink",
+          "gpio"
+        ],
+        "glossary": [
+          "setup",
+          "loop",
+          "pinmode",
+          "digitalwrite",
+          "delay"
+        ],
+        "needsHumanVerification": false,
+        "verified": true,
+        "sources": [
+          {
+            "title": "Arduino Language Reference: Core Functions",
+            "url": "https://www.arduino.cc/reference/en/"
+          }
+        ],
+        "license": "CC-BY-SA-4.0",
+        "authors": [
+          "RoboForge Team"
+        ],
+        "locale": "en"
+      },
+      "rawMarkdown": "## 1. The Anatomy of an Arduino Sketch\nIn desktop software, a program has a `main()` function that starts, runs a task, and exits to the operating system.\n\nIn embedded robotics, **a microcontroller never exits!** If the code stopped, your robot would stop steering or regulating motor power.\n\nEvery Arduino program (called a **sketch**) is written in C++ and organized around two mandatory functions:\n\n```cpp\nvoid setup() {\n  // Runs ONCE when board powers on or resets\n}\n\nvoid loop() {\n  // Runs REPEATEDLY forever\n}\n```\n\n<Callout type=\"safety\" title=\"Pin Current Limit Safety\">\n  Each ATmega328P output pin can supply a maximum of 20mA safely (absolute max 40mA). Never connect an LED or motor directly to a digital pin without a current-limiting resistor or driver transistor. Exceeding current limits overheats and permanently burns the internal silicon driver.\n</Callout>\n\n## 2. Configuring Pins with `pinMode()`\nBy default, microcontroller pins wake up as high-impedance inputs to protect connected circuits. Before sending electricity out to an LED or transistor, we must configure the pin driver:\n\n```cpp\npinMode(13, OUTPUT);\n```\n- Pin 13 is tied to an onboard amber LED (marked **L**) on the Arduino Uno PCB.\n- `OUTPUT` switches the internal CMOS transistor pair so the pin can source or sink current.\n\n## 3. Driving Voltages with `digitalWrite()`\nDigital pins on the ATmega328P can only output two states:\n- `HIGH`: Connects the pin to $+5\\text{ V}$.\n- `LOW`: Connects the pin to $\\text{GND}$ ($0\\text{ V}$).\n\n```cpp\ndigitalWrite(13, HIGH); // 5V -> LED turns ON\ndelay(1000);            // Pause execution for 1000 milliseconds (1 second)\ndigitalWrite(13, LOW);  // 0V -> LED turns OFF\ndelay(1000);            // Pause for 1 second\n```\n\n## 4. The Complete Blink Sketch\n```cpp\nconst int LED_PIN = 13;\n\nvoid setup() {\n  pinMode(LED_PIN, OUTPUT);\n}\n\nvoid loop() {\n  digitalWrite(LED_PIN, HIGH);\n  delay(1000);\n  digitalWrite(LED_PIN, LOW);\n  delay(1000);\n}\n```\n\nWhen `loop()` reaches the closing brace `}`, the MCU immediately restarts at the first line of `loop()`, creating a steady 0.5 Hz blink!\n\n## 5. Summary & Best Practices\n- Define pin numbers as `const int` at the top of your file to prevent typos.\n- Only run one-time hardware configuration inside `setup()`.\n- `delay(ms)` stops the CPU completely; in later lessons, we will learn non-blocking timers using `millis()`.",
+      "quiz": {
+        "id": "q-m03-l14-first-sketch-blink",
+        "items": [
+          {
+            "type": "single",
+            "prompt": "How many times does the setup() function execute when the Arduino is plugged into power?",
+            "choices": [
+              {
+                "text": "Exactly once",
+                "correct": true
+              },
+              {
+                "text": "16 million times per second",
+                "correct": false
+              },
+              {
+                "text": "Continuously in an infinite loop",
+                "correct": false
+              },
+              {
+                "text": "Every 1000 milliseconds",
+                "correct": false
+              }
+            ],
+            "explanation": "setup() is called once on initial boot or reset to configure hardware registers, pin modes, and baud rates."
+          },
+          {
+            "type": "single",
+            "prompt": "What physical voltage does an ATmega328P output pin assert when commanded with digitalWrite(pin, HIGH)?",
+            "choices": [
+              {
+                "text": "Approximately +5V DC",
+                "correct": true
+              },
+              {
+                "text": "120V AC mains",
+                "correct": false
+              },
+              {
+                "text": "0V ground",
+                "correct": false
+              },
+              {
+                "text": "A random oscillating voltage",
+                "correct": false
+              }
+            ],
+            "explanation": "On a 5V Arduino board, digital HIGH connects the pin to the VCC rail (approximately +5.0 volts)."
+          },
+          {
+            "type": "numeric",
+            "prompt": "If your code calls delay(250) after turning an LED on and delay(250) after turning it off, what is the total period of one full on/off blink cycle in milliseconds?",
+            "unit": "ms",
+            "answer": 500,
+            "tolerance": 0.1,
+            "explanation": "Period = Ton + Toff = 250ms + 250ms = 500ms (frequency = 1 / 0.5s = 2 Hz)."
+          }
+        ]
+      }
+    },
+    "m03-l15-digital-io-and-pullups": {
+      "frontmatter": {
+        "id": "m03-l15-digital-io-and-pullups",
+        "title": "Digital Inputs, Floating Pins, and Pull-up Resistors",
+        "path": "electronics-embedded-foundations",
+        "module": "m03-arduino-and-code",
+        "order": 15,
+        "level": "beginner",
+        "minutes": 20,
+        "prerequisites": [
+          "m03-l14-first-sketch-blink",
+          "m02-l12-switches-and-breadboarding"
+        ],
+        "objectives": [
+          "Read binary logic states from external pushbuttons using digitalRead()",
+          "Explain why an unconnected input pin 'floats' unpredictably due to electrostatic noise",
+          "Utilize the internal 20k pull-up resistor (INPUT_PULLUP) for clean, reliable switch reading"
+        ],
+        "keyIdeas": [
+          "A digital input pin has immense resistance (>100 MΩ) and acts like an electrostatic antenna when disconnected.",
+          "A pull-up resistor guarantees a known HIGH (5V) state when the switch is open.",
+          "Using INPUT_PULLUP requires connecting the pushbutton between the pin and GND (active-LOW logic)."
+        ],
+        "tags": [
+          "digital-input",
+          "input-pullup",
+          "buttons",
+          "floating-pin"
+        ],
+        "glossary": [
+          "digitalread",
+          "input-pullup",
+          "floating-pin",
+          "active-low",
+          "debounce"
+        ],
+        "needsHumanVerification": false,
+        "verified": true,
+        "sources": [
+          {
+            "title": "Arduino Tutorial: Digital Input Pull-up Resistors",
+            "url": "https://docs.arduino.cc/tutorials/generic/digital-input-pullup"
+          }
+        ],
+        "license": "CC-BY-SA-4.0",
+        "authors": [
+          "RoboForge Team"
+        ],
+        "locale": "en"
+      },
+      "rawMarkdown": "## 1. The Mystery of the Phantom Button\nImagine wiring a pushbutton between $5\\text{ V}$ and digital pin 2. When you press the button, pin 2 reads `HIGH` ($5\\text{ V}$).\n\nWhat does pin 2 read when you let go?\n\nYou might guess `LOW` ($0\\text{ V}$). But if you test it, the pin rapidly and erratically flickers between 0 and 1! Even waving your hand near the wire changes the reading. Why?\n\n<Callout type=\"safety\" title=\"GPIO Voltage Protection\">\n  Digital input pins must never be exposed to voltages higher than VCC (+5.5V) or negative voltages below GND. Excessive external voltage blows the internal clamping diodes and damages the chip. Operate exclusively at low-voltage 5V DC logic levels.\n</Callout>\n\n## 2. The Floating Pin Phenomenon\nMicrocontroller input pins have enormous internal input impedance (over $100\\text{ M}\\Omega$). When the switch is open, the pin is connected to **nothing**—it is **floating**.\n\nJust like static electricity on a balloon attracts your hair, electromagnetic waves from mains wiring, fluorescent lights, and static charge in the air induce tiny voltages on the floating pin, causing unpredictable false triggers!\n\n## 3. The Solution: Pull-up and Pull-down Resistors\nTo guarantee a stable reading when the switch is open, we must tie the pin to a known voltage rail through a weak resistor:\n- **Pull-down Resistor (External 10k to GND):** Pin defaults to 0V (`LOW`). Pressing button brings it to 5V (`HIGH`).\n- **Pull-up Resistor (Weak Resistor to 5V):** Pin defaults to 5V (`HIGH`). Pressing button shorts the pin to GND (`LOW`).\n\n## 4. Secret Hardware Superpower: `INPUT_PULLUP`\nWiring external 10k resistors on a breadboard takes up space and wires. The designers of the ATmega328P included internal $20\\text{ k}\\Omega$ to $50\\text{ k}\\Omega$ pull-up resistors inside the silicon chip itself!\n\nYou can turn them on with a single line of code:\n```cpp\npinMode(2, INPUT_PULLUP);\n```\n\n### Wiring with `INPUT_PULLUP`:\nConnect one terminal of your momentary button to **Pin 2**, and the other terminal directly to **GND**. No external resistors needed!\n\n### Active-LOW Logic:\n- **Button Released (Open):** Internal pull-up pulls pin to $5\\text{ V}$ $\\rightarrow$ `digitalRead(2) == HIGH`\n- **Button Pressed (Closed):** Current flows to ground $\\rightarrow$ `digitalRead(2) == LOW`\n\n```cpp\nconst int BUTTON_PIN = 2;\nconst int LED_PIN = 13;\n\nvoid setup() {\n  pinMode(BUTTON_PIN, INPUT_PULLUP);\n  pinMode(LED_PIN, OUTPUT);\n}\n\nvoid loop() {\n  int buttonState = digitalRead(BUTTON_PIN);\n\n  if (buttonState == LOW) {\n    // Button is physically pressed!\n    digitalWrite(LED_PIN, HIGH);\n  } else {\n    digitalWrite(LED_PIN, LOW);\n  }\n}\n```\n\n## 5. Summary & Best Practices\n- Never leave a digital input pin floating.\n- Standard robotics practice is using `INPUT_PULLUP` with buttons wired to GND.\n- Remember the inverted logic: `LOW` means PRESSED, `HIGH` means RELEASED.",
+      "quiz": {
+        "id": "q-m03-l15-digital-io-and-pullups",
+        "items": [
+          {
+            "type": "single",
+            "prompt": "What behavior occurs when a digital input pin is left floating without any pull-up or pull-down resistor?",
+            "choices": [
+              {
+                "text": "The pin acts like an antenna and randomly alternates between HIGH and LOW due to environmental noise",
+                "correct": true
+              },
+              {
+                "text": "The microcontroller instantly burns out",
+                "correct": false
+              },
+              {
+                "text": "The pin permanently locks at 0V",
+                "correct": false
+              },
+              {
+                "text": "The Arduino Uno shuts down",
+                "correct": false
+              }
+            ],
+            "explanation": "Because CMOS inputs have massive input impedance, tiny stray electrostatic fields charge and discharge the pin gate, causing erratic readings."
+          },
+          {
+            "type": "single",
+            "prompt": "When a pushbutton is wired between Pin 2 and GND with pinMode(2, INPUT_PULLUP), what value does digitalRead(2) return when the button is actively pressed down?",
+            "choices": [
+              {
+                "text": "LOW (0)",
+                "correct": true
+              },
+              {
+                "text": "HIGH (1)",
+                "correct": false
+              },
+              {
+                "text": "1023",
+                "correct": false
+              },
+              {
+                "text": "Negative 1",
+                "correct": false
+              }
+            ],
+            "explanation": "Pressing the button connects the pin directly to the 0V GND rail, forcing the digital reading to LOW (Active-LOW architecture)."
+          },
+          {
+            "type": "single",
+            "prompt": "What is the approximate resistance value of the internal pull-up resistor inside the ATmega328P?",
+            "choices": [
+              {
+                "text": "20kΩ to 50kΩ",
+                "correct": true
+              },
+              {
+                "text": "1 ohm",
+                "correct": false
+              },
+              {
+                "text": "10 Megaohms",
+                "correct": false
+              },
+              {
+                "text": "Zero ohms (pure short)",
+                "correct": false
+              }
+            ],
+            "explanation": "The ATmega328P datasheet specifies an internal pull-up resistance between 20kΩ and 50kΩ, perfect for low-power, noise-immune switch sensing."
+          }
+        ]
+      }
+    },
+    "m03-l16-analog-input-and-adc": {
+      "frontmatter": {
+        "id": "m03-l16-analog-input-and-adc",
+        "title": "Analog Inputs: The 10-Bit Analog-to-Digital Converter (ADC)",
+        "path": "electronics-embedded-foundations",
+        "module": "m03-arduino-and-code",
+        "order": 16,
+        "level": "beginner",
+        "minutes": 20,
+        "prerequisites": [
+          "m02-l11-sensors-and-voltage-dividers",
+          "m03-l15-digital-io-and-pullups"
+        ],
+        "objectives": [
+          "Explain how an Analog-to-Digital Converter (ADC) quantizes continuous analog voltage into digital numbers",
+          "Calculate ADC voltage resolution for a 10-bit converter (5V / 1024 ≈ 4.88 mV per count)",
+          "Read potentiometers and variable sensor dividers using analogRead()"
+        ],
+        "keyIdeas": [
+          "Digital pins only see 0V or 5V; analog pins read the continuous spectrum between them.",
+          "The ATmega328P has a 10-bit ADC that maps 0V–5V to integer values from 0 to 1023.",
+          "The conversion formula is: Voltage = (ADC_Value * 5.0) / 1023.0."
+        ],
+        "tags": [
+          "analog-read",
+          "adc",
+          "potentiometer",
+          "sensors"
+        ],
+        "glossary": [
+          "adc",
+          "analogread",
+          "quantization",
+          "resolution",
+          "potentiometer"
+        ],
+        "needsHumanVerification": false,
+        "verified": true,
+        "sources": [
+          {
+            "title": "Atmel AVR094: Replacing ADC with Oversampling and Decimation",
+            "url": "https://ww1.microchip.com/downloads/en/Appnotes/doc8003.pdf"
+          }
+        ],
+        "license": "CC-BY-SA-4.0",
+        "authors": [
+          "RoboForge Team"
+        ],
+        "locale": "en"
+      },
+      "rawMarkdown": "## 1. Beyond 1s and 0s: The Continuous Spectrum\nDigital inputs are binary: a light switch is either ON or OFF.\n\nHowever, the real physical world is continuous and analog:\n- A dimmer knob turns gradually from dim to bright.\n- A robot battery drains smoothly from $8.4\\text{ V}$ down to $6.0\\text{ V}$.\n- Ambient temperature changes smoothly by fractions of a degree.\n\nTo measure these continuous physical states, microcontrollers employ an **Analog-to-Digital Converter (ADC)**!\n\n<Callout type=\"safety\" title=\"Analog Input Voltage Limits\">\n  The ATmega328P ADC input pins (A0–A5) are designed strictly for 0V to 5V DC signals. Never feed high voltages (such as direct 12V motor battery voltages) into an analog pin without a properly calculated resistive voltage divider to step it down below 5V.\n</Callout>\n\n## 2. 10-Bit Resolution & Quantization\nThe ATmega328P on the Arduino Uno includes a built-in 10-bit Successive Approximation ADC accessible on pins **A0 through A5**.\n\nA 10-bit binary register can represent $2^{10} = 1024$ discrete numbers:\n$$\\text{Range: } 0 \\text{ to } 1023$$\n\nWhen using the default $5.0\\text{ V}$ reference:\n- $0.0\\text{ V} \\rightarrow 0$\n- $2.5\\text{ V} \\rightarrow 512$\n- $5.0\\text{ V} \\rightarrow 1023$\n\n### Voltage Resolution per Step:\n$$\\text{Step Size} = \\frac{5.0\\text{ V}}{1024} \\approx 0.00488\\text{ V} = 4.88\\text{ mV}$$\nThe microcontroller can detect voltage variations as tiny as $4.88\\text{ millivolts}$!\n\n## 3. Reading a Potentiometer with `analogRead()`\nA potentiometer is a 3-terminal adjustable voltage divider:\n- Outer pin 1 $\\rightarrow 5\\text{ V}$\n- Outer pin 2 $\\rightarrow \\text{GND}$\n- Center wiper $\\rightarrow \\text{A0}$\n\nAs you turn the knob, the wiper sweeps smoothly between $0\\text{ V}$ and $5\\text{ V}$.\n\n```cpp\nvoid setup() {\n  Serial.begin(9600); // Initialize serial monitor\n}\n\nvoid loop() {\n  int rawValue = analogRead(A0); // Reads 0 to 1023\n  float voltage = (rawValue * 5.0) / 1023.0;\n\n  Serial.print(\"Raw: \");\n  Serial.print(rawValue);\n  Serial.print(\" | Voltage: \");\n  Serial.println(voltage);\n\n  delay(200);\n}\n```\n\n*Note: You do not need to call `pinMode()` for analog input pins; `analogRead()` configures the internal multiplexer automatically.*\n\n## 4. Summary & Practical Tips\n- `analogRead()` takes approximately $100\\text{ }\\mu\\text{s}$ ($0.0001\\text{ s}$) to complete a successive-approximation conversion.\n- To convert raw ADC readings to physical units (like temperature, distance, or motor angle), calibrate with a linear mapping equation or lookup curve.",
+      "quiz": {
+        "id": "q-m03-l16-analog-input-and-adc",
+        "items": [
+          {
+            "type": "numeric",
+            "prompt": "If an Arduino Uno 10-bit ADC reads an analog pin at exactly 2.50V (halfway between 0V and 5V), what integer value does analogRead() return?",
+            "unit": "counts",
+            "answer": 512,
+            "tolerance": 2,
+            "explanation": "Halfway across the 1024 levels: 1023 * (2.5 / 5.0) = 511.5 ≈ 512 counts."
+          },
+          {
+            "type": "single",
+            "prompt": "What is the voltage resolution (voltage represented by 1 ADC step) of the Arduino Uno 10-bit converter with a 5.0V reference?",
+            "choices": [
+              {
+                "text": "Approximately 4.88 mV",
+                "correct": true
+              },
+              {
+                "text": "1.0 V",
+                "correct": false
+              },
+              {
+                "text": "100 mV",
+                "correct": false
+              },
+              {
+                "text": "0.001 microvolts",
+                "correct": false
+              }
+            ],
+            "explanation": "Resolution = Vref / 1024 = 5.0V / 1024 = 0.0048828V = 4.88 millivolts."
+          },
+          {
+            "type": "single",
+            "prompt": "Do you need to declare pinMode(A0, INPUT) in setup() before calling analogRead(A0)?",
+            "choices": [
+              {
+                "text": "No, analogRead() automatically manages the internal analog multiplexer channel",
+                "correct": true
+              },
+              {
+                "text": "Yes, failing to do so causes a compiler error",
+                "correct": false
+              },
+              {
+                "text": "Yes, otherwise pin A0 catches on fire",
+                "correct": false
+              }
+            ],
+            "explanation": "Analog input pins default to high-impedance analog inputs, and analogRead() configures the ADC multiplexer on each read."
+          }
+        ]
+      }
+    },
+    "m03-l17-pwm-analog-output": {
+      "frontmatter": {
+        "id": "m03-l17-pwm-analog-output",
+        "title": "Pulse Width Modulation (PWM): Simulating Analog Voltages",
+        "path": "electronics-embedded-foundations",
+        "module": "m03-arduino-and-code",
+        "order": 17,
+        "level": "beginner",
+        "minutes": 20,
+        "prerequisites": [
+          "m03-l14-first-sketch-blink",
+          "m03-l16-analog-input-and-adc"
+        ],
+        "objectives": [
+          "Understand how high-frequency digital pulsing creates an equivalent average analog voltage",
+          "Calculate duty cycle percentages and average output voltages",
+          "Use analogWrite() on 8-bit PWM timer pins (3, 5, 6, 9, 10, 11)"
+        ],
+        "keyIdeas": [
+          "The ATmega328P has no true Digital-to-Analog Converter (DAC); it uses PWM to simulate analog levels.",
+          "Duty cycle is the percentage of time a square wave remains HIGH: D = (T_on / Period) * 100%.",
+          "analogWrite() accepts an 8-bit value (0 to 255): 0 is 0% duty, 128 is 50%, and 255 is 100%."
+        ],
+        "tags": [
+          "pwm",
+          "analogwrite",
+          "duty-cycle",
+          "led-dimming"
+        ],
+        "glossary": [
+          "pwm",
+          "duty-cycle",
+          "analogwrite",
+          "average-voltage",
+          "frequency"
+        ],
+        "needsHumanVerification": false,
+        "verified": true,
+        "sources": [
+          {
+            "title": "Arduino Secrets of Arduino PWM",
+            "url": "https://docs.arduino.cc/learn/microcontrollers/analog-output"
+          }
+        ],
+        "license": "CC-BY-SA-4.0",
+        "authors": [
+          "RoboForge Team"
+        ],
+        "locale": "en"
+      },
+      "rawMarkdown": "## 1. Hook: Can a Digital Pin Output 2.5 Volts?\nWe know digital pins can only output $0\\text{ V}$ or $5\\text{ V}$.\n\nWhat if you want to dim an LED to half brightness, or drive a robot motor at 50% cruising speed? Does the microcontroller have an analog valve to output $2.5\\text{ V}$?\n\nNo! Instead, it uses a brilliant trick of physics: **Pulse Width Modulation (PWM)**.\n\n<Callout type=\"safety\" title=\"PWM Motor Drive Isolation\">\n  While PWM can control DC motor speed, never wire a motor coil directly to an Arduino PWM pin! Motors draw high current and generate inductive flyback spikes. Always buffer PWM signals through a dedicated driver transistor, MOSFET, or H-bridge IC.\n</Callout>\n\n## 2. What is Pulse Width Modulation?\nPWM switches a digital output pin between $5\\text{ V}$ (HIGH) and $0\\text{ V}$ (LOW) hundreds of times per second (approx $490\\text{ Hz}$ or $980\\text{ Hz}$ on the Arduino Uno).\n\nBecause it switches so fast (faster than human persistence of vision or motor coil inductance can react), the connected device responds to the **time-averaged voltage**:\n\n$$V_{\\text{avg}} = \\text{Duty Cycle} \\times V_{\\text{max}}$$\n\n### Duty Cycle ($D$):\nThe percentage of time the signal is HIGH during each repeating period:\n$$D = \\frac{T_{\\text{on}}}{T_{\\text{on}} + T_{\\text{off}}} \\times 100\\%$$\n\n- **0% Duty Cycle:** Pin is permanently LOW ($0\\text{ V}$).\n- **25% Duty Cycle:** HIGH for $1/4$ of the cycle $\\rightarrow V_{\\text{avg}} = 0.25 \\times 5\\text{ V} = 1.25\\text{ V}$.\n- **50% Duty Cycle:** HIGH for $1/2$ of the cycle $\\rightarrow V_{\\text{avg}} = 0.50 \\times 5\\text{ V} = 2.50\\text{ V}$.\n- **100% Duty Cycle:** Pin is permanently HIGH ($5\\text{ V}$).\n\n## 3. The `analogWrite()` Function\nIn Arduino code, PWM is controlled using `analogWrite()`.\n\nDespite the name, `analogWrite()` is NOT true analog; it sets an **8-bit timer compare register**:\n$$\\text{Range: } 0 \\text{ to } 255 \\quad (2^8 = 256 \\text{ levels})$$\n\n- `analogWrite(pin, 0)` $\\rightarrow 0\\%$ duty ($0\\text{ V}$)\n- `analogWrite(pin, 64)` $\\rightarrow 25\\%$ duty ($1.25\\text{ V}$)\n- `analogWrite(pin, 128)` $\\rightarrow 50\\%$ duty ($2.50\\text{ V}$)\n- `analogWrite(pin, 255)` $\\rightarrow 100\\%$ duty ($5.0\\text{ V}$)\n\n### Which Pins Support PWM?\nLook closely at the Arduino Uno board silkscreen. Certain digital pins have a tilde (~) symbol:\n**Pins 3, 5, 6, 9, 10, and 11.** Only these specific pins are wired to internal hardware timer output compare channels!\n\n## 4. Example: Smooth LED Breathing Fader\n```cpp\nconst int LED_PIN = 9; // Pin 9 supports PWM (~)\n\nvoid setup() {\n  pinMode(LED_PIN, OUTPUT);\n}\n\nvoid loop() {\n  // Fade in from dark to bright\n  for (int b = 0; b <= 255; b++) {\n    analogWrite(LED_PIN, b);\n    delay(5);\n  }\n\n  // Fade out from bright to dark\n  for (int b = 255; b >= 0; b--) {\n    analogWrite(LED_PIN, b);\n    delay(5);\n  }\n}\n```\n\n## 5. Summary\n- PWM mimics continuous analog voltage by switching digital outputs on and off at high frequency.\n- `analogWrite()` takes values from $0$ to $255$.\n- Available strictly on hardware timer pins marked with `~` (3, 5, 6, 9, 10, 11).",
+      "quiz": {
+        "id": "q-m03-l17-pwm-analog-output",
+        "items": [
+          {
+            "type": "numeric",
+            "prompt": "If an Arduino PWM pin with a 5.0V source is driven with analogWrite(pin, 128), what is the effective time-averaged voltage across the load?",
+            "unit": "V",
+            "answer": 2.5,
+            "tolerance": 0.1,
+            "explanation": "128 out of 255 is approximately a 50% duty cycle (128 / 255 = 0.502). Vavg = 0.502 * 5.0V ≈ 2.51V."
+          },
+          {
+            "type": "single",
+            "prompt": "Which of the following digital pins on an Arduino Uno R3 supports hardware PWM (analogWrite)?",
+            "choices": [
+              {
+                "text": "Pin 9 (~)",
+                "correct": true
+              },
+              {
+                "text": "Pin 4",
+                "correct": false
+              },
+              {
+                "text": "Pin 7",
+                "correct": false
+              },
+              {
+                "text": "Pin 12",
+                "correct": false
+              }
+            ],
+            "explanation": "On the Uno, only pins 3, 5, 6, 9, 10, and 11 have internal hardware timer PWM generators (indicated by the ~ symbol)."
+          },
+          {
+            "type": "single",
+            "prompt": "What is the duty cycle of a PWM signal that is HIGH for 2 ms and LOW for 6 ms?",
+            "choices": [
+              {
+                "text": "25%",
+                "correct": true
+              },
+              {
+                "text": "50%",
+                "correct": false
+              },
+              {
+                "text": "33%",
+                "correct": false
+              },
+              {
+                "text": "75%",
+                "correct": false
+              }
+            ],
+            "explanation": "Total period = 2ms + 6ms = 8ms. Duty cycle = Ton / Period = 2ms / 8ms = 0.25 = 25%."
+          }
+        ]
+      }
+    },
+    "m03-l18-serial-monitor-debugging": {
+      "frontmatter": {
+        "id": "m03-l18-serial-monitor-debugging",
+        "title": "UART Serial Communication & Debugging: Seeing Inside the Chip",
+        "path": "electronics-embedded-foundations",
+        "module": "m03-arduino-and-code",
+        "order": 18,
+        "level": "beginner",
+        "minutes": 20,
+        "prerequisites": [
+          "m03-l14-first-sketch-blink",
+          "m03-l16-analog-input-and-adc"
+        ],
+        "objectives": [
+          "Understand Universal Asynchronous Receiver-Transmitter (UART) communication over TX and RX lines",
+          "Configure baud rate matching between MCU and desktop terminal",
+          "Use Serial.print() and Serial.println() to diagnose logic bugs and inspect live sensor telemetry"
+        ],
+        "keyIdeas": [
+          "UART transmits bytes sequentially one bit at a time across two physical wires: TX (Transmit) and RX (Receive).",
+          "Both sides must agree on the exact baud rate (e.g. 9600 or 115200 bits per second).",
+          "Serial debugging is an engineer's primary window into the microcontroller's internal state."
+        ],
+        "tags": [
+          "uart",
+          "serial",
+          "debugging",
+          "baud-rate"
+        ],
+        "glossary": [
+          "uart",
+          "baud-rate",
+          "serial-monitor",
+          "tx-rx",
+          "telemetry"
+        ],
+        "needsHumanVerification": false,
+        "verified": true,
+        "sources": [
+          {
+            "title": "Arduino Language Reference: Serial Communication",
+            "url": "https://www.arduino.cc/reference/en/language/functions/communication/serial/"
+          }
+        ],
+        "license": "CC-BY-SA-4.0",
+        "authors": [
+          "RoboForge Team"
+        ],
+        "locale": "en"
+      },
+      "rawMarkdown": "## 1. Hook: Coding with a Blindfold\nWhen writing code on your computer, you can easily inspect variables or print messages to the screen.\n\nWhen your code is running inside a sealed silicon microcontroller chip on a robot rolling across the floor, how do you know what it is thinking? If a motor fails to spin, is the sensor reading wrong, the battery dead, or the code stuck in an infinite loop?\n\nThe answer is the **Serial Monitor**!\n\n<Callout type=\"safety\" title=\"USB & Bench Safety\">\n  When connecting your computer via USB to an Arduino mounted on a robot, ensure the robot's wheels are raised off the desk surface so unexpected motor commands cannot drive the robot off the edge. Disconnect high-current external battery packs when re-programming if not using a shared common ground.\n</Callout>\n\n## 2. What is UART?\n**UART** stands for Universal Asynchronous Receiver-Transmitter. It is one of the oldest, most reliable digital communication protocols in computing:\n- **TX (Transmit):** Sends outgoing bits of data.\n- **RX (Receive):** Listens for incoming bits of data.\n- **Asynchronous:** There is no shared clock line! Both devices agree in advance on the transmission speed: the **baud rate**.\n\nOn the Arduino Uno, digital Pin 0 is **RX** and Pin 1 is **TX**, connected directly to the USB interface chip.\n\n## 3. Baud Rates: Timing Must Match\nBaud rate is measured in **symbols (bits) per second**:\n- Common speeds: `9600`, `19200`, `57600`, `115200`.\n- At $9600\\text{ baud}$, each bit takes $1 / 9600 \\approx 104.2\\text{ }\\mu\\text{s}$.\n- If the Arduino transmits at $9600\\text{ baud}$ but your computer is listening at $115200\\text{ baud}$, the incoming characters will appear as garbled alien gibberish (`⸮⸮x⸮~`)!\n\n## 4. Basic Serial Code\n```cpp\nvoid setup() {\n  // Start serial communications at 9600 baud\n  Serial.begin(9600);\n  Serial.println(\"--- RoboForge Boot Sequence Initiated ---\");\n}\n\nvoid loop() {\n  int sensorValue = analogRead(A0);\n\n  // Print on one line without a carriage return\n  Serial.print(\"Sensor reading: \");\n\n  // Print value followed by a new line\n  Serial.println(sensorValue);\n\n  delay(500);\n}\n```\n\n### The Difference Between `print()` and `println()`:\n- `Serial.print(\"Hello\")`: Sends the text and leaves the cursor on the same line.\n- `Serial.println(\"World\")`: Sends the text followed by `\\r\\n` (Carriage Return + Newline), advancing to the next row.\n\n## 5. Summary & Debugging Rules\n- Always initialize `Serial.begin(baud)` in `setup()`.\n- Ensure your terminal baud rate matches your code.\n- Avoid placing thousands of `Serial.print()` statements inside tight loops without delays; serial transmission takes time and can slow down time-critical motor loops!",
+      "quiz": {
+        "id": "q-m03-l18-serial-monitor-debugging",
+        "items": [
+          {
+            "type": "single",
+            "prompt": "What happens if an Arduino transmits serial data at 9600 baud, but the terminal monitor is set to 115200 baud?",
+            "choices": [
+              {
+                "text": "The received text appears as garbled symbols or unreadable characters",
+                "correct": true
+              },
+              {
+                "text": "The Arduino catches fire",
+                "correct": false
+              },
+              {
+                "text": "The text prints in reverse order",
+                "correct": false
+              },
+              {
+                "text": "The USB cable disconnects automatically",
+                "correct": false
+              }
+            ],
+            "explanation": "Because UART is asynchronous, the receiver samples bits at the specified baud rate interval. A speed mismatch misaligns the bit boundaries, decoding invalid ASCII characters."
+          },
+          {
+            "type": "single",
+            "prompt": "Which two pins on the Arduino Uno header are physically dedicated to the primary hardware UART serial port?",
+            "choices": [
+              {
+                "text": "Pin 0 (RX) and Pin 1 (TX)",
+                "correct": true
+              },
+              {
+                "text": "Pin 12 and Pin 13",
+                "correct": false
+              },
+              {
+                "text": "A4 (SDA) and A5 (SCL)",
+                "correct": false
+              },
+              {
+                "text": "Pin 3 and Pin 5",
+                "correct": false
+              }
+            ],
+            "explanation": "Hardware USART0 on the ATmega328P is routed to digital pins 0 (RX) and 1 (TX), and also connected to the USB interface bridge."
+          },
+          {
+            "type": "single",
+            "prompt": "What is the difference between Serial.print() and Serial.println()?",
+            "choices": [
+              {
+                "text": "Serial.println() automatically appends a newline character (advancing to the next line)",
+                "correct": true
+              },
+              {
+                "text": "Serial.print() can only print numbers, never text",
+                "correct": false
+              },
+              {
+                "text": "Serial.println() prints in bold font",
+                "correct": false
+              },
+              {
+                "text": "There is no difference",
+                "correct": false
+              }
+            ],
+            "explanation": "Serial.println() writes data and terminates the line with carriage return ('\\r') and newline ('\\n')."
+          }
+        ]
+      }
+    },
+    "m03-l19-code-logic-and-state-machines": {
+      "frontmatter": {
+        "id": "m03-l19-code-logic-and-state-machines",
+        "title": "Robot Logic, Non-Blocking Timers, and Finite State Machines",
+        "path": "electronics-embedded-foundations",
+        "module": "m03-arduino-and-code",
+        "order": 19,
+        "level": "intermediate",
+        "minutes": 25,
+        "prerequisites": [
+          "m03-l14-first-sketch-blink",
+          "m03-l15-digital-io-and-pullups"
+        ],
+        "objectives": [
+          "Eliminate freezing bugs caused by delay() using millis() non-blocking timers",
+          "Represent robot behavior using enums and switch-case statements",
+          "Construct a Finite State Machine (FSM) for multi-tasking robotics control"
+        ],
+        "keyIdeas": [
+          "delay() halts the CPU, preventing the robot from reading collision sensors or emergency buttons.",
+          "millis() returns elapsed milliseconds since boot without pausing execution.",
+          "A Finite State Machine organizes robot logic into discrete modes (IDLE, SEARCH, EVADE)."
+        ],
+        "tags": [
+          "state-machine",
+          "millis",
+          "non-blocking",
+          "c-plus-plus"
+        ],
+        "glossary": [
+          "fsm",
+          "millis",
+          "enum",
+          "switch-case",
+          "non-blocking"
+        ],
+        "needsHumanVerification": false,
+        "verified": true,
+        "sources": [
+          {
+            "title": "Arduino Tutorial: Blink Without Delay",
+            "url": "https://docs.arduino.cc/built-in-examples/digital/BlinkWithoutDelay"
+          }
+        ],
+        "license": "CC-BY-SA-4.0",
+        "authors": [
+          "RoboForge Team"
+        ],
+        "locale": "en"
+      },
+      "rawMarkdown": "## 1. The Danger of `delay()`\nIn early lessons, we used `delay(1000)` to pause our sketch.\n\nImagine an autonomous robot driving toward a staircase. Your code is currently running `delay(2000)` for a turn. During those two full seconds, the CPU is completely frozen in a busy loop!\n- It cannot read the cliff sensor.\n- It cannot detect the emergency stop button.\n- The robot tumbles off the edge!\n\nRoboticists replace blocking delays with **non-blocking cooperative timers** using `millis()`.\n\n<Callout type=\"safety\" title=\"Fail-Safe State Machine Design\">\n  Always include an explicit emergency stop state (e.g. STATE_EMERGENCY_STOP) in your robot's state machine. In unhandled edge cases or unexpected sensor timeouts, the default fail-safe behavior must immediately kill motor power and stop mechanical motion.\n</Callout>\n\n## 2. The `millis()` Stopwatch\n`millis()` returns the number of milliseconds that have elapsed since the Arduino board powered on or was reset:\n- Returns an `unsigned long` (rolls over after approximately 50 days of continuous operation).\n- Like checking your wristwatch: instead of standing still waiting for an alarm, you check the current time against your target time while continuing other work!\n\n```cpp\nunsigned long previousMillis = 0;\nconst long interval = 1000;\nint ledState = LOW;\n\nvoid loop() {\n  unsigned long currentMillis = millis();\n\n  // Has 1 second elapsed since the last toggle?\n  if (currentMillis - previousMillis >= interval) {\n    previousMillis = currentMillis; // Reset stopwatch marker\n    ledState = (ledState == LOW) ? HIGH : LOW;\n    digitalWrite(13, ledState);\n  }\n\n  // The CPU can read sensors and process buttons HERE without waiting!\n}\n```\n\n## 3. Finite State Machines (FSM)\nA robot cannot perform every action at once. It moves through distinct **states**:\n1. `STATE_PATROL`: Drive forward in search of targets.\n2. `STATE_OBSTACLE`: Stop, reverse, and steer clear of a wall.\n3. `STATE_LOW_BATTERY`: Halt motors and sound a warning beeper.\n\n### Building an FSM with `enum` and `switch`:\n```cpp\nenum RobotState {\n  STATE_PATROL,\n  STATE_OBSTACLE,\n  STATE_CELEBRATE\n};\n\nRobotState currentState = STATE_PATROL;\n\nvoid loop() {\n  switch (currentState) {\n    case STATE_PATROL:\n      // Drive motors forward\n      if (checkWallSensor() < 15) {\n        currentState = STATE_OBSTACLE; // State transition\n      }\n      break;\n\n    case STATE_OBSTACLE:\n      // Pivot turn left\n      if (turnCompleted()) {\n        currentState = STATE_PATROL;   // Return to patrol\n      }\n      break;\n\n    case STATE_CELEBRATE:\n      // Spin in a victory circle\n      break;\n  }\n}\n```\n\n## 4. Summary & Engineering Wisdom\n- Never use `delay()` in production robotics code.\n- Use `millis() - previousTime >= interval` for periodic tasks.\n- Structure complex autonomous behavior using an explicit state machine with named `enum` states.",
+      "quiz": {
+        "id": "q-m03-l19-code-logic-and-state-machines",
+        "items": [
+          {
+            "type": "single",
+            "prompt": "Why is delay() discouraged in autonomous robotics software?",
+            "choices": [
+              {
+                "text": "delay() blocks the CPU from executing any other instructions (such as reading bumper switches or collision sensors)",
+                "correct": true
+              },
+              {
+                "text": "delay() discharges the battery 10x faster",
+                "correct": false
+              },
+              {
+                "text": "delay() can only be called once in the entire program",
+                "correct": false
+              },
+              {
+                "text": "delay() reverses the direction of the electric current",
+                "correct": false
+              }
+            ],
+            "explanation": "delay() is a blocking busy-wait loop that freezes execution, preventing real-time safety response."
+          },
+          {
+            "type": "single",
+            "prompt": "Which data type should always be used to store timestamps returned by millis() to prevent overflow bugs?",
+            "choices": [
+              {
+                "text": "unsigned long",
+                "correct": true
+              },
+              {
+                "text": "int",
+                "correct": false
+              },
+              {
+                "text": "char",
+                "correct": false
+              },
+              {
+                "text": "boolean",
+                "correct": false
+              }
+            ],
+            "explanation": "millis() returns an unsigned 32-bit integer (unsigned long) counting milliseconds from 0 to over 4.29 billion (~50 days)."
+          },
+          {
+            "type": "single",
+            "prompt": "In a Finite State Machine (FSM), what represents a move from one operational mode (like PATROL) to another mode (like EVADE)?",
+            "choices": [
+              {
+                "text": "A state transition",
+                "correct": true
+              },
+              {
+                "text": "A hardware reset",
+                "correct": false
+              },
+              {
+                "text": "A memory leak",
+                "correct": false
+              },
+              {
+                "text": "A clock glitch",
+                "correct": false
+              }
+            ],
+            "explanation": "A state transition occurs when a defined event or sensor condition triggers a change from the current state to a new state."
+          }
+        ]
+      }
+    },
+    "m03-l20-sensor-decisions-hysteresis": {
+      "frontmatter": {
+        "id": "m03-l20-sensor-decisions-hysteresis",
+        "title": "Sensor Decisions, Noise Filtering, and Hysteresis",
+        "path": "electronics-embedded-foundations",
+        "module": "m03-arduino-and-code",
+        "order": 20,
+        "level": "intermediate",
+        "minutes": 25,
+        "prerequisites": [
+          "m03-l16-analog-input-and-adc",
+          "m03-l19-code-logic-and-state-machines"
+        ],
+        "objectives": [
+          "Identify how electrical noise causes high-frequency threshold chatter (hunting)",
+          "Implement an Exponential Moving Average (EMA) software low-pass filter",
+          "Apply dual-threshold hysteresis (Schmitt trigger principle) for rock-solid robot decisions"
+        ],
+        "keyIdeas": [
+          "Raw analog sensor signals always contain electrical and thermal noise.",
+          "A single threshold creates violent oscillating chatter when readings hover near the decision boundary.",
+          "Hysteresis separates the turn-on threshold from the turn-off threshold, creating a stable deadband."
+        ],
+        "tags": [
+          "hysteresis",
+          "filtering",
+          "threshold",
+          "closed-loop"
+        ],
+        "glossary": [
+          "hysteresis",
+          "deadband",
+          "low-pass-filter",
+          "chatter",
+          "schmitt-trigger"
+        ],
+        "needsHumanVerification": false,
+        "verified": true,
+        "sources": [
+          {
+            "title": "Horowitz and Hill, The Art of Electronics 3rd Ed. (Comparators & Hysteresis)",
+            "url": "https://artofelectronics.net/"
+          }
+        ],
+        "license": "CC-BY-SA-4.0",
+        "authors": [
+          "RoboForge Team"
+        ],
+        "locale": "en"
+      },
+      "rawMarkdown": "## 1. The Chattering Headlight Problem\nSuppose you program an automated night-light robot:\n```cpp\nif (lightReading < 500) {\n  turnLightON();\n} else {\n  turnLightOFF();\n}\n```\n\nAt dusk, as ambient daylight hovers right around $500$, random electrical noise in the sensor wire causes readings like:\n`499, 501, 498, 502, 500, 499...`\n\nYour light will rapidly flicker on and off dozens of times per second! In a motor system, this rapid switching (called **hunting** or **chatter**) causes violent mechanical shuddering, wasted power, and burned motor coils.\n\n<Callout type=\"safety\" title=\"Chatter & Thermal Hazard Prevention\">\n  Rapidly toggling high-current loads (like DC motors, solenoids, or mechanical relays) on and off due to sensor noise creates massive voltage transients and excessive coil heating. Always implement hysteresis and rate-limiting delays to protect hardware from thermal runaway.\n</Callout>\n\n## 2. Solution 1: Software Low-Pass Filtering (EMA)\nBefore making decisions on a raw ADC reading, smooth out the high-frequency noise spikes with an **Exponential Moving Average (EMA)** filter:\n\n$$Y_n = (1 - \\alpha) \\cdot Y_{n-1} + \\alpha \\cdot X_n$$\n- $X_n$: New raw sensor reading.\n- $Y_n$: Filtered output.\n- $\\alpha$: Smoothing factor ($0.1$ is very smooth, $0.5$ is more responsive).\n\n```cpp\nfloat filteredLight = 500.0;\nconst float ALPHA = 0.15;\n\nvoid loop() {\n  int raw = analogRead(A0);\n  filteredLight = (1.0 - ALPHA) * filteredLight + ALPHA * raw;\n}\n```\n\n## 3. Solution 2: Hysteresis (Dual Thresholds)\nThe definitive cure for chatter is **hysteresis** (the operating principle behind the hardware Schmitt Trigger and home thermostats):\n\nInstead of a single threshold at $500$, use **two separate thresholds**:\n- **Upper Threshold ($550$):** Light turns OFF only when ambient light climbs safely above 550.\n- **Lower Threshold ($450$):** Light turns ON only when ambient light drops cleanly below 450.\n- **Deadband ($450$ to $550$):** The system holds its previous state and ignores fluctuations!\n\n```cpp\nconst int THRESHOLD_LOW = 450;\nconst int THRESHOLD_HIGH = 550;\nbool headlightActive = false;\n\nvoid loop() {\n  int light = analogRead(A0);\n\n  if (headlightActive && light > THRESHOLD_HIGH) {\n    headlightActive = false;\n    digitalWrite(LED_PIN, LOW); // It is definitely bright daylight\n  } \n  else if (!headlightActive && light < THRESHOLD_LOW) {\n    headlightActive = true;\n    digitalWrite(LED_PIN, HIGH); // It is definitely dark\n  }\n}\n```\n\n## 4. Summary & Best Practices\n- Never use a single sharp cutoff boundary for noisy physical sensors.\n- Use an exponential filter ($\\alpha \\approx 0.1$) to eliminate ADC jitter.\n- Always implement a hysteresis band to prevent motor and relay chatter.",
+      "quiz": {
+        "id": "q-m03-l20-sensor-decisions-hysteresis",
+        "items": [
+          {
+            "type": "single",
+            "prompt": "What is 'hunting' or 'chatter' in a sensor-driven control system?",
+            "choices": [
+              {
+                "text": "Rapid, destructive oscillation back and forth between two states when an input signal hovers right on a single decision threshold",
+                "correct": true
+              },
+              {
+                "text": "When a robot searches for food",
+                "correct": false
+              },
+              {
+                "text": "A battery losing its chemistry permanently",
+                "correct": false
+              },
+              {
+                "text": "An error in the C++ compiler syntax",
+                "correct": false
+              }
+            ],
+            "explanation": "Small noise fluctuations crossing a single threshold trigger frantic on-off transitions, creating mechanical wear and excessive heat."
+          },
+          {
+            "type": "single",
+            "prompt": "How does hysteresis solve the threshold chatter problem?",
+            "choices": [
+              {
+                "text": "By using two distinct thresholds (upper and lower), creating a deadband where state changes cannot occur",
+                "correct": true
+              },
+              {
+                "text": "By increasing CPU clock speed to 10 GHz",
+                "correct": false
+              },
+              {
+                "text": "By turning off the sensor completely",
+                "correct": false
+              },
+              {
+                "text": "By using thicker copper wires",
+                "correct": false
+              }
+            ],
+            "explanation": "Hysteresis introduces memory into the system: the turn-on point is intentionally lower than the turn-off point, ensuring noise inside the deadband is ignored."
+          },
+          {
+            "type": "single",
+            "prompt": "In an Exponential Moving Average filter Y[n] = (1 - alpha)*Y[n-1] + alpha*X[n], what happens if alpha is set very close to 0 (e.g. 0.02)?",
+            "choices": [
+              {
+                "text": "The output becomes extremely smooth and immune to noise, but reacts more sluggishly to sudden real-world changes",
+                "correct": true
+              },
+              {
+                "text": "The filter turns into an oscillator",
+                "correct": false
+              },
+              {
+                "text": "The reading instantly jumps to 1023",
+                "correct": false
+              },
+              {
+                "text": "The microcontroller freezes",
+                "correct": false
+              }
+            ],
+            "explanation": "Smaller alpha weights previous history heavily over the newest measurement, providing high noise filtering at the cost of transient phase delay."
+          }
+        ]
+      }
+    },
+    "m04-l21-dc-motors-and-back-emf": {
+      "frontmatter": {
+        "id": "m04-l21-dc-motors-and-back-emf",
+        "title": "DC Motors, Inductive Spikes, and Flyback Diodes",
+        "path": "electronics-embedded-foundations",
+        "module": "m04-motion-and-actuators",
+        "order": 21,
+        "level": "intermediate",
+        "minutes": 20,
+        "prerequisites": [
+          "m02-l07-diodes-and-leds",
+          "m02-l09-transistors-as-switches"
+        ],
+        "objectives": [
+          "Explain how electromagnetic coils convert electrical current into mechanical rotational torque",
+          "Identify why DC motors draw massive surge current at startup and during stalls",
+          "Protect driver transistors from inductive flyback spikes using parallel suppression diodes"
+        ],
+        "keyIdeas": [
+          "DC motors contain wire coils wrapped around an iron rotor inside a permanent magnetic field.",
+          "Stall current can be 5 to 10 times higher than free-running no-load current.",
+          "Collapsing magnetic fields generate massive reverse voltage spikes that destroy silicon transistors without a flyback diode."
+        ],
+        "tags": [
+          "dc-motors",
+          "flyback-diode",
+          "inductance",
+          "stall-current"
+        ],
+        "glossary": [
+          "dc-motor",
+          "back-emf",
+          "flyback-diode",
+          "stall-current",
+          "commutator"
+        ],
+        "needsHumanVerification": false,
+        "verified": true,
+        "sources": [
+          {
+            "title": "Horowitz and Hill, The Art of Electronics (Inductive Loads and Clamping)",
+            "url": "https://artofelectronics.net/"
+          }
+        ],
+        "license": "CC-BY-SA-4.0",
+        "authors": [
+          "RoboForge Team"
+        ],
+        "locale": "en"
+      },
+      "rawMarkdown": "## 1. Hook: From Sparks to Motion\nSo far, our circuits have only moved electrons, blinked lights, and computed numbers.\n\nRobotics is about making physical things move in the physical world! The workhorse of robotics motion is the **direct-current (DC) electric motor**.\n\n<Callout type=\"safety\" title=\"Motor Drive Safety\">\n  Motors are inductive loads that draw high current. Never power a DC motor directly from an Arduino I/O pin (pins are rated for 20mA max; motors draw 200mA to 800mA). Always use a dedicated battery pack or external supply limited to ≤ 12V DC and ≤ 2A. Never leave a stalled motor powered, as coils can overheat and cause burns.\n</Callout>\n\n## 2. How Brushed DC Motors Work\nInside a brushed DC motor:\n1. **Permanent Magnets (Stator):** Create a stationary magnetic field.\n2. **Coils of Copper Wire (Rotor / Armature):** When electric current passes through the wire, it creates an electromagnet.\n3. **Lorentz Force:** Opposite magnetic poles attract and like poles repel, forcing the shaft to rotate.\n4. **Commutator & Brushes:** As the shaft turns, mechanical brushes slide across copper contacts, reversing current direction every half-turn to keep rotation continuous.\n\n## 3. Free-Running vs Stall Current\nA DC motor has two critical operational states:\n- **No-Load Current ($I_{\\text{nl}}$):** Motor spins freely in the air without resistance (e.g., $100\\text{ mA}$).\n- **Stall Current ($I_{\\text{stall}}$):** When wheels are locked in place by a heavy load or wall, rotation stops. The motor acts like a dead short circuit of bare copper wire! Current can surge to $800\\text{ mA}$ or more, generating intense heat.\n\n## 4. The Inductive Spike Hazard\nMotor coils store energy in magnetic fields:\n$$E = \\frac{1}{2} L \\cdot I^2$$\n\nWhen you turn off a switching transistor, current drops to zero instantly ($dI/dt$ is huge). According to Faraday's law of induction ($V = -L \\cdot dI/dt$), the collapsing magnetic field releases its stored energy as a massive high-voltage spike (often exceeding $50\\text{ V}$ to $100\\text{ V}$)!\n\nThis spike instantly punches through the thin silicon junction of your transistor or Arduino chip, destroying it permanently.\n\n## 5. The Solution: The Flyback Diode\nPlace a rectifier diode (like a `1N4007`) in parallel with the motor terminals, with its cathode pointing toward the positive supply voltage:\n\n```\n        +5V / +6V (V_motor)\n           |\n       +---+---+\n       |       |\n      [M]     [D] (Flyback Diode: Cathode up)\n       |       |\n       +---+---+\n           |\n         [ NPN Transistor or MOSFET Switch ]\n           |\n          GND\n```\n\nWhen the transistor turns off, the inductive spike circulates harmlessly through the diode loop until its energy dissipates as heat, saving your circuit!\n\n## 6. Summary\n- Never drive motors directly from microcontroller pins.\n- Budget for stall current, not just running current.\n- Always install a flyback diode across inductive motor coils.",
+      "quiz": {
+        "id": "q-m04-l21-dc-motors-and-back-emf",
+        "items": [
+          {
+            "type": "single",
+            "prompt": "Why is a flyback diode connected in reverse across DC motor terminals?",
+            "choices": [
+              {
+                "text": "To suppress and recirculate dangerous high-voltage inductive spikes generated when the motor coil field collapses",
+                "correct": true
+              },
+              {
+                "text": "To make the motor spin twice as fast",
+                "correct": false
+              },
+              {
+                "text": "To convert DC into AC current",
+                "correct": false
+              },
+              {
+                "text": "To recharge the battery",
+                "correct": false
+              }
+            ],
+            "explanation": "When a driver turns off, coil inductance produces a reverse voltage spike (V = -L*dI/dt). The diode provides a safe return path, clamping the voltage."
+          },
+          {
+            "type": "single",
+            "prompt": "When does a DC motor draw its maximum possible current?",
+            "choices": [
+              {
+                "text": "At stall (when the motor shaft is completely prevented from rotating)",
+                "correct": true
+              },
+              {
+                "text": "When spinning freely in the air with no load",
+                "correct": false
+              },
+              {
+                "text": "When disconnected from the power supply",
+                "correct": false
+              },
+              {
+                "text": "When running at top speed",
+                "correct": false
+              }
+            ],
+            "explanation": "When stalled, back-EMF is zero and current is limited solely by the tiny resistance of the copper winding, causing current to reach peak stall values."
+          },
+          {
+            "type": "single",
+            "prompt": "Why should you never connect a DC motor directly between an Arduino digital output pin and ground?",
+            "choices": [
+              {
+                "text": "Motors draw hundreds of milliamps, far exceeding the 20mA maximum limit of the ATmega328P output driver",
+                "correct": true
+              },
+              {
+                "text": "Arduino pins only support light bulbs",
+                "correct": false
+              },
+              {
+                "text": "The motor will spin backwards",
+                "correct": false
+              },
+              {
+                "text": "The ATmega328P only works with solar panels",
+                "correct": false
+              }
+            ],
+            "explanation": "Drawing more than 20-40mA from an Arduino GPIO pin overheats and burns out the internal silicon output drivers."
+          }
+        ]
+      }
+    },
+    "m04-l22-h-bridge-motor-drivers": {
+      "frontmatter": {
+        "id": "m04-l22-h-bridge-motor-drivers",
+        "title": "H-Bridge Drivers: Bi-directional Motor Control",
+        "path": "electronics-embedded-foundations",
+        "module": "m04-motion-and-actuators",
+        "order": 22,
+        "level": "intermediate",
+        "minutes": 25,
+        "prerequisites": [
+          "m04-l21-dc-motors-and-back-emf",
+          "m03-l17-pwm-analog-output"
+        ],
+        "objectives": [
+          "Understand the 4-transistor H-Bridge topology for reversing motor direction without swapping wires",
+          "Identify the four operating modes: Forward, Reverse, Coast (Freewheel), and Active Brake",
+          "Control motor speed and direction using an L298N dual driver module"
+        ],
+        "keyIdeas": [
+          "An H-bridge uses 4 solid-state switches arranged in an 'H' shape around a motor.",
+          "Closing diagonal switch pairs reverses the polarity of voltage across the motor terminals.",
+          "Never close both switches on the same vertical leg simultaneously (shoot-through short circuit)."
+        ],
+        "tags": [
+          "h-bridge",
+          "motor-driver",
+          "l298n",
+          "bidirectional"
+        ],
+        "glossary": [
+          "h-bridge",
+          "shoot-through",
+          "active-braking",
+          "coasting",
+          "l298n"
+        ],
+        "needsHumanVerification": false,
+        "verified": true,
+        "sources": [
+          {
+            "title": "STMicroelectronics L298 Dual Full-Bridge Driver Datasheet",
+            "url": "https://www.st.com/resource/en/datasheet/l298.pdf"
+          }
+        ],
+        "license": "CC-BY-SA-4.0",
+        "authors": [
+          "RoboForge Team"
+        ],
+        "locale": "en"
+      },
+      "rawMarkdown": "## 1. The Reverse Problem\nA single transistor switch can turn a motor ON and OFF.\n\nHowever, to reverse a DC motor, you must reverse the polarity of the voltage applied across its two terminals! How can an autonomous robot reverse without a human manually swapping wires?\n\nThe solution is the **H-Bridge**.\n\n<Callout type=\"safety\" title=\"Motor Driver & Power Safety\">\n  Always operate mobile robot motor drivers on low voltage (6V to 12V DC battery packs, under 2A). L298N heatsinks can become warm during extended heavy loads; do not touch heatsink surfaces immediately after high-speed runs. Always connect battery negative to Arduino GND to prevent erratic floating gate states.\n</Callout>\n\n## 2. The H-Bridge Circuit Architecture\nFour electronic switches ($S_1, S_2, S_3, S_4$) surround the motor in an \"H\" configuration:\n\n```\n            +V_Motor (+6V to +12V)\n               |             |\n             [S1]           [S3]\n               |             |\n               +---[MOTOR]---+\n               |             |\n             [S2]           [S4]\n               |             |\n              GND           GND\n```\n\n### The Four Operating States:\n1. **Forward:** Close $S_1$ and $S_4$. Current flows Left-to-Right through the motor $\\rightarrow$ Motor spins Forward.\n2. **Reverse:** Close $S_3$ and $S_2$. Current flows Right-to-Left through the motor $\\rightarrow$ Motor spins Backward.\n3. **Coast (Freewheel):** All switches OPEN ($S_1, S_2, S_3, S_4 = 0$). Current ceases; motor coasts to a gradual stop.\n4. **Brake:** Close $S_2$ and $S_4$ (both low-side switches). The motor terminals are shorted together! Rotating momentum generates back-EMF, dynamically fighting rotation and locking the shaft quickly.\n\n## 3. The Deadly \"Shoot-Through\" Short Circuit\nWhat happens if you accidentally close $S_1$ and $S_2$ at the same time?\nCurrent bypasses the motor entirely, rushing straight from $+V_{\\text{motor}}$ to $\\text{GND}$ in a dead short circuit! This \"shoot-through\" condition incinerates driver transistors in milliseconds.\n\nIntegrated driver ICs (like the `L298N` and `TB6612FNG`) contain internal lockout logic preventing shoot-through.\n\n## 4. Driving the L298N Module with Arduino\nThe popular L298N dual H-bridge module has direction inputs (IN1, IN2) and an optional speed enable pin (ENA):\n\n| IN1 | IN2 | Motor Action |\n|---|---|---|\n| HIGH | LOW | Spin Forward |\n| LOW | HIGH | Spin Reverse |\n| LOW | LOW | Coast (Stop) |\n| HIGH | HIGH | Active Brake |\n\n```cpp\nconst int IN1 = 5; // Connected to PWM pin for speed control\nconst int IN2 = 6;\n\nvoid setMotorSpeed(int speed) {\n  if (speed > 0) {\n    analogWrite(IN1, speed);\n    digitalWrite(IN2, LOW);\n  } else if (speed < 0) {\n    digitalWrite(IN1, LOW);\n    analogWrite(IN2, -speed);\n  } else {\n    digitalWrite(IN1, LOW);\n    digitalWrite(IN2, LOW);\n  }\n}\n```\n\n## 5. Summary\n- An H-bridge enables full bi-directional motion and active braking.\n- Diagonal switch pairs determine polarity.\n- Combining PWM on direction inputs provides smooth proportional speed control.",
+      "quiz": {
+        "id": "q-m04-l22-h-bridge-motor-drivers",
+        "items": [
+          {
+            "type": "single",
+            "prompt": "In an H-bridge circuit, which switch pairs must be closed to drive the motor in the forward direction?",
+            "choices": [
+              {
+                "text": "Diagonal pair: High-side Left (S1) and Low-side Right (S4)",
+                "correct": true
+              },
+              {
+                "text": "Vertical pair: S1 and S2 on the same side",
+                "correct": false
+              },
+              {
+                "text": "All 4 switches at once",
+                "correct": false
+              },
+              {
+                "text": "No switches",
+                "correct": false
+              }
+            ],
+            "explanation": "Closing diagonal switches directs current from positive supply through the motor to ground in one direction."
+          },
+          {
+            "type": "single",
+            "prompt": "What is 'shoot-through' in an H-bridge driver?",
+            "choices": [
+              {
+                "text": "A destructive direct short-circuit from power supply to ground caused by closing both top and bottom switches on the same leg simultaneously",
+                "correct": true
+              },
+              {
+                "text": "A laser beam emitted by the motor",
+                "correct": false
+              },
+              {
+                "text": "When a robot shoots a projectile",
+                "correct": false
+              },
+              {
+                "text": "A wireless communication failure",
+                "correct": false
+              }
+            ],
+            "explanation": "Shoot-through creates a zero-resistance path from +V to GND across the vertical transistor leg, causing instantaneous destruction."
+          },
+          {
+            "type": "single",
+            "prompt": "What occurs when both motor leads are shorted together to ground in an active braking state?",
+            "choices": [
+              {
+                "text": "Back-EMF generated by the spinning rotor opposes rotation, stopping the motor rapidly",
+                "correct": true
+              },
+              {
+                "text": "The motor spins at infinite speed",
+                "correct": false
+              },
+              {
+                "text": "The battery catches fire",
+                "correct": false
+              },
+              {
+                "text": "The motor begins to float",
+                "correct": false
+              }
+            ],
+            "explanation": "In active braking, kinetic energy is converted into electrical current that is dissipated in the winding resistance, creating strong dynamic braking torque."
+          }
+        ]
+      }
+    },
+    "m04-l23-servo-motors-position-control": {
+      "frontmatter": {
+        "id": "m04-l23-servo-motors-position-control",
+        "title": "RC Servo Motors: Closed-Loop Position Control",
+        "path": "electronics-embedded-foundations",
+        "module": "m04-motion-and-actuators",
+        "order": 23,
+        "level": "intermediate",
+        "minutes": 25,
+        "prerequisites": [
+          "m04-l21-dc-motors-and-back-emf",
+          "m03-l17-pwm-analog-output"
+        ],
+        "objectives": [
+          "Understand the four internal elements of an RC hobby servo: DC motor, reduction geartrain, feedback potentiometer, and error amplifier",
+          "Differentiate 50 Hz position-command pulse widths from ordinary power-dimming PWM",
+          "Control angular position with precision using the Arduino Servo library"
+        ],
+        "keyIdeas": [
+          "Unlike continuous DC motors, a standard servo rotates to a commanded angle (0° to 180°) and holds it under load.",
+          "Position is commanded by pulse width: ~1.0 ms is 0°, ~1.5 ms is 90° (center), and ~2.0 ms is 180°.",
+          "Servos draw peak stall currents over 500mA; power them from an external 5V supply, never the Arduino 5V pin."
+        ],
+        "tags": [
+          "servo",
+          "pwm",
+          "position-control",
+          "robotics-arm"
+        ],
+        "glossary": [
+          "servo",
+          "pulse-width",
+          "closed-loop",
+          "feedback-potentiometer",
+          "torque"
+        ],
+        "needsHumanVerification": false,
+        "verified": true,
+        "sources": [
+          {
+            "title": "TowerPro SG90 9g Micro Servo Specifications",
+            "url": "http://www.towerpro.com.tw/product/sg90-7/"
+          }
+        ],
+        "license": "CC-BY-SA-4.0",
+        "authors": [
+          "RoboForge Team"
+        ],
+        "locale": "en"
+      },
+      "rawMarkdown": "## 1. Hook: Precision Positioning\nA DC motor spins continuously. If you turn off power, it coasts to a halt at a random angle.\n\nHow can a steering linkage, pan-tilt camera, or robotic arm move to exactly $45^\\circ$, stop instantly, and resist external forces trying to push it out of position?\n\nThey use **RC Servo Motors**!\n\n<Callout type=\"safety\" title=\"Servo Power & Mechanical Safety\">\n  Never power multiple servos from the Arduino board 5V pin. When moving rapidly or loaded, small 9g servos can pull 500mA to 1A each, causing the Arduino regulator to overheat or brown out. Always power servos from an external 5V–6V battery pack (≤ 2A) and connect external Ground to Arduino Ground. Beware of mechanical pinch points.\n</Callout>\n\n## 2. Anatomy of a Servo Motor\nInside a compact plastic servo shell (like the classic SG90):\n1. **Coreless DC Motor:** High-speed, low-torque miniature motor.\n2. **Reduction Geartrain:** Multi-stage nylon or metal gears that sacrifice speed to multiply mechanical torque by over 100 times.\n3. **Internal Feedback Potentiometer:** Linked to the output shaft, measuring the physical angle in real time.\n4. **Control Circuit Board:** Compares your command signal against the internal potentiometer position. If there is an error, it drives the motor forward or backward until the error reaches zero!\n\n## 3. The 50 Hz Pulse Width Protocol\nServo control is often confused with PWM dimming.\n\nStandard servos do NOT care about the duty cycle percentage. They care strictly about the **absolute pulse width duration**:\n- Repeating frame rate: **50 Hz** (one pulse every $20\\text{ ms}$).\n- **1.0 ms (1000 µs):** Drive to $0^\\circ$ (full counter-clockwise).\n- **1.5 ms (1500 µs):** Drive to $90^\\circ$ (neutral center).\n- **2.0 ms (2000 µs):** Drive to $180^\\circ$ (full clockwise).\n\n## 4. Servo Wiring (3 Pins)\n- **Brown or Black:** Ground ($0\\text{ V}$)\n- **Red:** Power ($+4.8\\text{ V}$ to $+6.0\\text{ V}$)\n- **Orange, Yellow, or White:** Control signal (PWM GPIO)\n\n## 5. Arduino Servo Code\n```cpp\n#include <Servo.h>\n\nServo myServo;\n\nvoid setup() {\n  myServo.attach(9); // Attach to digital pin 9\n}\n\nvoid loop() {\n  myServo.write(0);   // Move to 0 degrees\n  delay(1000);\n\n  myServo.write(90);  // Center at 90 degrees\n  delay(1000);\n\n  myServo.write(180); // Move to 180 degrees\n  delay(1000);\n}\n```\n\n## 6. Summary\n- Servos provide closed-loop position control with internal feedback.\n- Pulse duration ($1\\text{ ms}$ to $2\\text{ ms}$) sets the mechanical target angle.\n- Always provide dedicated external power with a common ground return.",
+      "quiz": {
+        "id": "q-m04-l23-servo-motors-position-control",
+        "items": [
+          {
+            "type": "numeric",
+            "prompt": "What pulse width in microseconds (µs) commands a standard RC servo to its 90-degree center position?",
+            "unit": "µs",
+            "answer": 1500,
+            "tolerance": 50,
+            "explanation": "Standard RC servos map 1000 µs (1.0 ms) to 0 degrees, 1500 µs (1.5 ms) to 90 degrees center, and 2000 µs (2.0 ms) to 180 degrees."
+          },
+          {
+            "type": "single",
+            "prompt": "How does a standard RC hobby servo know its current physical shaft angle?",
+            "choices": [
+              {
+                "text": "An internal rotary potentiometer is mechanically geared directly to the output shaft",
+                "correct": true
+              },
+              {
+                "text": "By listening to acoustic sonar pings",
+                "correct": false
+              },
+              {
+                "text": "By counting GPS satellites",
+                "correct": false
+              },
+              {
+                "text": "It guesses randomly based on temperature",
+                "correct": false
+              }
+            ],
+            "explanation": "A potentiometer acts as an internal analog angle sensor, allowing the internal control chip to run closed-loop negative feedback."
+          },
+          {
+            "type": "single",
+            "prompt": "Why should you avoid powering three SG90 micro servos directly from the 5V pin of an Arduino Uno?",
+            "choices": [
+              {
+                "text": "The servos' combined peak stall current exceeds the thermal current rating of the Arduino onboard 5V linear regulator, causing brownouts",
+                "correct": true
+              },
+              {
+                "text": "The Arduino will explode",
+                "correct": false
+              },
+              {
+                "text": "Servos only run on alternating current (AC)",
+                "correct": false
+              },
+              {
+                "text": "The servos will spin in the wrong direction",
+                "correct": false
+              }
+            ],
+            "explanation": "The Arduino onboard 5V regulator can only output 500-800mA safely. Multiple loaded servos drawing 500mA each will drag down the 5V line and reset the processor."
+          }
+        ]
+      }
+    },
+    "m04-l24-stepper-motors-basics": {
+      "frontmatter": {
+        "id": "m04-l24-stepper-motors-basics",
+        "title": "Stepper Motors: Digital Step Angles and Open-Loop Precision",
+        "path": "electronics-embedded-foundations",
+        "module": "m04-motion-and-actuators",
+        "order": 24,
+        "level": "intermediate",
+        "minutes": 20,
+        "prerequisites": [
+          "m04-l21-dc-motors-and-back-emf",
+          "m04-l22-h-bridge-motor-drivers"
+        ],
+        "objectives": [
+          "Understand how multi-phase stator coils rotate a toothed rotor by exact angular increments",
+          "Calculate steps-per-revolution and angular resolution from step angle (e.g., 1.8° = 200 steps/rev)",
+          "Compare open-loop stepper motion with closed-loop servo systems in 3D printers and CNC machines"
+        ],
+        "keyIdeas": [
+          "A stepper motor moves in discrete digital increments called steps when phase coils are pulsed.",
+          "Standard hybrid steppers have 200 steps per revolution (1.8° per step).",
+          "Steppers offer immense holding torque at zero speed but draw constant current even while stationary."
+        ],
+        "tags": [
+          "stepper-motor",
+          "step-angle",
+          "cnc",
+          "motion-control"
+        ],
+        "glossary": [
+          "stepper-motor",
+          "step-angle",
+          "holding-torque",
+          "full-step",
+          "microstepping"
+        ],
+        "needsHumanVerification": false,
+        "verified": true,
+        "sources": [
+          {
+            "title": "Jones on Stepping Motors (University of Iowa)",
+            "url": "https://homepage.divms.uiowa.edu/~jones/step/"
+          }
+        ],
+        "license": "CC-BY-SA-4.0",
+        "authors": [
+          "RoboForge Team"
+        ],
+        "locale": "en"
+      },
+      "rawMarkdown": "## 1. Hook: How Does a 3D Printer Move with Micrometer Precision?\nLook at a 3D printer extruding plastic layers thinner than a human hair ($0.1\\text{ mm}$). There are no position sensors on the nozzle carriage!\n\nHow does the machine know its exact location after four hours of printing?\n\nIt uses **Stepper Motors**!\n\n<Callout type=\"safety\" title=\"Stepper Thermal & Current Safety\">\n  Unlike DC motors which draw near-zero current at rest, stepper motors draw maximum current when stopped to maintain holding torque! Stepper motor casings can become hot to the touch during normal operation. Always operate with proper driver current-limiting (A4988/TMC2208 VREF) and low-voltage DC supplies ≤ 12V and ≤ 2A.\n</Callout>\n\n## 2. Operating Principle: Teeth and Coils\nA stepper motor contains:\n- **Toothed Permanent Magnet Rotor:** A cylindrical shaft with alternating magnetic teeth.\n- **Multi-Phase Stator Coils:** Coils of wire arranged symmetrically around the outer housing.\n\nWhen electromagnetic Phase A is energized, the rotor's teeth snap into magnetic alignment with Phase A's poles. When Phase B is energized and Phase A de-energized, the rotor snaps forward by one exact angular increment: a **step**!\n\n## 3. Step Angle & Resolution\nThe smallest angular increment of motion is the **step angle** ($\\theta_s$):\n$$\\text{Steps per Revolution} = \\frac{360^\\circ}{\\theta_s}$$\n\nCommon configurations:\n- **$1.8^\\circ$ Step Angle (NEMA 17 standard):**\n  $$\\frac{360^\\circ}{1.8^\\circ} = 200\\text{ steps per full revolution}$$\n- **$7.5^\\circ$ Step Angle (Toy/Can-stack steppers):**\n  $$\\frac{360^\\circ}{7.5^\\circ} = 48\\text{ steps per full revolution}$$\n\nBy commanding exactly 100 electrical pulses, the shaft rotates exactly half a turn ($180^\\circ$) without needing any sensor feedback! This is called **open-loop precision**.\n\n## 4. Steppers vs DC Motors vs Servos\n| Feature | DC Motor | RC Servo | Stepper Motor |\n|---|---|---|---|\n| **Motion** | Continuous rotation | $0^\\circ$ to $180^\\circ$ bounded | Incremental steps ($360^\\circ$ continuous) |\n| **Feedback** | Open-loop (blind) | Closed-loop (internal pot) | Open-loop (step counting) |\n| **Holding Torque** | Zero at rest | Moderate | Very High |\n| **Best Application** | Drive wheels, fans | Grippers, steering arms | 3D printers, CNC, robot joints |\n\n## 5. Summary\n- Stepper motors convert digital electrical pulses into precise mechanical steps.\n- Standard industrial steppers have $200\\text{ steps/rev}$ ($1.8^\\circ/\\text{step}$).\n- Steppers draw holding current continuously, keeping joints locked firmly in place.",
+      "quiz": {
+        "id": "q-m04-l24-stepper-motors-basics",
+        "items": [
+          {
+            "type": "numeric",
+            "prompt": "A hybrid stepper motor has a rated step angle of 1.8 degrees. How many full steps are required to complete one full 360-degree revolution?",
+            "unit": "steps",
+            "answer": 200,
+            "tolerance": 0.1,
+            "explanation": "Steps = 360 / 1.8 = 200 steps per revolution."
+          },
+          {
+            "type": "single",
+            "prompt": "Why do stepper motors become warm or hot even when the robot is completely stationary and not moving?",
+            "choices": [
+              {
+                "text": "The phase coils stay continuously energized with DC current to generate static holding torque",
+                "correct": true
+              },
+              {
+                "text": "The internal gears are rubbing together",
+                "correct": false
+              },
+              {
+                "text": "A dangerous short-circuit is occurring",
+                "correct": false
+              },
+              {
+                "text": "Microprocessors radiate excessive infrared light",
+                "correct": false
+              }
+            ],
+            "explanation": "To keep the rotor locked in its stepped position and resist external forces, drivers maintain full coil current, producing constant I^2*R resistive heating."
+          },
+          {
+            "type": "single",
+            "prompt": "Why are stepper motors favored for 3D printer axes and laser cutters over standard DC motors?",
+            "choices": [
+              {
+                "text": "They provide precise repeatable incremental movements without requiring costly external rotary position sensors",
+                "correct": true
+              },
+              {
+                "text": "They weigh 10 times less",
+                "correct": false
+              },
+              {
+                "text": "They do not require any electricity",
+                "correct": false
+              },
+              {
+                "text": "They spin at 100,000 RPM",
+                "correct": false
+              }
+            ],
+            "explanation": "Because each pulse equals a known angular step, a 3D printer can track carriage position open-loop simply by counting step pulses from an initial endstop limit switch."
+          }
+        ]
+      }
+    },
+    "m04-l25-robot-power-and-current-budgets": {
+      "frontmatter": {
+        "id": "m04-l25-robot-power-and-current-budgets",
+        "title": "Powering Robots: Battery Chemistries, Current Budgets, and Common Ground",
+        "path": "electronics-embedded-foundations",
+        "module": "m04-motion-and-actuators",
+        "order": 25,
+        "level": "intermediate",
+        "minutes": 25,
+        "prerequisites": [
+          "m01-l05-power-and-energy",
+          "m04-l21-dc-motors-and-back-emf"
+        ],
+        "objectives": [
+          "Calculate total mobile robot current consumption across motors, sensors, and microcontrollers",
+          "Explain internal battery resistance and voltage sag under sudden acceleration loads",
+          "Enforce strict common ground bonding across independent logic and motor power rails"
+        ],
+        "keyIdeas": [
+          "A power budget sums peak and average currents across all robotic subsystems.",
+          "When motors pull sudden surge currents, battery internal resistance causes voltage to sag, resetting the MCU.",
+          "Separate power rails (logic vs motors) sharing a common ground wire solve motor brownout resets."
+        ],
+        "tags": [
+          "power-budget",
+          "batteries",
+          "common-ground",
+          "brownout"
+        ],
+        "glossary": [
+          "power-budget",
+          "voltage-sag",
+          "brownout",
+          "internal-resistance",
+          "common-ground"
+        ],
+        "needsHumanVerification": false,
+        "verified": true,
+        "sources": [
+          {
+            "title": "Linden's Handbook of Batteries 4th Edition (Electrochemical Power Sources)",
+            "url": "https://www.accessengineeringlibrary.com/content/book/9780071624213"
+          }
+        ],
+        "license": "CC-BY-SA-4.0",
+        "authors": [
+          "RoboForge Team"
+        ],
+        "locale": "en"
+      },
+      "rawMarkdown": "## 1. Hook: The Robot That Freezes on Takeoff\nYou finish assembling your two-wheel autonomous robot car. It sits on your desk, blinking its LEDs happily.\n\nYou turn on the drive motors. The wheels twitch forward for a fraction of a second, the robot dies, and the Arduino boots up from the beginning again! Why does the robot reboot every single time the motors start?\n\nYou have encountered **Voltage Sag and Brownout**!\n\n<Callout type=\"safety\" title=\"Battery & Power Safety\">\n  School-path robotics strictly uses safe low-voltage battery packs (4xAA alkaline or NiMH cells producing 4.8V to 6V DC, ≤ 2A). Never attempt to charge bare Lithium-Polymer (LiPo) or Lithium-Ion pouch cells without specialized balance chargers and dedicated fire-safe enclosures. Disconnect battery packs when leaving the laboratory bench.\n</Callout>\n\n## 2. Battery Internal Resistance ($R_{\\text{int}}$) & Voltage Sag\nA real battery is not an ideal infinite voltage source. It behaves like an ideal voltage source in series with an internal resistance ($R_{\\text{int}}$):\n\n$$V_{\\text{terminal}} = V_{\\text{battery}} - (I_{\\text{load}} \\times R_{\\text{int}})$$\n\n- In resting mode, current is tiny ($50\\text{ mA}$): voltage drop is negligible.\n- When two TT gearmotors suddenly accelerate, their stall surge current pulls $1.5\\text{ A}$!\n- The $1.5\\text{ A}$ current through $R_{\\text{int}}$ causes the battery terminal voltage to plummet from $6.0\\text{ V}$ down to $3.5\\text{ V}$!\n- The Arduino's on-chip Brown-Out Detection (BOD) circuit detects the voltage drop and forces an immediate CPU hardware reset!\n\n## 3. The Power Budget\nTo design a reliable robot, calculate your maximum and average current requirements:\n\n| Subsystem | Idle Current | Peak / Operating Current |\n|---|---|---|\n| Arduino Uno (ATmega328P) | $45\\text{ mA}$ | $50\\text{ mA}$ |\n| Ultrasonic Sensor (HC-SR04) | $2\\text{ mA}$ | $15\\text{ mA}$ |\n| Line Tracking IR Modules (x2) | $20\\text{ mA}$ | $40\\text{ mA}$ |\n| Two TT DC Gearmotors | $0\\text{ mA}$ | $400\\text{ mA}$ (running) / $1400\\text{ mA}$ (stall) |\n| SG90 Pan Servo | $10\\text{ mA}$ | $500\\text{ mA}$ (moving) |\n| **Total Current Demand** | **$77\\text{ mA}$** | **$2005\\text{ mA}$ (Peak Peak)** |\n\nYour power supply must be capable of delivering this peak surge current without dropping below the operating voltage threshold.\n\n## 4. The Golden Rule of Robotics: Common Ground\nTo isolate heavy motor surges from delicate logic chips, roboticists often use **two power sources** (e.g. a USB power bank for the Arduino and a 4xAA battery pack for the motor driver).\n\nWhen using separate supplies, you **MUST connect their Ground wires together**:\n```\n  [ Battery 1 (Motors) ]              [ Battery 2 (Logic) ]\n       (+)      (-)                        (+)      (-)\n        |        |                          |        |\n        |        +--------------------------+--------+\n        |                    |                       |\n   Motors +6V        SHARED COMMON GROUND        Arduino GND (0V)\n```\nWithout a shared common ground, control signals have no reference voltage and float erratically!\n\n## 5. Summary\n- Always calculate a full subsystem current budget.\n- Account for motor stall surges and battery voltage sag.\n- Always bond all power supply negative leads into a shared common ground.",
+      "quiz": {
+        "id": "q-m04-l25-robot-power-and-current-budgets",
+        "items": [
+          {
+            "type": "single",
+            "prompt": "What causes an Arduino to reset when DC motors abruptly start spinning from the same battery?",
+            "choices": [
+              {
+                "text": "Motor inrush current drops the battery terminal voltage below the microcontroller's Brown-Out Detection (BOD) reset threshold",
+                "correct": true
+              },
+              {
+                "text": "The Arduino runs out of Flash memory",
+                "correct": false
+              },
+              {
+                "text": "Motors erase the C++ code from SRAM",
+                "correct": false
+              },
+              {
+                "text": "The USB cable emits radio static",
+                "correct": false
+              }
+            ],
+            "explanation": "Because batteries have internal impedance, sudden motor stall or start current causes a transient voltage sag that triggers the MCU's brown-out detector."
+          },
+          {
+            "type": "single",
+            "prompt": "When powering the microcontroller from a USB power bank and motors from a 4xAA battery pack, what wire connection is mandatory between both systems?",
+            "choices": [
+              {
+                "text": "A Common Ground (GND) wire connecting the negative terminals of both supplies together",
+                "correct": true
+              },
+              {
+                "text": "A high-voltage bridge wire connecting 5V directly to 12V",
+                "correct": false
+              },
+              {
+                "text": "No connection at all",
+                "correct": false
+              },
+              {
+                "text": "A series capacitor",
+                "correct": false
+              }
+            ],
+            "explanation": "Voltage is a relative potential difference between two points. Without a shared common ground, control signals cannot be referenced to 0V."
+          },
+          {
+            "type": "numeric",
+            "prompt": "A mobile robot consumes an average current of 500mA from a 2000mAh battery pack. Neglecting Peukert derating, estimate the theoretical operating runtime in hours.",
+            "unit": "hours",
+            "answer": 4,
+            "tolerance": 0.1,
+            "explanation": "Runtime = Capacity / Current = 2000 mAh / 500 mA = 4.0 hours."
+          }
+        ]
+      }
+    },
+    "m04-l26-rotary-encoders-motion-feedback": {
+      "frontmatter": {
+        "id": "m04-l26-rotary-encoders-motion-feedback",
+        "title": "Rotary Encoders: Measuring Movement and Odometry",
+        "path": "electronics-embedded-foundations",
+        "module": "m04-motion-and-actuators",
+        "order": 26,
+        "level": "intermediate",
+        "minutes": 25,
+        "prerequisites": [
+          "m04-l21-dc-motors-and-back-emf",
+          "m03-l15-digital-io-and-pullups"
+        ],
+        "objectives": [
+          "Understand how slotted optical disc encoders convert mechanical shaft rotation into digital square-wave pulses",
+          "Decode direction and quadruple resolution using dual-channel Quadrature encoding (Phase A and Phase B)",
+          "Calculate linear distance traveled and vehicle speed (odometry) from pulse counts"
+        ],
+        "keyIdeas": [
+          "An optical encoder pulses high and low as a slotted wheel breaks an infrared light beam.",
+          "Quadrature encoders use two sensors offset by 90° of phase to determine forward vs reverse rotation.",
+          "Odometry integrates wheel revolutions over time to estimate a robot's 2D position."
+        ],
+        "tags": [
+          "encoders",
+          "odometry",
+          "quadrature",
+          "closed-loop"
+        ],
+        "glossary": [
+          "encoder",
+          "quadrature",
+          "odometry",
+          "pulses-per-revolution",
+          "interrupt"
+        ],
+        "needsHumanVerification": false,
+        "verified": true,
+        "sources": [
+          {
+            "title": "Bourns Introduction to Optical and Magnetic Encoders",
+            "url": "https://www.bourns.com/products/encoders"
+          }
+        ],
+        "license": "CC-BY-SA-4.0",
+        "authors": [
+          "RoboForge Team"
+        ],
+        "locale": "en"
+      },
+      "rawMarkdown": "## 1. Hook: How Far Did the Robot Drive?\nYou program your robot to drive forward:\n```cpp\nsetMotors(200, 200);\ndelay(3000); // Drive for 3 seconds\nsetMotors(0, 0);\n```\n\nDid the robot travel exactly $1.0\\text{ meter}$?\n- On slick tile, wheels slip and it travels $0.6\\text{ m}$.\n- On deep carpet, friction slows the wheels and it travels $0.8\\text{ m}$.\n- As the battery drains, it drives slower each minute.\n\nOpen-loop timing cannot measure movement accurately. To navigate reliably, a robot must measure the physical rotation of its wheels using **Rotary Encoders**!\n\n<Callout type=\"safety\" title=\"Rotating Mechanism Safety\">\n  When mounting slotted encoder discs to DC gearmotors, verify adequate clearance between the spinning disc and the chassis wall. Keep loose clothing, hair, and fingers away from spinning gears and wheels during testing.\n</Callout>\n\n## 2. Optical Slotted Encoders\nThe simplest encoder consists of:\n1. **Slotted Code Wheel:** A black plastic wheel with 20 radial cutouts attached to the motor shaft.\n2. **Optocoupler Sensor (Photo-Interrupter):** An infrared LED facing a phototransistor across an optical gap.\n\nAs the wheel spins, the solid spokes block the light (Output = LOW) and the slots let light through (Output = HIGH). Each rising edge equals one fractional turn!\n\n### Calculating Distance:\nIf a wheel has 20 slots ($20\\text{ pulses per revolution}$) and a diameter $D = 65\\text{ mm}$:\n$$\\text{Circumference} = \\pi \\times D = 3.14159 \\times 65\\text{ mm} \\approx 204.2\\text{ mm}$$\n$$\\text{Distance per Pulse} = \\frac{204.2\\text{ mm}}{20} \\approx 10.21\\text{ mm per tick}$$\n\nEvery time the Arduino detects a pulse, the robot has moved forward by approximately $1\\text{ centimeter}$!\n\n## 3. Quadrature Encoding: Detecting Direction\nA single sensor counts pulses, but cannot tell if the wheel is spinning **forward** or **backward**!\n\nA **Quadrature Encoder** uses two sensors (Channel A and Channel B) placed out of phase by $90^\\circ$ (a quarter-wave):\n\n```\nForward:\nChannel A:  ___|---|___|---|___\nChannel B:  _____|---|___|---|__  (B lags behind A)\n\nReverse:\nChannel A:  _____|---|___|---|__\nChannel B:  ___|---|___|---|___  (B leads ahead of A)\n```\n\nBy reading the state of Channel B at the exact moment Channel A transitions from LOW to HIGH:\n- If B is LOW: Wheel is spinning **Forward**.\n- If B is HIGH: Wheel is spinning **Backward**!\n\n## 4. Hardware Interrupts\nBecause wheels spin fast (often generating hundreds of pulses per second), regular `loop()` code can miss pulses while busy calculating.\n\nMicrocontrollers use **Hardware Interrupts** (pins 2 and 3 on the Arduino Uno) that instantly pause normal execution, increment a counter in nanoseconds, and return to the main loop:\n\n```cpp\nvolatile long pulseCount = 0;\n\nvoid countPulse() {\n  pulseCount++; // Runs instantly in hardware ISR\n}\n\nvoid setup() {\n  pinMode(2, INPUT_PULLUP);\n  // Trigger countPulse() on every rising edge of Pin 2\n  attachInterrupt(digitalPinToInterrupt(2), countPulse, RISING);\n}\n```\n\n## 5. Summary\n- Rotary encoders provide closed-loop physical feedback on speed and distance.\n- Quadrature phase encoding provides direction and 4x resolution.\n- Hardware interrupts ensure no movement ticks are lost during computation.",
+      "quiz": {
+        "id": "q-m04-l26-rotary-encoders-motion-feedback",
+        "items": [
+          {
+            "type": "single",
+            "prompt": "How does a quadrature encoder determine whether a motor shaft is turning clockwise or counter-clockwise?",
+            "choices": [
+              {
+                "text": "By measuring the 90-degree phase relationship (lead or lag) between Channel A and Channel B pulses",
+                "correct": true
+              },
+              {
+                "text": "By measuring the frequency of the light beam",
+                "correct": false
+              },
+              {
+                "text": "By detecting the temperature of the encoder disc",
+                "correct": false
+              },
+              {
+                "text": "By using an internal compass",
+                "correct": false
+              }
+            ],
+            "explanation": "Because the two optical channels are spatially offset by 90 electrical degrees, the leading channel indicates direction of rotation."
+          },
+          {
+            "type": "numeric",
+            "prompt": "A robot wheel has a diameter of 60mm and a 20-slot optical encoder disc directly on the wheel axle. How many millimeters does the robot travel per encoder pulse? (Use pi ≈ 3.1416)",
+            "unit": "mm",
+            "answer": 9.42,
+            "tolerance": 0.1,
+            "explanation": "Circumference = pi * D = 3.1416 * 60mm = 188.496mm. Distance per pulse = 188.496 / 20 = 9.42mm."
+          },
+          {
+            "type": "single",
+            "prompt": "Why are microcontroller hardware interrupts (like attachInterrupt on Arduino pin 2) preferred for encoder counting?",
+            "choices": [
+              {
+                "text": "They execute immediately in hardware on each pulse edge without missing ticks during CPU loop processing",
+                "correct": true
+              },
+              {
+                "text": "They reduce the wheel friction",
+                "correct": false
+              },
+              {
+                "text": "They increase the battery capacity",
+                "correct": false
+              },
+              {
+                "text": "They eliminate the need for electricity",
+                "correct": false
+              }
+            ],
+            "explanation": "Interrupt Service Routines (ISRs) guarantee that high-speed pulse trains are captured even if the main program is executing other logic."
           }
         ]
       }

@@ -1,0 +1,32 @@
+id: q-m04-l24-stepper-motors-basics
+items:
+  - type: numeric
+    prompt: "A hybrid stepper motor has a rated step angle of 1.8 degrees. How many full steps are required to complete one full 360-degree revolution?"
+    unit: "steps"
+    answer: 200
+    tolerance: 0.1
+    explanation: "Steps = 360 / 1.8 = 200 steps per revolution."
+  - type: single
+    prompt: "Why do stepper motors become warm or hot even when the robot is completely stationary and not moving?"
+    choices:
+      - text: "The phase coils stay continuously energized with DC current to generate static holding torque"
+        correct: true
+      - text: "The internal gears are rubbing together"
+        correct: false
+      - text: "A dangerous short-circuit is occurring"
+        correct: false
+      - text: "Microprocessors radiate excessive infrared light"
+        correct: false
+    explanation: "To keep the rotor locked in its stepped position and resist external forces, drivers maintain full coil current, producing constant I^2*R resistive heating."
+  - type: single
+    prompt: "Why are stepper motors favored for 3D printer axes and laser cutters over standard DC motors?"
+    choices:
+      - text: "They provide precise repeatable incremental movements without requiring costly external rotary position sensors"
+        correct: true
+      - text: "They weigh 10 times less"
+        correct: false
+      - text: "They do not require any electricity"
+        correct: false
+      - text: "They spin at 100,000 RPM"
+        correct: false
+    explanation: "Because each pulse equals a known angular step, a 3D printer can track carriage position open-loop simply by counting step pulses from an initial endstop limit switch."

@@ -1,0 +1,32 @@
+id: q-m03-l14-first-sketch-blink
+items:
+  - type: single
+    prompt: "How many times does the setup() function execute when the Arduino is plugged into power?"
+    choices:
+      - text: "Exactly once"
+        correct: true
+      - text: "16 million times per second"
+        correct: false
+      - text: "Continuously in an infinite loop"
+        correct: false
+      - text: "Every 1000 milliseconds"
+        correct: false
+    explanation: "setup() is called once on initial boot or reset to configure hardware registers, pin modes, and baud rates."
+  - type: single
+    prompt: "What physical voltage does an ATmega328P output pin assert when commanded with digitalWrite(pin, HIGH)?"
+    choices:
+      - text: "Approximately +5V DC"
+        correct: true
+      - text: "120V AC mains"
+        correct: false
+      - text: "0V ground"
+        correct: false
+      - text: "A random oscillating voltage"
+        correct: false
+    explanation: "On a 5V Arduino board, digital HIGH connects the pin to the VCC rail (approximately +5.0 volts)."
+  - type: numeric
+    prompt: "If your code calls delay(250) after turning an LED on and delay(250) after turning it off, what is the total period of one full on/off blink cycle in milliseconds?"
+    unit: "ms"
+    answer: 500
+    tolerance: 0.1
+    explanation: "Period = Ton + Toff = 250ms + 250ms = 500ms (frequency = 1 / 0.5s = 2 Hz)."

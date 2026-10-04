@@ -1,0 +1,93 @@
+---
+id: m04-l21-dc-motors-and-back-emf
+title: "DC Motors, Inductive Spikes, and Flyback Diodes"
+path: electronics-embedded-foundations
+module: m04-motion-and-actuators
+order: 21
+level: intermediate
+minutes: 20
+prerequisites:
+  - m02-l07-diodes-and-leds
+  - m02-l09-transistors-as-switches
+objectives:
+  - "Explain how electromagnetic coils convert electrical current into mechanical rotational torque"
+  - "Identify why DC motors draw massive surge current at startup and during stalls"
+  - "Protect driver transistors from inductive flyback spikes using parallel suppression diodes"
+keyIdeas:
+  - "DC motors contain wire coils wrapped around an iron rotor inside a permanent magnetic field."
+  - "Stall current can be 5 to 10 times higher than free-running no-load current."
+  - "Collapsing magnetic fields generate massive reverse voltage spikes that destroy silicon transistors without a flyback diode."
+tags:
+  - dc-motors
+  - flyback-diode
+  - inductance
+  - stall-current
+glossary:
+  - dc-motor
+  - back-emf
+  - flyback-diode
+  - stall-current
+  - commutator
+needsHumanVerification: false
+verified: true
+sources:
+  - title: "Horowitz and Hill, The Art of Electronics (Inductive Loads and Clamping)"
+    url: "https://artofelectronics.net/"
+license: CC-BY-SA-4.0
+authors:
+  - "RoboForge Team"
+locale: en
+---
+
+## 1. Hook: From Sparks to Motion
+So far, our circuits have only moved electrons, blinked lights, and computed numbers.
+
+Robotics is about making physical things move in the physical world! The workhorse of robotics motion is the **direct-current (DC) electric motor**.
+
+<Callout type="safety" title="Motor Drive Safety">
+  Motors are inductive loads that draw high current. Never power a DC motor directly from an Arduino I/O pin (pins are rated for 20mA max; motors draw 200mA to 800mA). Always use a dedicated battery pack or external supply limited to ≤ 12V DC and ≤ 2A. Never leave a stalled motor powered, as coils can overheat and cause burns.
+</Callout>
+
+## 2. How Brushed DC Motors Work
+Inside a brushed DC motor:
+1. **Permanent Magnets (Stator):** Create a stationary magnetic field.
+2. **Coils of Copper Wire (Rotor / Armature):** When electric current passes through the wire, it creates an electromagnet.
+3. **Lorentz Force:** Opposite magnetic poles attract and like poles repel, forcing the shaft to rotate.
+4. **Commutator & Brushes:** As the shaft turns, mechanical brushes slide across copper contacts, reversing current direction every half-turn to keep rotation continuous.
+
+## 3. Free-Running vs Stall Current
+A DC motor has two critical operational states:
+- **No-Load Current ($I_{\text{nl}}$):** Motor spins freely in the air without resistance (e.g., $100\text{ mA}$).
+- **Stall Current ($I_{\text{stall}}$):** When wheels are locked in place by a heavy load or wall, rotation stops. The motor acts like a dead short circuit of bare copper wire! Current can surge to $800\text{ mA}$ or more, generating intense heat.
+
+## 4. The Inductive Spike Hazard
+Motor coils store energy in magnetic fields:
+$$E = \frac{1}{2} L \cdot I^2$$
+
+When you turn off a switching transistor, current drops to zero instantly ($dI/dt$ is huge). According to Faraday's law of induction ($V = -L \cdot dI/dt$), the collapsing magnetic field releases its stored energy as a massive high-voltage spike (often exceeding $50\text{ V}$ to $100\text{ V}$)!
+
+This spike instantly punches through the thin silicon junction of your transistor or Arduino chip, destroying it permanently.
+
+## 5. The Solution: The Flyback Diode
+Place a rectifier diode (like a `1N4007`) in parallel with the motor terminals, with its cathode pointing toward the positive supply voltage:
+
+```
+        +5V / +6V (V_motor)
+           |
+       +---+---+
+       |       |
+      [M]     [D] (Flyback Diode: Cathode up)
+       |       |
+       +---+---+
+           |
+         [ NPN Transistor or MOSFET Switch ]
+           |
+          GND
+```
+
+When the transistor turns off, the inductive spike circulates harmlessly through the diode loop until its energy dissipates as heat, saving your circuit!
+
+## 6. Summary
+- Never drive motors directly from microcontroller pins.
+- Budget for stall current, not just running current.
+- Always install a flyback diode across inductive motor coils.

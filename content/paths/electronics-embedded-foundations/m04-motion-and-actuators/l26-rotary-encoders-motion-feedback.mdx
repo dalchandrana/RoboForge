@@ -1,0 +1,116 @@
+---
+id: m04-l26-rotary-encoders-motion-feedback
+title: "Rotary Encoders: Measuring Movement and Odometry"
+path: electronics-embedded-foundations
+module: m04-motion-and-actuators
+order: 26
+level: intermediate
+minutes: 25
+prerequisites:
+  - m04-l21-dc-motors-and-back-emf
+  - m03-l15-digital-io-and-pullups
+objectives:
+  - "Understand how slotted optical disc encoders convert mechanical shaft rotation into digital square-wave pulses"
+  - "Decode direction and quadruple resolution using dual-channel Quadrature encoding (Phase A and Phase B)"
+  - "Calculate linear distance traveled and vehicle speed (odometry) from pulse counts"
+keyIdeas:
+  - "An optical encoder pulses high and low as a slotted wheel breaks an infrared light beam."
+  - "Quadrature encoders use two sensors offset by 90° of phase to determine forward vs reverse rotation."
+  - "Odometry integrates wheel revolutions over time to estimate a robot's 2D position."
+tags:
+  - encoders
+  - odometry
+  - quadrature
+  - closed-loop
+glossary:
+  - encoder
+  - quadrature
+  - odometry
+  - pulses-per-revolution
+  - interrupt
+needsHumanVerification: false
+verified: true
+sources:
+  - title: "Bourns Introduction to Optical and Magnetic Encoders"
+    url: "https://www.bourns.com/products/encoders"
+license: CC-BY-SA-4.0
+authors:
+  - "RoboForge Team"
+locale: en
+---
+
+## 1. Hook: How Far Did the Robot Drive?
+You program your robot to drive forward:
+```cpp
+setMotors(200, 200);
+delay(3000); // Drive for 3 seconds
+setMotors(0, 0);
+```
+
+Did the robot travel exactly $1.0\text{ meter}$?
+- On slick tile, wheels slip and it travels $0.6\text{ m}$.
+- On deep carpet, friction slows the wheels and it travels $0.8\text{ m}$.
+- As the battery drains, it drives slower each minute.
+
+Open-loop timing cannot measure movement accurately. To navigate reliably, a robot must measure the physical rotation of its wheels using **Rotary Encoders**!
+
+<Callout type="safety" title="Rotating Mechanism Safety">
+  When mounting slotted encoder discs to DC gearmotors, verify adequate clearance between the spinning disc and the chassis wall. Keep loose clothing, hair, and fingers away from spinning gears and wheels during testing.
+</Callout>
+
+## 2. Optical Slotted Encoders
+The simplest encoder consists of:
+1. **Slotted Code Wheel:** A black plastic wheel with 20 radial cutouts attached to the motor shaft.
+2. **Optocoupler Sensor (Photo-Interrupter):** An infrared LED facing a phototransistor across an optical gap.
+
+As the wheel spins, the solid spokes block the light (Output = LOW) and the slots let light through (Output = HIGH). Each rising edge equals one fractional turn!
+
+### Calculating Distance:
+If a wheel has 20 slots ($20\text{ pulses per revolution}$) and a diameter $D = 65\text{ mm}$:
+$$\text{Circumference} = \pi \times D = 3.14159 \times 65\text{ mm} \approx 204.2\text{ mm}$$
+$$\text{Distance per Pulse} = \frac{204.2\text{ mm}}{20} \approx 10.21\text{ mm per tick}$$
+
+Every time the Arduino detects a pulse, the robot has moved forward by approximately $1\text{ centimeter}$!
+
+## 3. Quadrature Encoding: Detecting Direction
+A single sensor counts pulses, but cannot tell if the wheel is spinning **forward** or **backward**!
+
+A **Quadrature Encoder** uses two sensors (Channel A and Channel B) placed out of phase by $90^\circ$ (a quarter-wave):
+
+```
+Forward:
+Channel A:  ___|---|___|---|___
+Channel B:  _____|---|___|---|__  (B lags behind A)
+
+Reverse:
+Channel A:  _____|---|___|---|__
+Channel B:  ___|---|___|---|___  (B leads ahead of A)
+```
+
+By reading the state of Channel B at the exact moment Channel A transitions from LOW to HIGH:
+- If B is LOW: Wheel is spinning **Forward**.
+- If B is HIGH: Wheel is spinning **Backward**!
+
+## 4. Hardware Interrupts
+Because wheels spin fast (often generating hundreds of pulses per second), regular `loop()` code can miss pulses while busy calculating.
+
+Microcontrollers use **Hardware Interrupts** (pins 2 and 3 on the Arduino Uno) that instantly pause normal execution, increment a counter in nanoseconds, and return to the main loop:
+
+```cpp
+volatile long pulseCount = 0;
+
+void countPulse() {
+  pulseCount++; // Runs instantly in hardware ISR
+}
+
+void setup() {
+  pinMode(2, INPUT_PULLUP);
+  // Trigger countPulse() on every rising edge of Pin 2
+  attachInterrupt(digitalPinToInterrupt(2), countPulse, RISING);
+}
+```
+
+## 5. Summary
+- Rotary encoders provide closed-loop physical feedback on speed and distance.
+- Quadrature phase encoding provides direction and 4x resolution.
+- Hardware interrupts ensure no movement ticks are lost during computation.

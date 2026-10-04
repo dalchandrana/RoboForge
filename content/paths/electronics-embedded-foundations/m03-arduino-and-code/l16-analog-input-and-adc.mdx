@@ -1,0 +1,101 @@
+---
+id: m03-l16-analog-input-and-adc
+title: "Analog Inputs: The 10-Bit Analog-to-Digital Converter (ADC)"
+path: electronics-embedded-foundations
+module: m03-arduino-and-code
+order: 16
+level: beginner
+minutes: 20
+prerequisites:
+  - m02-l11-sensors-and-voltage-dividers
+  - m03-l15-digital-io-and-pullups
+objectives:
+  - "Explain how an Analog-to-Digital Converter (ADC) quantizes continuous analog voltage into digital numbers"
+  - "Calculate ADC voltage resolution for a 10-bit converter (5V / 1024 ≈ 4.88 mV per count)"
+  - "Read potentiometers and variable sensor dividers using analogRead()"
+keyIdeas:
+  - "Digital pins only see 0V or 5V; analog pins read the continuous spectrum between them."
+  - "The ATmega328P has a 10-bit ADC that maps 0V–5V to integer values from 0 to 1023."
+  - "The conversion formula is: Voltage = (ADC_Value * 5.0) / 1023.0."
+tags:
+  - analog-read
+  - adc
+  - potentiometer
+  - sensors
+glossary:
+  - adc
+  - analogread
+  - quantization
+  - resolution
+  - potentiometer
+needsHumanVerification: false
+verified: true
+sources:
+  - title: "Atmel AVR094: Replacing ADC with Oversampling and Decimation"
+    url: "https://ww1.microchip.com/downloads/en/Appnotes/doc8003.pdf"
+license: CC-BY-SA-4.0
+authors:
+  - "RoboForge Team"
+locale: en
+---
+
+## 1. Beyond 1s and 0s: The Continuous Spectrum
+Digital inputs are binary: a light switch is either ON or OFF.
+
+However, the real physical world is continuous and analog:
+- A dimmer knob turns gradually from dim to bright.
+- A robot battery drains smoothly from $8.4\text{ V}$ down to $6.0\text{ V}$.
+- Ambient temperature changes smoothly by fractions of a degree.
+
+To measure these continuous physical states, microcontrollers employ an **Analog-to-Digital Converter (ADC)**!
+
+<Callout type="safety" title="Analog Input Voltage Limits">
+  The ATmega328P ADC input pins (A0–A5) are designed strictly for 0V to 5V DC signals. Never feed high voltages (such as direct 12V motor battery voltages) into an analog pin without a properly calculated resistive voltage divider to step it down below 5V.
+</Callout>
+
+## 2. 10-Bit Resolution & Quantization
+The ATmega328P on the Arduino Uno includes a built-in 10-bit Successive Approximation ADC accessible on pins **A0 through A5**.
+
+A 10-bit binary register can represent $2^{10} = 1024$ discrete numbers:
+$$\text{Range: } 0 \text{ to } 1023$$
+
+When using the default $5.0\text{ V}$ reference:
+- $0.0\text{ V} \rightarrow 0$
+- $2.5\text{ V} \rightarrow 512$
+- $5.0\text{ V} \rightarrow 1023$
+
+### Voltage Resolution per Step:
+$$\text{Step Size} = \frac{5.0\text{ V}}{1024} \approx 0.00488\text{ V} = 4.88\text{ mV}$$
+The microcontroller can detect voltage variations as tiny as $4.88\text{ millivolts}$!
+
+## 3. Reading a Potentiometer with `analogRead()`
+A potentiometer is a 3-terminal adjustable voltage divider:
+- Outer pin 1 $\rightarrow 5\text{ V}$
+- Outer pin 2 $\rightarrow \text{GND}$
+- Center wiper $\rightarrow \text{A0}$
+
+As you turn the knob, the wiper sweeps smoothly between $0\text{ V}$ and $5\text{ V}$.
+
+```cpp
+void setup() {
+  Serial.begin(9600); // Initialize serial monitor
+}
+
+void loop() {
+  int rawValue = analogRead(A0); // Reads 0 to 1023
+  float voltage = (rawValue * 5.0) / 1023.0;
+
+  Serial.print("Raw: ");
+  Serial.print(rawValue);
+  Serial.print(" | Voltage: ");
+  Serial.println(voltage);
+
+  delay(200);
+}
+```
+
+*Note: You do not need to call `pinMode()` for analog input pins; `analogRead()` configures the internal multiplexer automatically.*
+
+## 4. Summary & Practical Tips
+- `analogRead()` takes approximately $100\text{ }\mu\text{s}$ ($0.0001\text{ s}$) to complete a successive-approximation conversion.
+- To convert raw ADC readings to physical units (like temperature, distance, or motor angle), calibrate with a linear mapping equation or lookup curve.

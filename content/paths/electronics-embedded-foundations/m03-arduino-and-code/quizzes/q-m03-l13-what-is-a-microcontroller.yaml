@@ -1,0 +1,38 @@
+id: q-m03-l13-what-is-a-microcontroller
+items:
+  - type: single
+    prompt: "What is the primary difference between a microprocessor (like an Intel Core i9) and a microcontroller (like the ATmega328P)?"
+    choices:
+      - text: "A microcontroller integrates CPU, Flash program memory, SRAM, and I/O pins into a single standalone chip"
+        correct: true
+      - text: "A microcontroller has no CPU inside"
+        correct: false
+      - text: "A microprocessor can only run on AA batteries"
+        correct: false
+      - text: "Microcontrollers can only perform additions, never subtractions"
+        correct: false
+    explanation: "Microcontrollers are self-contained systems-on-chip with on-die memory and peripherals tailored for dedicated physical hardware control."
+  - type: single
+    prompt: "Where does your compiled Arduino program code stay stored when the power cord is disconnected?"
+    choices:
+      - text: "Non-volatile Flash memory"
+        correct: true
+      - text: "Volatile SRAM"
+        correct: false
+      - text: "In the copper traces of the breadboard"
+        correct: false
+      - text: "In the USB cable"
+        correct: false
+    explanation: "Flash memory retains its stored binary data without electrical power, whereas SRAM variables vanish when power is cut."
+  - type: single
+    prompt: "What is the clock speed of the ATmega328P crystal on a standard Arduino Uno R3?"
+    choices:
+      - text: "16 MHz (16 million cycles per second)"
+        correct: true
+      - text: "3.5 GHz"
+        correct: false
+      - text: "60 Hz"
+        correct: false
+      - text: "1 kHz"
+        correct: false
+    explanation: "The Arduino Uno uses a 16 MHz quartz crystal resonator, executing most single-cycle RISC instructions in 62.5 nanoseconds."

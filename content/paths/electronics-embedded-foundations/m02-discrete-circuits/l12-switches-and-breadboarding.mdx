@@ -1,0 +1,77 @@
+---
+id: m02-l12-switches-and-breadboarding
+title: "Switches, Buttons, and Breadboard Prototyping"
+path: electronics-embedded-foundations
+module: m02-discrete-circuits
+order: 12
+level: beginner
+minutes: 20
+prerequisites:
+  - m01-l01-what-is-electricity
+  - m01-l06-multimeter-and-schematics
+objectives:
+  - "Understand internal spring clip bus rows and power distribution rails on a solderless breadboard"
+  - "Differentiate momentary pushbuttons from latching toggle switches"
+  - "Identify contact pairs and internal bridging on standard 4-pin tactile buttons"
+keyIdeas:
+  - "Solderless breadboards use spring metal clips to join component leads without heat or solder."
+  - "Power rails run horizontally along the edges; tie-point rows run vertically across the center divide."
+  - "Standard 4-pin tactile switches have 2 internal permanent pairs that connect when the plunger is pressed."
+tags:
+  - breadboard
+  - switches
+  - buttons
+  - prototyping
+glossary:
+  - breadboard
+  - momentary-switch
+  - spst
+  - tie-point
+  - bus-strip
+needsHumanVerification: false
+verified: true
+sources:
+  - title: "Adafruit Breadboard Anatomy & Usage Guide"
+    url: "https://learn.adafruit.com/breadboards"
+license: CC-BY-SA-4.0
+authors:
+  - "RoboForge Team"
+locale: en
+---
+
+## 1. Hook: Rapid Prototyping Without Solder
+Before solderless breadboards were invented in the 1970s, engineers wrapped bare wires around brass nails hammered into wooden bread-cutting boards!
+
+Today, solderless breadboards allow you to assemble, test, modify, and disassemble electronic circuits in seconds with zero soldering.
+
+<Callout type="safety" title="Prototyping Safety">
+  Always disconnect the battery or USB power cable before inserting or moving jumper wires on a breadboard. Accidentally bridging adjacent rows with power on can cause a short circuit that damages components or overheats wiring. Keep circuit voltage strictly under 12V DC.
+</Callout>
+
+## 2. Anatomy of a Solderless Breadboard
+If you peel back the adhesive backing of a breadboard, you will find rows of nickel-silver spring clips:
+1. **Power Bus Rails (+ and -):**
+   - Run along the top and bottom outer edges.
+   - Long continuous horizontal strips distributing $+5\text{ V}$ (Red rail) and Ground $0\text{ V}$ (Blue or Black rail).
+2. **Terminal Tie-Point Rows (Rows 1 to 30 or 60):**
+   - Run vertically in 5-hole groups (A-B-C-D-E and F-G-H-J-K).
+   - All 5 holes in a lettered column share one internal metallic clip.
+3. **The Center Trough (DIP Divide):**
+   - Separates the top half (A-E) from the bottom half (F-K).
+   - Designed to straddle Dual In-Line Package (DIP) integrated circuits so opposing IC pins do not short together.
+
+## 3. Switches and Pushbuttons
+A switch physically makes or breaks electrical continuity:
+- **Latching Switch (Toggle / Slide):** Remains in its new state after being toggled (like a room light switch).
+- **Momentary Pushbutton (Tactile Switch):** Only completes the circuit while mechanical pressure is applied, springing open as soon as released.
+
+### The 4-Pin Tactile Button Mystery:
+Learners are often confused by 4-pin tactile buttons. Why four pins for a simple switch?
+- Pins on the same side across the center trough are internally linked in pairs ($1\leftrightarrow 2$ and $3\leftrightarrow 4$).
+- Pressing the button connects pair $(1,2)$ to pair $(3,4)$.
+- **Best Practice:** Mount the button straddling the center trough!
+
+## 4. Summary & Prototyping Rules
+- Never connect $+5\text{ V}$ and $\text{GND}$ rails together directly.
+- Component leads sharing the same 5-hole numbered row are electrically joined.
+- Keep jumper wires flat and color-coded: Red for power, Black for ground, Yellow/Green/Blue for signals.

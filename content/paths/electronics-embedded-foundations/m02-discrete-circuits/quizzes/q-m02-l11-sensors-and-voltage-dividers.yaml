@@ -1,0 +1,30 @@
+id: q-m02-l11-sensors-and-voltage-dividers
+items:
+  - type: numeric
+    prompt: "In a voltage divider with Vin = 5V, R1 = 10kΩ, and an LDR R2 = 10kΩ in normal room light, what is Vout across R2?"
+    unit: "V"
+    answer: 2.5
+    tolerance: 0.1
+    explanation: "Vout = Vin * (R2 / (R1 + R2)) = 5V * (10k / (10k + 10k)) = 5V * 0.5 = 2.5V."
+  - type: single
+    prompt: "What happens to the resistance of a standard LDR (photoresistor) when bright light shines on it?"
+    choices:
+      - text: "Resistance decreases dramatically"
+        correct: true
+      - text: "Resistance increases dramatically"
+        correct: false
+      - text: "Resistance stays completely constant"
+        correct: false
+      - text: "Resistance drops to negative ohms"
+        correct: false
+    explanation: "Photons impart energy into the semiconductor material, freeing charge carriers and causing resistance to decrease."
+  - type: single
+    prompt: "Why cannot an Arduino analog input pin measure a solitary two-terminal LDR directly without an accompanying fixed resistor?"
+    choices:
+      - text: "Microcontroller ADC input channels measure voltage potential differences, not pure resistance"
+        correct: true
+      - text: "LDR sensors require high AC mains voltage to function"
+        correct: false
+      - text: "An LDR emits light that blinds the processor"
+        correct: false
+    explanation: "An ADC (Analog-to-Digital Converter) samples voltage. Placing the LDR in a voltage divider transforms changing resistance into a readable 0V-5V signal."

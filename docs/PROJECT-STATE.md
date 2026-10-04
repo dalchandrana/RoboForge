@@ -111,6 +111,13 @@
     - Offline BOM Export (FR-PRJ-04): 1-click CSV download and 1-click printable workshop text checklist.
   - Browser verification recording: `hardware_projects_demo`.
 
+- **Slice 6: Curriculum Expansion (Lessons 11–26)**
+  - Module 2 extended with L11 (sensors & voltage dividers) and L12 (switches & breadboarding).
+  - New Module 3 `m03-arduino-and-code` (L13–L20): microcontrollers, blink, digital I/O & pull-ups, ADC, PWM, serial debugging, state machines, hysteresis.
+  - New Module 4 `m04-motion-and-actuators` (L21–L26): DC motors & flyback, H-bridge, servos, steppers, power budgets, encoders.
+  - Each lesson has a quiz and a `<Callout type="safety">` block; `path.yaml` now lists 4 modules; bundle contains 26 lessons.
+  - `content:check` passes with 0 warnings. **Browser verification not done** (browser subagent quota exhausted); re-verify visually later.
+
 ## Test & Coverage Status
 - **Unit Test Suite:** 114 tests passing (100% pass rate).
 - **Code Coverage:** 94.7% statements, 97.5% functions across all workspace packages.
@@ -127,12 +134,10 @@
   - `hardware_projects_demo`
 
 ## In progress
-- Phase 2, Slice 6: Curriculum Expansion (Modules 2, 3, 4: Lessons 11–26).
+- Phase 2, Slice 7: Learning Motivation & Practice Engine (`PracticeView.tsx`).
 
 ## Next (Phase 2 Milestones)
-1. **Slice 6: Curriculum Expansion (Modules 2, 3, 4: Lessons 11–26):**
-   - Microcontrollers, digital logic, actuators, and sensors.
-2. **Slice 7: Learning Motivation & Practice Engine (`PracticeView.tsx`):**
+1. **Slice 7: Learning Motivation & Practice Engine (`PracticeView.tsx`):**
    - Daily challenges, streak tracking, formula flashcards, and achievement badges.
 
 ## Open questions (for the maintainer)

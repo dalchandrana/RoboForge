@@ -1,0 +1,30 @@
+id: q-m03-l16-analog-input-and-adc
+items:
+  - type: numeric
+    prompt: "If an Arduino Uno 10-bit ADC reads an analog pin at exactly 2.50V (halfway between 0V and 5V), what integer value does analogRead() return?"
+    unit: "counts"
+    answer: 512
+    tolerance: 2
+    explanation: "Halfway across the 1024 levels: 1023 * (2.5 / 5.0) = 511.5 ≈ 512 counts."
+  - type: single
+    prompt: "What is the voltage resolution (voltage represented by 1 ADC step) of the Arduino Uno 10-bit converter with a 5.0V reference?"
+    choices:
+      - text: "Approximately 4.88 mV"
+        correct: true
+      - text: "1.0 V"
+        correct: false
+      - text: "100 mV"
+        correct: false
+      - text: "0.001 microvolts"
+        correct: false
+    explanation: "Resolution = Vref / 1024 = 5.0V / 1024 = 0.0048828V = 4.88 millivolts."
+  - type: single
+    prompt: "Do you need to declare pinMode(A0, INPUT) in setup() before calling analogRead(A0)?"
+    choices:
+      - text: "No, analogRead() automatically manages the internal analog multiplexer channel"
+        correct: true
+      - text: "Yes, failing to do so causes a compiler error"
+        correct: false
+      - text: "Yes, otherwise pin A0 catches on fire"
+        correct: false
+    explanation: "Analog input pins default to high-impedance analog inputs, and analogRead() configures the ADC multiplexer on each read."

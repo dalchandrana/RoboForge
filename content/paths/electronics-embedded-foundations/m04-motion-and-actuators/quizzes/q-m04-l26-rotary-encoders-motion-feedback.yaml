@@ -1,0 +1,32 @@
+id: q-m04-l26-rotary-encoders-motion-feedback
+items:
+  - type: single
+    prompt: "How does a quadrature encoder determine whether a motor shaft is turning clockwise or counter-clockwise?"
+    choices:
+      - text: "By measuring the 90-degree phase relationship (lead or lag) between Channel A and Channel B pulses"
+        correct: true
+      - text: "By measuring the frequency of the light beam"
+        correct: false
+      - text: "By detecting the temperature of the encoder disc"
+        correct: false
+      - text: "By using an internal compass"
+        correct: false
+    explanation: "Because the two optical channels are spatially offset by 90 electrical degrees, the leading channel indicates direction of rotation."
+  - type: numeric
+    prompt: "A robot wheel has a diameter of 60mm and a 20-slot optical encoder disc directly on the wheel axle. How many millimeters does the robot travel per encoder pulse? (Use pi ≈ 3.1416)"
+    unit: "mm"
+    answer: 9.42
+    tolerance: 0.1
+    explanation: "Circumference = pi * D = 3.1416 * 60mm = 188.496mm. Distance per pulse = 188.496 / 20 = 9.42mm."
+  - type: single
+    prompt: "Why are microcontroller hardware interrupts (like attachInterrupt on Arduino pin 2) preferred for encoder counting?"
+    choices:
+      - text: "They execute immediately in hardware on each pulse edge without missing ticks during CPU loop processing"
+        correct: true
+      - text: "They reduce the wheel friction"
+        correct: false
+      - text: "They increase the battery capacity"
+        correct: false
+      - text: "They eliminate the need for electricity"
+        correct: false
+    explanation: "Interrupt Service Routines (ISRs) guarantee that high-speed pulse trains are captured even if the main program is executing other logic."

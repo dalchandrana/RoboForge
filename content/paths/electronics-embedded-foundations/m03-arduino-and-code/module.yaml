@@ -1,0 +1,13 @@
+id: m03-arduino-and-code
+title: "Module 3: Arduino & Embedded Programming"
+description: "Master microcontroller architecture, C++ firmware basics, digital and analog I/O, PWM, UART communication, and state machine algorithms."
+order: 3
+lessons:
+  - m03-l13-what-is-a-microcontroller
+  - m03-l14-first-sketch-blink
+  - m03-l15-digital-io-and-pullups
+  - m03-l16-analog-input-and-adc
+  - m03-l17-pwm-analog-output
+  - m03-l18-serial-monitor-debugging
+  - m03-l19-code-logic-and-state-machines
+  - m03-l20-sensor-decisions-hysteresis

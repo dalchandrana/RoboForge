@@ -1,0 +1,38 @@
+id: q-m03-l19-code-logic-and-state-machines
+items:
+  - type: single
+    prompt: "Why is delay() discouraged in autonomous robotics software?"
+    choices:
+      - text: "delay() blocks the CPU from executing any other instructions (such as reading bumper switches or collision sensors)"
+        correct: true
+      - text: "delay() discharges the battery 10x faster"
+        correct: false
+      - text: "delay() can only be called once in the entire program"
+        correct: false
+      - text: "delay() reverses the direction of the electric current"
+        correct: false
+    explanation: "delay() is a blocking busy-wait loop that freezes execution, preventing real-time safety response."
+  - type: single
+    prompt: "Which data type should always be used to store timestamps returned by millis() to prevent overflow bugs?"
+    choices:
+      - text: "unsigned long"
+        correct: true
+      - text: "int"
+        correct: false
+      - text: "char"
+        correct: false
+      - text: "boolean"
+        correct: false
+    explanation: "millis() returns an unsigned 32-bit integer (unsigned long) counting milliseconds from 0 to over 4.29 billion (~50 days)."
+  - type: single
+    prompt: "In a Finite State Machine (FSM), what represents a move from one operational mode (like PATROL) to another mode (like EVADE)?"
+    choices:
+      - text: "A state transition"
+        correct: true
+      - text: "A hardware reset"
+        correct: false
+      - text: "A memory leak"
+        correct: false
+      - text: "A clock glitch"
+        correct: false
+    explanation: "A state transition occurs when a defined event or sensor condition triggers a change from the current state to a new state."

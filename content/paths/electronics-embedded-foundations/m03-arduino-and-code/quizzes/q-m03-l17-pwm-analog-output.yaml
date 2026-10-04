@@ -1,0 +1,32 @@
+id: q-m03-l17-pwm-analog-output
+items:
+  - type: numeric
+    prompt: "If an Arduino PWM pin with a 5.0V source is driven with analogWrite(pin, 128), what is the effective time-averaged voltage across the load?"
+    unit: "V"
+    answer: 2.5
+    tolerance: 0.1
+    explanation: "128 out of 255 is approximately a 50% duty cycle (128 / 255 = 0.502). Vavg = 0.502 * 5.0V ≈ 2.51V."
+  - type: single
+    prompt: "Which of the following digital pins on an Arduino Uno R3 supports hardware PWM (analogWrite)?"
+    choices:
+      - text: "Pin 9 (~)"
+        correct: true
+      - text: "Pin 4"
+        correct: false
+      - text: "Pin 7"
+        correct: false
+      - text: "Pin 12"
+        correct: false
+    explanation: "On the Uno, only pins 3, 5, 6, 9, 10, and 11 have internal hardware timer PWM generators (indicated by the ~ symbol)."
+  - type: single
+    prompt: "What is the duty cycle of a PWM signal that is HIGH for 2 ms and LOW for 6 ms?"
+    choices:
+      - text: "25%"
+        correct: true
+      - text: "50%"
+        correct: false
+      - text: "33%"
+        correct: false
+      - text: "75%"
+        correct: false
+    explanation: "Total period = 2ms + 6ms = 8ms. Duty cycle = Ton / Period = 2ms / 8ms = 0.25 = 25%."

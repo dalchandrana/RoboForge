@@ -1,0 +1,110 @@
+---
+id: m03-l17-pwm-analog-output
+title: "Pulse Width Modulation (PWM): Simulating Analog Voltages"
+path: electronics-embedded-foundations
+module: m03-arduino-and-code
+order: 17
+level: beginner
+minutes: 20
+prerequisites:
+  - m03-l14-first-sketch-blink
+  - m03-l16-analog-input-and-adc
+objectives:
+  - "Understand how high-frequency digital pulsing creates an equivalent average analog voltage"
+  - "Calculate duty cycle percentages and average output voltages"
+  - "Use analogWrite() on 8-bit PWM timer pins (3, 5, 6, 9, 10, 11)"
+keyIdeas:
+  - "The ATmega328P has no true Digital-to-Analog Converter (DAC); it uses PWM to simulate analog levels."
+  - "Duty cycle is the percentage of time a square wave remains HIGH: D = (T_on / Period) * 100%."
+  - "analogWrite() accepts an 8-bit value (0 to 255): 0 is 0% duty, 128 is 50%, and 255 is 100%."
+tags:
+  - pwm
+  - analogwrite
+  - duty-cycle
+  - led-dimming
+glossary:
+  - pwm
+  - duty-cycle
+  - analogwrite
+  - average-voltage
+  - frequency
+needsHumanVerification: false
+verified: true
+sources:
+  - title: "Arduino Secrets of Arduino PWM"
+    url: "https://docs.arduino.cc/learn/microcontrollers/analog-output"
+license: CC-BY-SA-4.0
+authors:
+  - "RoboForge Team"
+locale: en
+---
+
+## 1. Hook: Can a Digital Pin Output 2.5 Volts?
+We know digital pins can only output $0\text{ V}$ or $5\text{ V}$.
+
+What if you want to dim an LED to half brightness, or drive a robot motor at 50% cruising speed? Does the microcontroller have an analog valve to output $2.5\text{ V}$?
+
+No! Instead, it uses a brilliant trick of physics: **Pulse Width Modulation (PWM)**.
+
+<Callout type="safety" title="PWM Motor Drive Isolation">
+  While PWM can control DC motor speed, never wire a motor coil directly to an Arduino PWM pin! Motors draw high current and generate inductive flyback spikes. Always buffer PWM signals through a dedicated driver transistor, MOSFET, or H-bridge IC.
+</Callout>
+
+## 2. What is Pulse Width Modulation?
+PWM switches a digital output pin between $5\text{ V}$ (HIGH) and $0\text{ V}$ (LOW) hundreds of times per second (approx $490\text{ Hz}$ or $980\text{ Hz}$ on the Arduino Uno).
+
+Because it switches so fast (faster than human persistence of vision or motor coil inductance can react), the connected device responds to the **time-averaged voltage**:
+
+$$V_{\text{avg}} = \text{Duty Cycle} \times V_{\text{max}}$$
+
+### Duty Cycle ($D$):
+The percentage of time the signal is HIGH during each repeating period:
+$$D = \frac{T_{\text{on}}}{T_{\text{on}} + T_{\text{off}}} \times 100\%$$
+
+- **0% Duty Cycle:** Pin is permanently LOW ($0\text{ V}$).
+- **25% Duty Cycle:** HIGH for $1/4$ of the cycle $\rightarrow V_{\text{avg}} = 0.25 \times 5\text{ V} = 1.25\text{ V}$.
+- **50% Duty Cycle:** HIGH for $1/2$ of the cycle $\rightarrow V_{\text{avg}} = 0.50 \times 5\text{ V} = 2.50\text{ V}$.
+- **100% Duty Cycle:** Pin is permanently HIGH ($5\text{ V}$).
+
+## 3. The `analogWrite()` Function
+In Arduino code, PWM is controlled using `analogWrite()`.
+
+Despite the name, `analogWrite()` is NOT true analog; it sets an **8-bit timer compare register**:
+$$\text{Range: } 0 \text{ to } 255 \quad (2^8 = 256 \text{ levels})$$
+
+- `analogWrite(pin, 0)` $\rightarrow 0\%$ duty ($0\text{ V}$)
+- `analogWrite(pin, 64)` $\rightarrow 25\%$ duty ($1.25\text{ V}$)
+- `analogWrite(pin, 128)` $\rightarrow 50\%$ duty ($2.50\text{ V}$)
+- `analogWrite(pin, 255)` $\rightarrow 100\%$ duty ($5.0\text{ V}$)
+
+### Which Pins Support PWM?
+Look closely at the Arduino Uno board silkscreen. Certain digital pins have a tilde (~) symbol:
+**Pins 3, 5, 6, 9, 10, and 11.** Only these specific pins are wired to internal hardware timer output compare channels!
+
+## 4. Example: Smooth LED Breathing Fader
+```cpp
+const int LED_PIN = 9; // Pin 9 supports PWM (~)
+
+void setup() {
+  pinMode(LED_PIN, OUTPUT);
+}
+
+void loop() {
+  // Fade in from dark to bright
+  for (int b = 0; b <= 255; b++) {
+    analogWrite(LED_PIN, b);
+    delay(5);
+  }
+
+  // Fade out from bright to dark
+  for (int b = 255; b >= 0; b--) {
+    analogWrite(LED_PIN, b);
+    delay(5);
+  }
+}
+```
+
+## 5. Summary
+- PWM mimics continuous analog voltage by switching digital outputs on and off at high frequency.
+- `analogWrite()` takes values from $0$ to $255$.
+- Available strictly on hardware timer pins marked with `~` (3, 5, 6, 9, 10, 11).

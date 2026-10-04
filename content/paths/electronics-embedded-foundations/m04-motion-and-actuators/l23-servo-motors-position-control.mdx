@@ -1,0 +1,99 @@
+---
+id: m04-l23-servo-motors-position-control
+title: "RC Servo Motors: Closed-Loop Position Control"
+path: electronics-embedded-foundations
+module: m04-motion-and-actuators
+order: 23
+level: intermediate
+minutes: 25
+prerequisites:
+  - m04-l21-dc-motors-and-back-emf
+  - m03-l17-pwm-analog-output
+objectives:
+  - "Understand the four internal elements of an RC hobby servo: DC motor, reduction geartrain, feedback potentiometer, and error amplifier"
+  - "Differentiate 50 Hz position-command pulse widths from ordinary power-dimming PWM"
+  - "Control angular position with precision using the Arduino Servo library"
+keyIdeas:
+  - "Unlike continuous DC motors, a standard servo rotates to a commanded angle (0° to 180°) and holds it under load."
+  - "Position is commanded by pulse width: ~1.0 ms is 0°, ~1.5 ms is 90° (center), and ~2.0 ms is 180°."
+  - "Servos draw peak stall currents over 500mA; power them from an external 5V supply, never the Arduino 5V pin."
+tags:
+  - servo
+  - pwm
+  - position-control
+  - robotics-arm
+glossary:
+  - servo
+  - pulse-width
+  - closed-loop
+  - feedback-potentiometer
+  - torque
+needsHumanVerification: false
+verified: true
+sources:
+  - title: "TowerPro SG90 9g Micro Servo Specifications"
+    url: "http://www.towerpro.com.tw/product/sg90-7/"
+license: CC-BY-SA-4.0
+authors:
+  - "RoboForge Team"
+locale: en
+---
+
+## 1. Hook: Precision Positioning
+A DC motor spins continuously. If you turn off power, it coasts to a halt at a random angle.
+
+How can a steering linkage, pan-tilt camera, or robotic arm move to exactly $45^\circ$, stop instantly, and resist external forces trying to push it out of position?
+
+They use **RC Servo Motors**!
+
+<Callout type="safety" title="Servo Power & Mechanical Safety">
+  Never power multiple servos from the Arduino board 5V pin. When moving rapidly or loaded, small 9g servos can pull 500mA to 1A each, causing the Arduino regulator to overheat or brown out. Always power servos from an external 5V–6V battery pack (≤ 2A) and connect external Ground to Arduino Ground. Beware of mechanical pinch points.
+</Callout>
+
+## 2. Anatomy of a Servo Motor
+Inside a compact plastic servo shell (like the classic SG90):
+1. **Coreless DC Motor:** High-speed, low-torque miniature motor.
+2. **Reduction Geartrain:** Multi-stage nylon or metal gears that sacrifice speed to multiply mechanical torque by over 100 times.
+3. **Internal Feedback Potentiometer:** Linked to the output shaft, measuring the physical angle in real time.
+4. **Control Circuit Board:** Compares your command signal against the internal potentiometer position. If there is an error, it drives the motor forward or backward until the error reaches zero!
+
+## 3. The 50 Hz Pulse Width Protocol
+Servo control is often confused with PWM dimming.
+
+Standard servos do NOT care about the duty cycle percentage. They care strictly about the **absolute pulse width duration**:
+- Repeating frame rate: **50 Hz** (one pulse every $20\text{ ms}$).
+- **1.0 ms (1000 µs):** Drive to $0^\circ$ (full counter-clockwise).
+- **1.5 ms (1500 µs):** Drive to $90^\circ$ (neutral center).
+- **2.0 ms (2000 µs):** Drive to $180^\circ$ (full clockwise).
+
+## 4. Servo Wiring (3 Pins)
+- **Brown or Black:** Ground ($0\text{ V}$)
+- **Red:** Power ($+4.8\text{ V}$ to $+6.0\text{ V}$)
+- **Orange, Yellow, or White:** Control signal (PWM GPIO)
+
+## 5. Arduino Servo Code
+```cpp
+#include <Servo.h>
+
+Servo myServo;
+
+void setup() {
+  myServo.attach(9); // Attach to digital pin 9
+}
+
+void loop() {
+  myServo.write(0);   // Move to 0 degrees
+  delay(1000);
+
+  myServo.write(90);  // Center at 90 degrees
+  delay(1000);
+
+  myServo.write(180); // Move to 180 degrees
+  delay(1000);
+}
+```
+
+## 6. Summary
+- Servos provide closed-loop position control with internal feedback.
+- Pulse duration ($1\text{ ms}$ to $2\text{ ms}$) sets the mechanical target angle.
+- Always provide dedicated external power with a common ground return.
