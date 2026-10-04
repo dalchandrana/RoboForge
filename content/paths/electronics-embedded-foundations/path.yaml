@@ -6,3 +6,4 @@ modules:
   - m02-discrete-circuits
   - m03-arduino-and-code
   - m04-motion-and-actuators
+  - m05-your-first-robot

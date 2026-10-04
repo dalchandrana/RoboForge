@@ -1,0 +1,38 @@
+id: q-m05-l29-obstacle-avoiding-robot
+items:
+  - type: single
+    prompt: "An HC-SR04 sensor measures an echo pulse duration of 1164 microseconds. What is the approximate distance to the obstacle in front of the robot?"
+    choices:
+      - text: "20.0 cm"
+        correct: true
+      - text: "10.0 cm"
+        correct: false
+      - text: "40.0 cm"
+        correct: false
+      - text: "200.0 cm"
+        correct: false
+    explanation: "Distance = duration / 58.2 = 1164 / 58.2 = 20.0 cm."
+  - type: single
+    prompt: "Why should you avoid using blocking functions like delay(1000) inside autonomous navigation loops?"
+    choices:
+      - text: "Because delay() halts the CPU, preventing the robot from reading new sonar pulses or detecting collisions during that full second"
+        correct: true
+      - text: "Because delay() drains the battery twice as quickly"
+        correct: false
+      - text: "Because delay() is forbidden in C++ code"
+        correct: false
+      - text: "Because ultrasonic sound waves travel backwards during delay()"
+        correct: false
+    explanation: "Blocking delays freeze the program, leaving the robot blind to real-time sensor updates while motors are spinning."
+  - type: single
+    prompt: "What acoustic characteristic can cause an ultrasonic sonar to fail to detect a soft cushion or thick velvet curtain?"
+    choices:
+      - text: "Porous, soft materials absorb 40 kHz sound waves rather than reflecting them, preventing an echo pulse from reaching the receiver"
+        correct: true
+      - text: "Cushions emit high-frequency microwave interference"
+        correct: false
+      - text: "Soft materials reverse the polarity of sound"
+        correct: false
+      - text: "The cushion attracts the ultrasonic sound cone magnetically"
+        correct: false
+    explanation: "Ultrasound relies on reflection from hard surfaces. Soft sound-absorbing materials can create acoustic blind spots."

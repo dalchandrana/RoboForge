@@ -1,0 +1,140 @@
+---
+id: m05-l27-differential-drive-kinematics
+title: "Differential Drive Kinematics: How Two-Wheel Robots Turn"
+path: electronics-embedded-foundations
+module: m05-your-first-robot
+order: 27
+level: intermediate
+minutes: 20
+prerequisites:
+  - m04-l21-dc-motors-and-back-emf
+  - m04-l22-h-bridge-motor-drivers
+objectives:
+  - "Understand unicycle and differential-drive mobile robot geometry"
+  - "Calculate linear velocity and turning rate from individual wheel angular speeds"
+  - "Execute straight, pivot, and zero-radius spin in-place maneuvers"
+keyIdeas:
+  - "Differential drive steers by spinning two independent drive wheels at different speeds (omega_L and omega_R)."
+  - "Body linear velocity is the average of wheel surface speeds: v = (R / 2) * (omega_R + omega_L)."
+  - "Body angular velocity depends on wheel speed difference divided by wheelbase: omega = (R / L) * (omega_R - omega_L)."
+  - "When wheels spin in opposite directions at equal speed (omega_L = -omega_R), the robot spins in place with zero forward motion."
+tags:
+  - differential-drive
+  - kinematics
+  - mobile-robots
+  - turning-radius
+glossary:
+  - differential-drive
+  - kinematics
+  - wheelbase
+  - turning-radius
+needsHumanVerification: false
+verified: true
+sources:
+  - title: "Siegwart & Nourbakhsh, Introduction to Autonomous Mobile Robots"
+    url: "https://mitpress.mit.edu/9780262015356/introduction-to-autonomous-mobile-robots/"
+license: CC-BY-SA-4.0
+authors:
+  - "RoboForge Team"
+locale: en
+---
+
+# Differential Drive Kinematics: How Two-Wheel Robots Turn
+
+Almost every mobile robot uses **differential-drive steering**. 
+
+Cars use complex steering racks to turn their front wheels. In contrast, a differential robot has two fixed drive wheels. A passive caster ball balances the chassis.
+
+We steer by varying the individual speeds of the left and right motors!
+
+---
+
+## 1. The Anatomy of a 2WD Mobile Robot
+
+Consider our standard RoboForge 2WD chassis (matching Starter Kit and Project P3/P4):
+
+- **Wheel Radius ($R$):** The distance from axle to rubber tread. Standard yellow TT motors use $66\,\text{mm}$ wheels ($R = 3.3\,\text{cm}$).
+- **Wheelbase ($L$):** The distance between the left and right wheel contact points (typically $L = 13.5\,\text{cm}$).
+- **Caster Wheel:** An omnidirectional ball that supports the chassis without steering.
+
+```
+       [ Front Caster Ball ]
+                |
+          +-----------+
+[Left] ===|  Chassis  |===[Right]
+Wheel     |  Body     |   Wheel
+(omega_L) +-----------+   (omega_R)
+                |
+          <- Wheelbase L ->
+```
+
+---
+
+## 2. Forward and Angular Kinematics
+
+Each wheel moves forward with linear speed:
+
+$$v_L = R \times \omega_L \quad \text{and} \quad v_R = R \times \omega_R$$
+
+The forward speed $v$ of the robot center is the average of both wheels:
+
+$$v = \frac{v_R + v_L}{2} = \frac{R}{2} (\omega_R + \omega_L)$$
+
+The turning rate $\omega$ depends on the wheel speed difference divided by wheelbase $L$:
+
+$$\omega = \frac{v_R - v_L}{L} = \frac{R}{L} (\omega_R - \omega_L)$$
+
+---
+
+## 3. Four Core Maneuvers
+
+By controlling motor directions and PWM duty cycles, we command four motions:
+
+### 1. Straight Line Forward ($\omega_L = \omega_R > 0$)
+- Linear velocity: $v = R \times \omega$
+- Angular velocity: $\omega = 0$
+- The robot travels straight forward.
+
+### 2. In-Place Zero-Radius Spin ($\omega_L = -\omega_R$)
+- Linear velocity: $v = 0$
+- Angular velocity: $\omega = \frac{2 R}{L} \omega_R$
+- The robot spins in place around its own center. This lets mobile robots escape tight dead-ends!
+
+### 3. Pivot Turn ($\omega_L = 0, \omega_R > 0$)
+- One wheel locks stationary.
+- The other wheel drives forward, swinging the robot around the locked wheel.
+
+### 4. Smooth Curved Arc ($\omega_R > \omega_L > 0$)
+- Both wheels move forward, but at different speeds.
+- The robot follows a smooth circular curve around an **Instantaneous Center of Curvature (ICC)**.
+
+---
+
+<Callout type="safety">
+**Tabletop and Mechanical Safety Directives:**
+1. **Never test driving on an elevated table:** A bug can drive the robot over the edge in seconds. This will break the chassis. Always test on the floor.
+2. **Pinch hazard:** Gearmotors generate strong torque. Keep fingers and loose hair away from spinning wheel rims.
+3. **Low-voltage limit:** Power motors from a battery pack ($\le 6\,\text{V}$) with current $\le 2\,\text{A}$.
+</Callout>
+
+---
+
+## 4. Summary & Practical Insights
+
+In code, the Arduino microcontroller controls wheel speeds using PWM:
+
+```cpp
+// Tank steering function for L298N driver
+void setMotorSpeeds(int leftPwm, int rightPwm) {
+  // Positive PWM = forward, negative PWM = reverse
+  setLeftMotor(leftPwm);
+  setRightMotor(rightPwm);
+}
+
+// Spin 90 degrees right in place
+void spinRightInPlace() {
+  setMotorSpeeds(180, -180); // Left forward, Right backward
+}
+```
+
+Now let's verify your understanding with the quiz below!

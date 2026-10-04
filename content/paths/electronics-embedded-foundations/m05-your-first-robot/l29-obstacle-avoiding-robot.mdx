@@ -1,0 +1,150 @@
+---
+id: m05-l29-obstacle-avoiding-robot
+title: "Obstacle-Avoiding Robot: Ultrasonic Sonar Navigation"
+path: electronics-embedded-foundations
+module: m05-your-first-robot
+order: 29
+level: intermediate
+minutes: 20
+prerequisites:
+  - m05-l27-differential-drive-kinematics
+  - m03-l15-digital-io-and-pullups
+objectives:
+  - "Understand ultrasonic acoustic echo time-of-flight ranging"
+  - "Trigger and decode HC-SR04 sonar pulses with microsecond timing"
+  - "Implement a responsive non-blocking finite state machine for obstacle avoidance"
+keyIdeas:
+  - "Ultrasonic sonar measures distance via time-of-flight of sound pulses: distance = (time * speedOfSound) / 2."
+  - "The HC-SR04 requires a 10 microsecond trigger pulse, emitting eight 40 kHz acoustic bursts."
+  - "A finite state machine (FORWARD -> BACKUP -> TURN) prevents navigation deadlocks."
+  - "Active pan servos scan left and right to choose the direction with maximum open clearance."
+tags:
+  - obstacle-avoidance
+  - hc-sr04
+  - ultrasonic-sensor
+  - time-of-flight
+glossary:
+  - obstacle-avoidance
+  - hc-sr04
+  - ultrasonic-sensor
+  - time-of-flight
+needsHumanVerification: false
+verified: true
+sources:
+  - title: "ElecFreaks HC-SR04 Ultrasonic Ranging Module User Guide"
+    url: "https://www.elecfreaks.com/learn-en/hc-sr04-ultrasonic-sensor.html"
+license: CC-BY-SA-4.0
+authors:
+  - "RoboForge Team"
+locale: en
+---
+
+# Obstacle-Avoiding Robot: Ultrasonic Sonar Navigation
+
+In structured environments, robots can follow pre-marked lines. But in unstructured, real-world rooms—such as autonomous vacuum cleaners or warehouse rovers—robots must navigate around unexpected obstacles without human intervention (Project P4).
+
+---
+
+## 1. How Ultrasonic Sonar Measures Distance
+
+The **HC-SR04** ultrasonic distance sensor module mimics the echolocation used by bats and marine sonar:
+
+```
+[ Arduino ] ---> (Trig: 10us) ---> [ Transmitter Eye ] ))))) 40 kHz Sound
+                                                                   |
+                                                              [ Obstacle ]
+                                                                   |
+[ Arduino ] <--- (Echo: Pulse) <--- [ Receiver Eye ]  ((((( Echo Return
+```
+
+1. **Triggering:** The microcontroller sends a short $10\,\mu\text{s}$ digital `HIGH` pulse to the `TRIG` pin.
+2. **Acoustic Burst:** The sensor's onboard oscillator fires an eight-cycle sonic burst at $40\,\text{kHz}$ (inaudible to human ears).
+3. **Echo Measurement:** The sensor sets its `ECHO` pin `HIGH` simultaneously. When the reflected sound wave strikes the receiver crystal, the `ECHO` pin drops back to `LOW`.
+4. **Time of Flight (ToF):** The duration that the `ECHO` pin stays `HIGH` corresponds to the round-trip travel time $t$ of sound in air.
+
+At room temperature ($20^\circ\text{C}$), sound travels at approximately $v_{\text{sound}} \approx 343\,\text{m/s} = 0.0343\,\text{cm/\mu s}$.
+
+Because the sound travels to the obstacle and bounces back, the distance is:
+
+$$\text{Distance (cm)} = \frac{t_{\text{echo}}\,(\mu\text{s}) \times 0.0343}{2} = \frac{t_{\text{echo}}}{58.2}$$
+
+---
+
+## 2. Arduino Sonar Reading Routine
+
+Using the built-in `pulseIn()` function:
+
+```cpp
+const int PIN_TRIG = 9;
+const int PIN_ECHO = 10;
+
+float readDistanceCm() {
+  // Clear trigger pin
+  digitalWrite(PIN_TRIG, LOW);
+  delayMicroseconds(2);
+
+  // Send 10us trigger pulse
+  digitalWrite(PIN_TRIG, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(PIN_TRIG, LOW);
+
+  // Measure echo pulse width (timeout 25ms = ~4 meters)
+  unsigned long duration = pulseIn(PIN_ECHO, HIGH, 25000);
+
+  if (duration == 0) return 400.0; // No echo received (clear path)
+  return duration / 58.2;
+}
+```
+
+---
+
+## 3. Reactive Navigation State Machine
+
+A common rookie mistake is calling `delay(1000)` whenever an obstacle is detected. Blocking delays freeze sensor updates, causing the robot to plow into walls!
+
+Instead, we structure navigation as a **Finite State Machine (FSM)**:
+
+```
+  +-------------------------------------------------+
+  |                                                 |
+  v                                                 |
+[ FORWARD ] --(Dist <= 20cm)--> [ BACKUP ]          |
+                                    | (0.5s timer)  |
+                                    v               |
+                                [ TURN ] -----------+
+                                    (Dist > 35cm & 0.6s timer)
+```
+
+1. **`FORWARD` State:** Both motors drive forward at cruising speed. The sensor continuously samples clearance ahead.
+2. **`BACKUP` State:** Triggered when distance $\le 20\,\text{cm}$. The robot reverses slowly for $0.5$ seconds to disengage from the obstacle.
+3. **`TURN` State:** The robot spins in place around its vertical axis until the sonar path ahead reads clear ($> 35\,\text{cm}$) for at least $0.6$ seconds. Once clear, it returns to `FORWARD`.
+
+---
+
+## 4. Pan-Radar Enhancement (Servo Scanning)
+
+For advanced navigation, we mount the HC-SR04 on an **SG90 micro-servo motor**:
+
+1. When blocked ahead, stop the drive wheels.
+2. Pan the servo $45^\circ$ left: measure distance $D_{\text{left}}$.
+3. Pan the servo $45^\circ$ right: measure distance $D_{\text{right}}$.
+4. Re-center the servo, and turn the robot in the direction that has greater clearance!
+
+---
+
+<Callout type="safety">
+**Obstacle & Sonar Safety Rules:**
+1. **Low-voltage battery supply:** Never power motors directly from the Arduino 5V pin. The instantaneous motor inrush current will brown out the microcontroller, causing continuous reboot cycles.
+2. **Floor clearance & trip hazards:** Keep the robot testing area clear of children, pets, electrical cords, and stairs.
+3. **Acoustic blind spots:** Soft materials (curtains, foam, thick carpets) absorb $40\,\text{kHz}$ ultrasound instead of reflecting it. The sensor may report a false "clear path" when approaching a soft object.
+</Callout>
+
+---
+
+## 5. Summary & Key Takeaways
+
+1. **Time-of-flight sensing** enables accurate non-contact distance ranging from $2\,\text{cm}$ to $400\,\text{cm}$.
+2. **State machine architectures** guarantee responsive, non-blocking real-time navigation.
+3. Combining sonar with pan servos gives the robot 2D spatial awareness.
+
+Check your comprehension with the quiz below!

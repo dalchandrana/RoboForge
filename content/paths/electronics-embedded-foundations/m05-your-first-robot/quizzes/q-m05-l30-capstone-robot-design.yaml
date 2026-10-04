@@ -1,0 +1,38 @@
+id: q-m05-l30-capstone-robot-design
+items:
+  - type: single
+    prompt: "Why is calculating a power budget critical before assembling a physical mobile robot?"
+    choices:
+      - text: "To verify that the battery pack can supply the peak stall current of both motors plus the microcontroller without voltage sagging below the reset threshold"
+        correct: true
+      - text: "To determine how many lines of C++ code the Arduino can store"
+        correct: false
+      - text: "To adjust the color temperature of the built-in LED"
+        correct: false
+      - text: "Power budgets are only necessary for satellites and space probes"
+        correct: false
+    explanation: "If motor stall current exceeds battery capacity, voltage drops sharply, causing the Arduino to brown out and continuously reboot."
+  - type: single
+    prompt: "What is the single most important safety check to perform with a multimeter before connecting the battery pack to your newly wired chassis?"
+    choices:
+      - text: "Measure the resistance between battery positive (+V) and GND to ensure there is no direct dead short circuit"
+        correct: true
+      - text: "Check if the tires are inflated to 30 PSI"
+        correct: false
+      - text: "Measure the ambient room temperature in Celsius"
+        correct: false
+      - text: "Verify that the chassis acrylic is transparent"
+        correct: false
+    explanation: "A continuity or resistance check across power rails prevents catastrophic short-circuit currents, melted jumper wires, or battery damage before power is applied."
+  - type: single
+    prompt: "In the 4-stage engineering lifecycle, why should you always 'Simulate First' in software before wiring physical hardware?"
+    choices:
+      - text: "It allows rapid iteration, detects wiring mistakes and logic bugs safely, and prevents damaging expensive hardware components"
+        correct: true
+      - text: "Simulation eliminates the need to ever build real robots"
+        correct: false
+      - text: "Simulation makes the physical motors run twice as fast"
+        correct: false
+      - text: "Hardware cannot be turned on without a simulation license"
+        correct: false
+    explanation: "Simulating circuits and algorithms in software saves time, catches errors early, and prevents burning out real components."

@@ -1,0 +1,38 @@
+id: q-m05-l28-line-following-robot
+items:
+  - type: single
+    prompt: "Why does standard black electrical tape appear 'dark' to an optical line sensor while a white floor appears 'bright'?"
+    choices:
+      - text: "Black vinyl absorbs the emitted 950nm infrared light, reflecting very little back to the receiver phototransistor"
+        correct: true
+      - text: "Black electrical tape generates its own magnetic field that repels photons"
+        correct: false
+      - text: "The sensor uses ultrasonic sonar, not light"
+        correct: false
+      - text: "Black tape conducts electricity from the sensor pins"
+        correct: false
+    explanation: "Black surfaces absorb infrared radiation, while white/light surfaces reflect infrared light back into the detector phototransistor."
+  - type: single
+    prompt: "In a 2-sensor straddle configuration, what action should the robot take when the left sensor detects black tape while the right sensor detects white floor?"
+    choices:
+      - text: "Steer left by reversing or slowing the left wheel and driving the right wheel forward"
+        correct: true
+      - text: "Steer right by reversing the right wheel"
+        correct: false
+      - text: "Full reverse both motors at maximum speed"
+        correct: false
+      - text: "Cut power to all motors"
+        correct: false
+    explanation: "If the left sensor sees the line, the line is drifting left relative to the robot chassis; steering left re-centers the line between the two sensors."
+  - type: single
+    prompt: "What is the primary advantage of Proportional (P) control over Bang-Bang control in a line follower?"
+    choices:
+      - text: "It scales the steering effort continuously based on error magnitude, resulting in smooth track tracking instead of aggressive zig-zag wobble"
+        correct: true
+      - text: "It reduces battery voltage by half"
+        correct: false
+      - text: "It allows the robot to fly over track gaps"
+        correct: false
+      - text: "It eliminates the need for an H-bridge driver"
+        correct: false
+    explanation: "Proportional control applies gentle corrections for minor line drift and stronger corrections for sharp corners, eliminating oscillatory hunting."

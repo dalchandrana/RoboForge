@@ -1,0 +1,9 @@
+id: m05-your-first-robot
+title: "Module 5: Your First Mobile Robot"
+description: "Bring circuits, microcontrollers, and actuators together into autonomous mobile robots with sensors and closed-loop control."
+order: 5
+lessons:
+  - m05-l27-differential-drive-kinematics
+  - m05-l28-line-following-robot
+  - m05-l29-obstacle-avoiding-robot
+  - m05-l30-capstone-robot-design

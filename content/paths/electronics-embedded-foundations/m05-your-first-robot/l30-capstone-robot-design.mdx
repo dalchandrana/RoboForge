@@ -1,0 +1,122 @@
+---
+id: m05-l30-capstone-robot-design
+title: "Capstone Project: Design Your Own Mini-Robot"
+path: electronics-embedded-foundations
+module: m05-your-first-robot
+order: 30
+level: advanced
+minutes: 30
+prerequisites:
+  - m05-l27-differential-drive-kinematics
+  - m05-l28-line-following-robot
+  - m05-l29-obstacle-avoiding-robot
+objectives:
+  - "Apply the 4-stage engineering cycle (Plan, Simulate, Build, Reflect)"
+  - "Calculate full system power budget and verify battery discharge safety"
+  - "Validate autonomous robot hardware assembly and document troubleshooting observations"
+keyIdeas:
+  - "The robotics engineering lifecycle follows four stages: Plan -> Simulate -> Build -> Test & Reflect."
+  - "Power budgets must be verified before connecting motors to prevent voltage sag and microcontroller resets."
+  - "Virtual simulation allows testing navigation logic and sensor thresholds safely before touching physical hardware."
+  - "Systematic troubleshooting isolates issues one subsystem at a time: power, inputs, code logic, and actuator outputs."
+tags:
+  - capstone
+  - robot-design
+  - engineering-cycle
+  - power-budget
+glossary:
+  - capstone
+  - robot-design
+  - engineering-cycle
+  - power-budget
+needsHumanVerification: false
+verified: true
+sources:
+  - title: "NASA Systems Engineering Handbook (Project Lifecycle)"
+    url: "https://www.nasa.gov/connect/ebooks/sp-2016-6105-rev2.html"
+license: CC-BY-SA-4.0
+authors:
+  - "RoboForge Team"
+locale: en
+---
+
+# Capstone Project: Design Your Own Mini-Robot
+
+Congratulations on reaching **Lesson 30**—the culminating milestone of the **Electronics & Embedded Foundations** curriculum! 
+
+You have mastered the physical fundamentals:
+1. **Electricity & Circuit Theory:** Voltage, current, Ohm's law, and Kirchhoff's laws.
+2. **Components & Electronics:** Resistors, LEDs, capacitors, transistors, and diodes.
+3. **Embedded Microcontrollers:** Arduino architecture, digital I/O, ADC analog reading, PWM timers, and UART serial debugging.
+4. **Motion & Power Systems:** DC gearmotors, H-bridges, servo positioners, power budgets, and optical encoders.
+5. **Mobile Robotics & Autonomy:** Differential-drive kinematics, optical line following, and ultrasonic sonar navigation.
+
+Now, you will apply the **complete professional robotics engineering cycle** to design, simulate, build, and document your own robot!
+
+---
+
+## 1. The 4-Stage Robotics Engineering Cycle
+
+```
+[ 1. PLAN ] ------> [ 2. SIMULATE ] ------> [ 3. BUILD ] ------> [ 4. REFLECT ]
+  Goal & BOM           Virtual Twin           Physical Hardware     Troubleshooting
+  Power Budget         Code Verification      Wiring & Assembly     Maker Log & Share
+```
+
+### Stage 1: Plan & Specify
+- **Mission Goal:** What specific task does your robot perform? (e.g. maze navigator, line follower with obstacle stop, remote teleoperated rover).
+- **Bill of Materials (BOM):** Choose standard parts from your Starter or Builder Kit.
+- **Power Budget:** Calculate peak stall current:
+  $$I_{\text{total}} = 2 \times I_{\text{motor\_stall}} + I_{\text{arduino}} + I_{\text{sensors}} + I_{\text{servo}}$$
+  Ensure your $4\times\text{AA}$ battery pack can supply this current without voltage sag below $4.5\,\text{V}$.
+- **Pinout Allocation Table:** Map every sensor and driver pin to Arduino I/O, avoiding pin conflicts.
+
+### Stage 2: Simulate in RoboForge First!
+Before wiring a single physical jumper wire:
+1. Verify component resistor values and driver wiring in the **⚡ Circuit Simulator**.
+2. Test sketch logic and serial outputs in the **🤖 Arduino Simulator**.
+3. Validate steering thresholds and state machines in the **🏎️ 2D Robot Simulator**.
+
+### Stage 3: Assemble Physical Hardware
+- Mount motors, wheels, and caster ball to the chassis plate.
+- Install the L298N motor driver and Arduino Uno securely with standoff screws.
+- Connect power lines, verifying polarity (Red $= +$, Black $= \text{GND}$).
+- Double-check **common ground**: the battery negative, L298N ground, and Arduino GND must all be tied together!
+
+### Stage 4: Test, Calibrate & Reflect
+- Test subsystems individually:
+  1. Power LED on?
+  2. Motor test: run each wheel forward and reverse for 1 second.
+  3. Sensor test: print sensor values to the Serial Monitor.
+  4. Autonomous loop: place in floor arena and tune control constants ($K_p$ or distance thresholds).
+- Record build notes and photos in your **Workshop Build Log**!
+
+---
+
+## 2. Capstone Evaluation Rubric
+
+| Criterion | Standard | Evidence Required |
+|---|---|---|
+| **1. Engineering Plan** | Clear mission statement, complete BOM, power budget calculation, and pinout table. | Written design notes or schematic. |
+| **2. Virtual Simulation** | Circuit netlist verified, sketch compiled, and autonomous navigation tested in 2D arena. | Successful virtual test run in RoboForge. |
+| **3. Hardware Build** | Neatly wired physical robot conforming to Class III SELV safety directives ($\le 12\,\text{V}$, $\le 2\,\text{A}$). | Physical photos or workshop assembly notes. |
+| **4. Reflection & Learning** | Documented troubleshooting observations: what failed first, how it was solved, and future improvements. | Completed entry in Workshop Build Log. |
+
+---
+
+<Callout type="safety">
+**Capstone Safety Checklist:**
+1. **Low-voltage Class III SELV:** All robot electronics must operate at $\le 12\,\text{V}$ DC and $\le 2\,\text{A}$. Battery packs must be AA or 9V alkaline/NiMH. Never use raw unmanaged LiPo pouch cells or mains power.
+2. **Current-limiting protection:** Ensure an inline slide switch or fuse disconnects the battery pack when the robot is unattended.
+3. **Inspect before powering on:** Perform a manual continuity and short-circuit check between $+V_{\text{bat}}$ and $\text{GND}$ using a multimeter in resistance mode before inserting batteries!
+</Callout>
+
+---
+
+## 3. Graduation & The Journey Ahead
+
+Completing this Foundations curriculum marks your transition from a curious learner to an **authentic robotics engineer**. 
+
+You now understand how the software you write translates into electromagnetic fields, physical gear rotation, and purposeful autonomous motion.
+
+Celebrate your hard work, explore the **Projects** and **Practice** workbenches, and continue building the future!

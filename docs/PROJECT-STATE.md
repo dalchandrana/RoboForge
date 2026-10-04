@@ -163,11 +163,23 @@
   - Wired `onRobotRan` milestone in `App.tsx` marking `'ran-robot-sim'`.
   - Browser verification recording: `robot_simulator_demo`.
 
+- **Slice 3: Curriculum Completion (Module 5: Lessons 27–30 & Capstone)**
+  - Created Module 5 in `content/paths/electronics-embedded-foundations/m05-your-first-robot/`:
+    - `module.yaml`: Module 5 metadata and lesson sequence.
+    - `l27-differential-drive-kinematics.mdx`: Unicycle kinematics, wheel radius $R$, wheelbase $L$, body velocities ($v, \omega$), straight/pivot/zero-radius spin maneuvers, and `<Callout type="safety">` block.
+    - `l28-line-following-robot.mdx`: TCRT5000 optical reflectance sensors, track straddle mounting, discrete bang-bang vs smooth proportional steering, and `<Callout type="safety">` block.
+    - `l29-obstacle-avoiding-robot.mdx`: HC-SR04 ultrasonic echo time-of-flight, microsecond pulse decoding ($d = t / 58.2$), non-blocking reactive finite state machine (`FORWARD` -> `BACKUP` -> `TURN`), and `<Callout type="safety">` block.
+    - `l30-capstone-robot-design.mdx`: 4-stage engineering lifecycle (Plan, Simulate, Build, Reflect), total stall power budget, evaluation rubric, multimeter continuity verification, and `<Callout type="safety">` block.
+    - 4 comprehensive quizzes (`quizzes/q-m05-l27...` to `q-m05-l30...`) with multi-choice questions and explanatory feedback.
+  - Updated `path.yaml` linking all 5 curriculum modules.
+  - Bundled static payload into `apps/desktop/src/content-bundle.json` with 30 lessons.
+  - Validated with `tools/content-lint`: 30 lessons, 20 components, 5 projects, 2 kits (0 warnings, 0 errors).
+
 ## Test & Coverage Status
 - **Unit Test Suite:** 147 tests passing across 12 test files (100% pass rate).
 - **Code Coverage:** >94% statements, >97% functions across all workspace packages.
 - **Lint & Types:** ESLint (0 errors, 0 warnings), TypeScript strict mode (0 errors across 15 workspace projects).
-- **Content Check:** 26 lessons, 20 components, 5 projects, 2 kits (0 warnings, 0 errors).
+- **Content Check:** 30 lessons, 20 components, 5 projects, 2 kits (0 warnings, 0 errors).
 - **Browser Verifications:**
   - `circuit_sim_demo`
   - `mdx_challenge_demo`
@@ -182,18 +194,16 @@
   - `robot_simulator_demo`
 
 ## In progress
-- Phase 3, Slice 3: Curriculum Completion (Module 5: Lessons 27–30 & Capstone).
+- Phase 3, Slice 4: Project Build Logs & Community Sharing (FR-PRJ-05, FR-PRJ-06).
 
 ## Next (Phase 3 Milestones)
-1. **Slice 3: Curriculum Completion (Module 5: Lessons 27–30 & Capstone):**
-   - L27 differential drive, L28 line follower, L29 obstacle car, L30 capstone robot.
-3. **Slice 4: Project Build Logs & Community Sharing (FR-PRJ-05, FR-PRJ-06):**
+1. **Slice 4: Project Build Logs & Community Sharing (FR-PRJ-05, FR-PRJ-06):**
    - SQLite `project_logs`, export PR template, completion certificate.
-4. **Slice 5: Accessibility, Low-Spec Mode & Performance Hardening:**
+2. **Slice 5: Accessibility, Low-Spec Mode & Performance Hardening:**
    - Low-spec toggle, full keyboard navigation, WCAG 2.2 AA.
-5. **Slice 6: Multi-Platform Desktop Packaging & Release Workflows:**
+3. **Slice 6: Multi-Platform Desktop Packaging & Release Workflows:**
    - Tauri bundle config, GitHub Actions matrix build.
-6. **Slice 7: Docs, Templates & Final Launch Audit:**
+4. **Slice 7: Docs, Templates & Final Launch Audit:**
    - `CONTRIBUTING.md`, issue templates, educator pack.
 
 ## Open questions (for the maintainer)

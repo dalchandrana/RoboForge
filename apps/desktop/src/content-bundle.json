@@ -1,5 +1,5 @@
 {
-  "builtAt": "2026-10-04T08:50:53.788Z",
+  "builtAt": "2026-10-04T17:57:21.035Z",
   "paths": {
     "electronics-embedded-foundations": {
       "id": "electronics-embedded-foundations",
@@ -9,7 +9,8 @@
         "m01-electricity-basics",
         "m02-discrete-circuits",
         "m03-arduino-and-code",
-        "m04-motion-and-actuators"
+        "m04-motion-and-actuators",
+        "m05-your-first-robot"
       ]
     }
   },
@@ -70,6 +71,18 @@
         "m04-l24-stepper-motors-basics",
         "m04-l25-robot-power-and-current-budgets",
         "m04-l26-rotary-encoders-motion-feedback"
+      ]
+    },
+    "m05-your-first-robot": {
+      "id": "m05-your-first-robot",
+      "title": "Module 5: Your First Mobile Robot",
+      "description": "Bring circuits, microcontrollers, and actuators together into autonomous mobile robots with sensors and closed-loop control.",
+      "order": 5,
+      "lessons": [
+        "m05-l27-differential-drive-kinematics",
+        "m05-l28-line-following-robot",
+        "m05-l29-obstacle-avoiding-robot",
+        "m05-l30-capstone-robot-design"
       ]
     }
   },
@@ -2951,6 +2964,511 @@
               }
             ],
             "explanation": "Interrupt Service Routines (ISRs) guarantee that high-speed pulse trains are captured even if the main program is executing other logic."
+          }
+        ]
+      }
+    },
+    "m05-l27-differential-drive-kinematics": {
+      "frontmatter": {
+        "id": "m05-l27-differential-drive-kinematics",
+        "title": "Differential Drive Kinematics: How Two-Wheel Robots Turn",
+        "path": "electronics-embedded-foundations",
+        "module": "m05-your-first-robot",
+        "order": 27,
+        "level": "intermediate",
+        "minutes": 20,
+        "prerequisites": [
+          "m04-l21-dc-motors-and-back-emf",
+          "m04-l22-h-bridge-motor-drivers"
+        ],
+        "objectives": [
+          "Understand unicycle and differential-drive mobile robot geometry",
+          "Calculate linear velocity and turning rate from individual wheel angular speeds",
+          "Execute straight, pivot, and zero-radius spin in-place maneuvers"
+        ],
+        "keyIdeas": [
+          "Differential drive steers by spinning two independent drive wheels at different speeds (omega_L and omega_R).",
+          "Body linear velocity is the average of wheel surface speeds: v = (R / 2) * (omega_R + omega_L).",
+          "Body angular velocity depends on wheel speed difference divided by wheelbase: omega = (R / L) * (omega_R - omega_L).",
+          "When wheels spin in opposite directions at equal speed (omega_L = -omega_R), the robot spins in place with zero forward motion."
+        ],
+        "tags": [
+          "differential-drive",
+          "kinematics",
+          "mobile-robots",
+          "turning-radius"
+        ],
+        "glossary": [
+          "differential-drive",
+          "kinematics",
+          "wheelbase",
+          "turning-radius"
+        ],
+        "needsHumanVerification": false,
+        "verified": true,
+        "sources": [
+          {
+            "title": "Siegwart & Nourbakhsh, Introduction to Autonomous Mobile Robots",
+            "url": "https://mitpress.mit.edu/9780262015356/introduction-to-autonomous-mobile-robots/"
+          }
+        ],
+        "license": "CC-BY-SA-4.0",
+        "authors": [
+          "RoboForge Team"
+        ],
+        "locale": "en"
+      },
+      "rawMarkdown": "# Differential Drive Kinematics: How Two-Wheel Robots Turn\n\nAlmost every mobile robot uses **differential-drive steering**. \n\nCars use complex steering racks to turn their front wheels. In contrast, a differential robot has two fixed drive wheels. A passive caster ball balances the chassis.\n\nWe steer by varying the individual speeds of the left and right motors!\n\n---\n\n## 1. The Anatomy of a 2WD Mobile Robot\n\nConsider our standard RoboForge 2WD chassis (matching Starter Kit and Project P3/P4):\n\n- **Wheel Radius ($R$):** The distance from axle to rubber tread. Standard yellow TT motors use $66\\,\\text{mm}$ wheels ($R = 3.3\\,\\text{cm}$).\n- **Wheelbase ($L$):** The distance between the left and right wheel contact points (typically $L = 13.5\\,\\text{cm}$).\n- **Caster Wheel:** An omnidirectional ball that supports the chassis without steering.\n\n```\n       [ Front Caster Ball ]\n                |\n          +-----------+\n[Left] ===|  Chassis  |===[Right]\nWheel     |  Body     |   Wheel\n(omega_L) +-----------+   (omega_R)\n                |\n          <- Wheelbase L ->\n```\n\n---\n\n## 2. Forward and Angular Kinematics\n\nEach wheel moves forward with linear speed:\n\n$$v_L = R \\times \\omega_L \\quad \\text{and} \\quad v_R = R \\times \\omega_R$$\n\nThe forward speed $v$ of the robot center is the average of both wheels:\n\n$$v = \\frac{v_R + v_L}{2} = \\frac{R}{2} (\\omega_R + \\omega_L)$$\n\nThe turning rate $\\omega$ depends on the wheel speed difference divided by wheelbase $L$:\n\n$$\\omega = \\frac{v_R - v_L}{L} = \\frac{R}{L} (\\omega_R - \\omega_L)$$\n\n---\n\n## 3. Four Core Maneuvers\n\nBy controlling motor directions and PWM duty cycles, we command four motions:\n\n### 1. Straight Line Forward ($\\omega_L = \\omega_R > 0$)\n- Linear velocity: $v = R \\times \\omega$\n- Angular velocity: $\\omega = 0$\n- The robot travels straight forward.\n\n### 2. In-Place Zero-Radius Spin ($\\omega_L = -\\omega_R$)\n- Linear velocity: $v = 0$\n- Angular velocity: $\\omega = \\frac{2 R}{L} \\omega_R$\n- The robot spins in place around its own center. This lets mobile robots escape tight dead-ends!\n\n### 3. Pivot Turn ($\\omega_L = 0, \\omega_R > 0$)\n- One wheel locks stationary.\n- The other wheel drives forward, swinging the robot around the locked wheel.\n\n### 4. Smooth Curved Arc ($\\omega_R > \\omega_L > 0$)\n- Both wheels move forward, but at different speeds.\n- The robot follows a smooth circular curve around an **Instantaneous Center of Curvature (ICC)**.\n\n---\n\n<Callout type=\"safety\">\n**Tabletop and Mechanical Safety Directives:**\n1. **Never test driving on an elevated table:** A bug can drive the robot over the edge in seconds. This will break the chassis. Always test on the floor.\n2. **Pinch hazard:** Gearmotors generate strong torque. Keep fingers and loose hair away from spinning wheel rims.\n3. **Low-voltage limit:** Power motors from a battery pack ($\\le 6\\,\\text{V}$) with current $\\le 2\\,\\text{A}$.\n</Callout>\n\n---\n\n## 4. Summary & Practical Insights\n\nIn code, the Arduino microcontroller controls wheel speeds using PWM:\n\n```cpp\n// Tank steering function for L298N driver\nvoid setMotorSpeeds(int leftPwm, int rightPwm) {\n  // Positive PWM = forward, negative PWM = reverse\n  setLeftMotor(leftPwm);\n  setRightMotor(rightPwm);\n}\n\n// Spin 90 degrees right in place\nvoid spinRightInPlace() {\n  setMotorSpeeds(180, -180); // Left forward, Right backward\n}\n```\n\nNow let's verify your understanding with the quiz below!",
+      "quiz": {
+        "id": "q-m05-l27-differential-drive-kinematics",
+        "items": [
+          {
+            "type": "single",
+            "prompt": "A 2WD mobile robot has wheel radius R = 3.0 cm and wheelbase L = 12.0 cm. If both wheels spin forward at 10 rad/s, what is the robot's forward linear velocity?",
+            "choices": [
+              {
+                "text": "30.0 cm/s",
+                "correct": true
+              },
+              {
+                "text": "15.0 cm/s",
+                "correct": false
+              },
+              {
+                "text": "60.0 cm/s",
+                "correct": false
+              },
+              {
+                "text": "0 cm/s",
+                "correct": false
+              }
+            ],
+            "explanation": "When both wheels spin forward at omega = 10 rad/s, linear speed is v = R * omega = 3.0 cm * 10 rad/s = 30.0 cm/s."
+          },
+          {
+            "type": "single",
+            "prompt": "To execute a zero-radius spin to the left in place, what should the motor speeds be?",
+            "choices": [
+              {
+                "text": "Left wheel reverse at -150 PWM, right wheel forward at +150 PWM",
+                "correct": true
+              },
+              {
+                "text": "Left wheel forward at 150 PWM, right wheel forward at 150 PWM",
+                "correct": false
+              },
+              {
+                "text": "Left wheel forward at +150 PWM, right wheel stopped at 0 PWM",
+                "correct": false
+              },
+              {
+                "text": "Left wheel stopped, right wheel stopped",
+                "correct": false
+              }
+            ],
+            "explanation": "Spinning the left wheel in reverse while driving the right wheel forward produces equal and opposite tangential forces, causing pure counter-clockwise (left) rotation with zero net translation."
+          },
+          {
+            "type": "single",
+            "prompt": "Why must autonomous mobile robot code never be initially bench-tested on an elevated tabletop without a boundary enclosure?",
+            "choices": [
+              {
+                "text": "Unexpected sensor readings or logic bugs can drive the robot over the edge within a second, causing catastrophic mechanical impact damage",
+                "correct": true
+              },
+              {
+                "text": "Table surfaces damage the rubber wheel rims",
+                "correct": false
+              },
+              {
+                "text": "Microcontrollers cannot receive infrared signals at table height",
+                "correct": false
+              },
+              {
+                "text": "Batteries discharge twice as fast on wooden tables",
+                "correct": false
+              }
+            ],
+            "explanation": "Autonomous navigation code should always be tested on the floor or in an enclosed arena to prevent expensive falls."
+          }
+        ]
+      }
+    },
+    "m05-l28-line-following-robot": {
+      "frontmatter": {
+        "id": "m05-l28-line-following-robot",
+        "title": "Autonomous Line Follower: Optical Reflectance & Control",
+        "path": "electronics-embedded-foundations",
+        "module": "m05-your-first-robot",
+        "order": 28,
+        "level": "intermediate",
+        "minutes": 20,
+        "prerequisites": [
+          "m05-l27-differential-drive-kinematics",
+          "m03-l16-analog-input-sensors"
+        ],
+        "objectives": [
+          "Understand how TCRT5000 optical reflectance sensors distinguish floor materials",
+          "Position dual IR sensors in a track straddle configuration",
+          "Implement discrete bang-bang and smooth proportional closed-loop steering"
+        ],
+        "keyIdeas": [
+          "TCRT5000 sensors use an infrared LED and phototransistor to measure surface reflectivity: black tape absorbs IR, white floor reflects IR.",
+          "Dual sensors straddle the track line so that steering corrections keep the line centered between them.",
+          "Bang-bang control uses simple IF/ELSE thresholds: if left sees line, turn left; if right sees line, turn right.",
+          "Proportional control uses analog reflectance differences to steer smoothly without violent zig-zag oscillation."
+        ],
+        "tags": [
+          "line-follower",
+          "tcrt5000",
+          "infrared-reflectance",
+          "closed-loop-control"
+        ],
+        "glossary": [
+          "line-follower",
+          "tcrt5000",
+          "infrared-reflectance",
+          "proportional-control"
+        ],
+        "needsHumanVerification": false,
+        "verified": true,
+        "sources": [
+          {
+            "title": "Vishay TCRT5000 Reflective Optical Sensor Datasheet",
+            "url": "https://www.vishay.com/docs/83760/tcrt5000.pdf"
+          }
+        ],
+        "license": "CC-BY-SA-4.0",
+        "authors": [
+          "RoboForge Team"
+        ],
+        "locale": "en"
+      },
+      "rawMarkdown": "# Autonomous Line Follower: Optical Reflectance & Control\n\nA **Line Follower Robot** is the quintessential rite-of-passage project in robotics (Project P3). It navigates an unknown path marked by dark electrical tape on a light floor, completely autonomously!\n\n---\n\n## 1. How Infrared Reflectance Sensors Work\n\nThe standard line sensor is the **TCRT5000 optical sensor module**. It houses two miniature optoelectronic components pointing downwards toward the floor:\n\n1. **Infrared Emitter LED:** Constantly emits an invisible beam of infrared light (wavelength $\\sim 950\\,\\text{nm}$).\n2. **Phototransistor Receiver:** Measures the intensity of infrared light bouncing back off the surface.\n\n```\n       [ TCRT5000 Module ]\n          (IR LED)  (Phototransistor)\n             |           ^\n      Light  v           |  Reflected\n     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n           Floor Surface (Ground)\n```\n\n- **White / Light Floor:** Highly reflective. A large amount of IR light bounces into the phototransistor, pulling the sensor output to LOW (digital 0, high voltage reflection).\n- **Black Electrical Tape:** Absorbs infrared radiation. Very little light bounces back, turning the phototransistor off and yielding a HIGH reading (digital 1, low reflection).\n\n---\n\n## 2. Dual-Sensor Positioning\n\nTo track a line reliably, two sensors (Left and Right) are mounted at the front underbelly of the chassis. The distance between the sensors is chosen so they **straddle** the line:\n\n```\n  [Left Sensor]                  [Right Sensor]\n       |                              |\n       v                              v\n  (White Floor)   [Black Tape]   (White Floor)\n```\n\n- When the robot is driving perfectly centered, **both sensors see white floor** (`0, 0`).\n- If the track curves left, the robot continues forward momentarily, causing the **Left sensor to hit black tape** (`1, 0`).\n- If the track curves right, the **Right sensor hits black tape** (`0, 1`).\n\n---\n\n## 3. Control Algorithm: Discrete Bang-Bang\n\nThe simplest line following algorithm is **Bang-Bang control**:\n\n| Left Sensor | Right Sensor | Interpretation | Commanded Action | Left Motor | Right Motor |\n|:---:|:---:|---|---|:---:|:---:|\n| **0** (Floor) | **0** (Floor) | Centered on line | Drive straight forward | `+140 PWM` | `+140 PWM` |\n| **1** (Line) | **0** (Floor) | Track curved left | Steer sharply left | `-80 PWM` | `+140 PWM` |\n| **0** (Floor) | **1** (Line) | Track curved right | Steer sharply right | `+140 PWM` | `-80 PWM` |\n| **1** (Line) | **1** (Line) | T-junction or cross | Crawl forward slowly | `+90 PWM` | `+90 PWM` |\n\nIn Arduino C++ code:\n\n```cpp\nconst int PIN_IR_LEFT = 2;\nconst int PIN_IR_RIGHT = 3;\n\nvoid loop() {\n  bool left = digitalRead(PIN_IR_LEFT) == HIGH;\n  bool right = digitalRead(PIN_IR_RIGHT) == HIGH;\n\n  if (!left && !right) {\n    driveForward(140);\n  } else if (left && !right) {\n    turnLeft(120);\n  } else if (!left && right) {\n    turnRight(120);\n  } else {\n    driveForward(90);\n  }\n}\n```\n\n---\n\n## 4. Upgrading to Smooth Proportional (P) Control\n\nBang-bang control produces a noticeable \"wobble\" or zig-zag as the robot bounces between the two sensors. \n\nBy connecting the TCRT5000 analog outputs (`A0` and `A1`) to Arduino ADC channels, we measure continuous reflectance from $0$ to $1023$:\n\n$$\\text{Error} = \\text{Analog}_{\\text{Left}} - \\text{Analog}_{\\text{Right}}$$\n$$\\text{Steering Adjustment} = K_p \\times \\text{Error}$$\n\n$$\\text{PWM}_{\\text{Left}} = \\text{BasePWM} - \\text{Adjustment}$$\n$$\\text{PWM}_{\\text{Right}} = \\text{BasePWM} + \\text{Adjustment}$$\n\nWhen the line is centered, $\\text{Error} \\approx 0$, and both wheels turn at identical speeds. When the line drifts slightly to the left, a gentle adjustment is applied proportionally, eliminating violent jerky movements!\n\n---\n\n<Callout type=\"safety\">\n**Chassis & Power Safety Directives:**\n1. **Sensor Ground Clearance:** Ensure the TCRT5000 module PCB is mounted $3\\text{--}8\\,\\text{mm}$ above the floor. If mounted too high ($> 15\\,\\text{mm}$), ambient daylight will overwhelm the phototransistor. If too low ($< 2\\,\\text{mm}$), it will scrape the floor and short out.\n2. **Current Spikes During Rapid Direction Changes:** When reversing a DC motor rapidly (e.g. from $+140$ to $-80$), back-EMF current spikes can reset the Arduino. Always ensure common ground and separate battery lines for the L298N motor driver.\n3. **Low-voltage requirement:** Do not exceed $9\\,\\text{V}$ DC on the motor driver supply.\n</Callout>\n\n---\n\n## 5. Summary & Key Takeaways\n\n1. **Optical contrast** allows autonomous path tracking using inexpensive infrared pairs.\n2. **Dual-sensor straddle geometry** makes detecting left vs right track departures straightforward.\n3. **Proportional feedback** softens the aggressive oscillations of bang-bang logic.\n\nTest your knowledge with the quiz below!",
+      "quiz": {
+        "id": "q-m05-l28-line-following-robot",
+        "items": [
+          {
+            "type": "single",
+            "prompt": "Why does standard black electrical tape appear 'dark' to an optical line sensor while a white floor appears 'bright'?",
+            "choices": [
+              {
+                "text": "Black vinyl absorbs the emitted 950nm infrared light, reflecting very little back to the receiver phototransistor",
+                "correct": true
+              },
+              {
+                "text": "Black electrical tape generates its own magnetic field that repels photons",
+                "correct": false
+              },
+              {
+                "text": "The sensor uses ultrasonic sonar, not light",
+                "correct": false
+              },
+              {
+                "text": "Black tape conducts electricity from the sensor pins",
+                "correct": false
+              }
+            ],
+            "explanation": "Black surfaces absorb infrared radiation, while white/light surfaces reflect infrared light back into the detector phototransistor."
+          },
+          {
+            "type": "single",
+            "prompt": "In a 2-sensor straddle configuration, what action should the robot take when the left sensor detects black tape while the right sensor detects white floor?",
+            "choices": [
+              {
+                "text": "Steer left by reversing or slowing the left wheel and driving the right wheel forward",
+                "correct": true
+              },
+              {
+                "text": "Steer right by reversing the right wheel",
+                "correct": false
+              },
+              {
+                "text": "Full reverse both motors at maximum speed",
+                "correct": false
+              },
+              {
+                "text": "Cut power to all motors",
+                "correct": false
+              }
+            ],
+            "explanation": "If the left sensor sees the line, the line is drifting left relative to the robot chassis; steering left re-centers the line between the two sensors."
+          },
+          {
+            "type": "single",
+            "prompt": "What is the primary advantage of Proportional (P) control over Bang-Bang control in a line follower?",
+            "choices": [
+              {
+                "text": "It scales the steering effort continuously based on error magnitude, resulting in smooth track tracking instead of aggressive zig-zag wobble",
+                "correct": true
+              },
+              {
+                "text": "It reduces battery voltage by half",
+                "correct": false
+              },
+              {
+                "text": "It allows the robot to fly over track gaps",
+                "correct": false
+              },
+              {
+                "text": "It eliminates the need for an H-bridge driver",
+                "correct": false
+              }
+            ],
+            "explanation": "Proportional control applies gentle corrections for minor line drift and stronger corrections for sharp corners, eliminating oscillatory hunting."
+          }
+        ]
+      }
+    },
+    "m05-l29-obstacle-avoiding-robot": {
+      "frontmatter": {
+        "id": "m05-l29-obstacle-avoiding-robot",
+        "title": "Obstacle-Avoiding Robot: Ultrasonic Sonar Navigation",
+        "path": "electronics-embedded-foundations",
+        "module": "m05-your-first-robot",
+        "order": 29,
+        "level": "intermediate",
+        "minutes": 20,
+        "prerequisites": [
+          "m05-l27-differential-drive-kinematics",
+          "m03-l15-digital-io-and-pullups"
+        ],
+        "objectives": [
+          "Understand ultrasonic acoustic echo time-of-flight ranging",
+          "Trigger and decode HC-SR04 sonar pulses with microsecond timing",
+          "Implement a responsive non-blocking finite state machine for obstacle avoidance"
+        ],
+        "keyIdeas": [
+          "Ultrasonic sonar measures distance via time-of-flight of sound pulses: distance = (time * speedOfSound) / 2.",
+          "The HC-SR04 requires a 10 microsecond trigger pulse, emitting eight 40 kHz acoustic bursts.",
+          "A finite state machine (FORWARD -> BACKUP -> TURN) prevents navigation deadlocks.",
+          "Active pan servos scan left and right to choose the direction with maximum open clearance."
+        ],
+        "tags": [
+          "obstacle-avoidance",
+          "hc-sr04",
+          "ultrasonic-sensor",
+          "time-of-flight"
+        ],
+        "glossary": [
+          "obstacle-avoidance",
+          "hc-sr04",
+          "ultrasonic-sensor",
+          "time-of-flight"
+        ],
+        "needsHumanVerification": false,
+        "verified": true,
+        "sources": [
+          {
+            "title": "ElecFreaks HC-SR04 Ultrasonic Ranging Module User Guide",
+            "url": "https://www.elecfreaks.com/learn-en/hc-sr04-ultrasonic-sensor.html"
+          }
+        ],
+        "license": "CC-BY-SA-4.0",
+        "authors": [
+          "RoboForge Team"
+        ],
+        "locale": "en"
+      },
+      "rawMarkdown": "# Obstacle-Avoiding Robot: Ultrasonic Sonar Navigation\n\nIn structured environments, robots can follow pre-marked lines. But in unstructured, real-world rooms—such as autonomous vacuum cleaners or warehouse rovers—robots must navigate around unexpected obstacles without human intervention (Project P4).\n\n---\n\n## 1. How Ultrasonic Sonar Measures Distance\n\nThe **HC-SR04** ultrasonic distance sensor module mimics the echolocation used by bats and marine sonar:\n\n```\n[ Arduino ] ---> (Trig: 10us) ---> [ Transmitter Eye ] ))))) 40 kHz Sound\n                                                                   |\n                                                              [ Obstacle ]\n                                                                   |\n[ Arduino ] <--- (Echo: Pulse) <--- [ Receiver Eye ]  ((((( Echo Return\n```\n\n1. **Triggering:** The microcontroller sends a short $10\\,\\mu\\text{s}$ digital `HIGH` pulse to the `TRIG` pin.\n2. **Acoustic Burst:** The sensor's onboard oscillator fires an eight-cycle sonic burst at $40\\,\\text{kHz}$ (inaudible to human ears).\n3. **Echo Measurement:** The sensor sets its `ECHO` pin `HIGH` simultaneously. When the reflected sound wave strikes the receiver crystal, the `ECHO` pin drops back to `LOW`.\n4. **Time of Flight (ToF):** The duration that the `ECHO` pin stays `HIGH` corresponds to the round-trip travel time $t$ of sound in air.\n\nAt room temperature ($20^\\circ\\text{C}$), sound travels at approximately $v_{\\text{sound}} \\approx 343\\,\\text{m/s} = 0.0343\\,\\text{cm/\\mu s}$.\n\nBecause the sound travels to the obstacle and bounces back, the distance is:\n\n$$\\text{Distance (cm)} = \\frac{t_{\\text{echo}}\\,(\\mu\\text{s}) \\times 0.0343}{2} = \\frac{t_{\\text{echo}}}{58.2}$$\n\n---\n\n## 2. Arduino Sonar Reading Routine\n\nUsing the built-in `pulseIn()` function:\n\n```cpp\nconst int PIN_TRIG = 9;\nconst int PIN_ECHO = 10;\n\nfloat readDistanceCm() {\n  // Clear trigger pin\n  digitalWrite(PIN_TRIG, LOW);\n  delayMicroseconds(2);\n\n  // Send 10us trigger pulse\n  digitalWrite(PIN_TRIG, HIGH);\n  delayMicroseconds(10);\n  digitalWrite(PIN_TRIG, LOW);\n\n  // Measure echo pulse width (timeout 25ms = ~4 meters)\n  unsigned long duration = pulseIn(PIN_ECHO, HIGH, 25000);\n\n  if (duration == 0) return 400.0; // No echo received (clear path)\n  return duration / 58.2;\n}\n```\n\n---\n\n## 3. Reactive Navigation State Machine\n\nA common rookie mistake is calling `delay(1000)` whenever an obstacle is detected. Blocking delays freeze sensor updates, causing the robot to plow into walls!\n\nInstead, we structure navigation as a **Finite State Machine (FSM)**:\n\n```\n  +-------------------------------------------------+\n  |                                                 |\n  v                                                 |\n[ FORWARD ] --(Dist <= 20cm)--> [ BACKUP ]          |\n                                    | (0.5s timer)  |\n                                    v               |\n                                [ TURN ] -----------+\n                                    (Dist > 35cm & 0.6s timer)\n```\n\n1. **`FORWARD` State:** Both motors drive forward at cruising speed. The sensor continuously samples clearance ahead.\n2. **`BACKUP` State:** Triggered when distance $\\le 20\\,\\text{cm}$. The robot reverses slowly for $0.5$ seconds to disengage from the obstacle.\n3. **`TURN` State:** The robot spins in place around its vertical axis until the sonar path ahead reads clear ($> 35\\,\\text{cm}$) for at least $0.6$ seconds. Once clear, it returns to `FORWARD`.\n\n---\n\n## 4. Pan-Radar Enhancement (Servo Scanning)\n\nFor advanced navigation, we mount the HC-SR04 on an **SG90 micro-servo motor**:\n\n1. When blocked ahead, stop the drive wheels.\n2. Pan the servo $45^\\circ$ left: measure distance $D_{\\text{left}}$.\n3. Pan the servo $45^\\circ$ right: measure distance $D_{\\text{right}}$.\n4. Re-center the servo, and turn the robot in the direction that has greater clearance!\n\n---\n\n<Callout type=\"safety\">\n**Obstacle & Sonar Safety Rules:**\n1. **Low-voltage battery supply:** Never power motors directly from the Arduino 5V pin. The instantaneous motor inrush current will brown out the microcontroller, causing continuous reboot cycles.\n2. **Floor clearance & trip hazards:** Keep the robot testing area clear of children, pets, electrical cords, and stairs.\n3. **Acoustic blind spots:** Soft materials (curtains, foam, thick carpets) absorb $40\\,\\text{kHz}$ ultrasound instead of reflecting it. The sensor may report a false \"clear path\" when approaching a soft object.\n</Callout>\n\n---\n\n## 5. Summary & Key Takeaways\n\n1. **Time-of-flight sensing** enables accurate non-contact distance ranging from $2\\,\\text{cm}$ to $400\\,\\text{cm}$.\n2. **State machine architectures** guarantee responsive, non-blocking real-time navigation.\n3. Combining sonar with pan servos gives the robot 2D spatial awareness.\n\nCheck your comprehension with the quiz below!",
+      "quiz": {
+        "id": "q-m05-l29-obstacle-avoiding-robot",
+        "items": [
+          {
+            "type": "single",
+            "prompt": "An HC-SR04 sensor measures an echo pulse duration of 1164 microseconds. What is the approximate distance to the obstacle in front of the robot?",
+            "choices": [
+              {
+                "text": "20.0 cm",
+                "correct": true
+              },
+              {
+                "text": "10.0 cm",
+                "correct": false
+              },
+              {
+                "text": "40.0 cm",
+                "correct": false
+              },
+              {
+                "text": "200.0 cm",
+                "correct": false
+              }
+            ],
+            "explanation": "Distance = duration / 58.2 = 1164 / 58.2 = 20.0 cm."
+          },
+          {
+            "type": "single",
+            "prompt": "Why should you avoid using blocking functions like delay(1000) inside autonomous navigation loops?",
+            "choices": [
+              {
+                "text": "Because delay() halts the CPU, preventing the robot from reading new sonar pulses or detecting collisions during that full second",
+                "correct": true
+              },
+              {
+                "text": "Because delay() drains the battery twice as quickly",
+                "correct": false
+              },
+              {
+                "text": "Because delay() is forbidden in C++ code",
+                "correct": false
+              },
+              {
+                "text": "Because ultrasonic sound waves travel backwards during delay()",
+                "correct": false
+              }
+            ],
+            "explanation": "Blocking delays freeze the program, leaving the robot blind to real-time sensor updates while motors are spinning."
+          },
+          {
+            "type": "single",
+            "prompt": "What acoustic characteristic can cause an ultrasonic sonar to fail to detect a soft cushion or thick velvet curtain?",
+            "choices": [
+              {
+                "text": "Porous, soft materials absorb 40 kHz sound waves rather than reflecting them, preventing an echo pulse from reaching the receiver",
+                "correct": true
+              },
+              {
+                "text": "Cushions emit high-frequency microwave interference",
+                "correct": false
+              },
+              {
+                "text": "Soft materials reverse the polarity of sound",
+                "correct": false
+              },
+              {
+                "text": "The cushion attracts the ultrasonic sound cone magnetically",
+                "correct": false
+              }
+            ],
+            "explanation": "Ultrasound relies on reflection from hard surfaces. Soft sound-absorbing materials can create acoustic blind spots."
+          }
+        ]
+      }
+    },
+    "m05-l30-capstone-robot-design": {
+      "frontmatter": {
+        "id": "m05-l30-capstone-robot-design",
+        "title": "Capstone Project: Design Your Own Mini-Robot",
+        "path": "electronics-embedded-foundations",
+        "module": "m05-your-first-robot",
+        "order": 30,
+        "level": "advanced",
+        "minutes": 30,
+        "prerequisites": [
+          "m05-l27-differential-drive-kinematics",
+          "m05-l28-line-following-robot",
+          "m05-l29-obstacle-avoiding-robot"
+        ],
+        "objectives": [
+          "Apply the 4-stage engineering cycle (Plan, Simulate, Build, Reflect)",
+          "Calculate full system power budget and verify battery discharge safety",
+          "Validate autonomous robot hardware assembly and document troubleshooting observations"
+        ],
+        "keyIdeas": [
+          "The robotics engineering lifecycle follows four stages: Plan -> Simulate -> Build -> Test & Reflect.",
+          "Power budgets must be verified before connecting motors to prevent voltage sag and microcontroller resets.",
+          "Virtual simulation allows testing navigation logic and sensor thresholds safely before touching physical hardware.",
+          "Systematic troubleshooting isolates issues one subsystem at a time: power, inputs, code logic, and actuator outputs."
+        ],
+        "tags": [
+          "capstone",
+          "robot-design",
+          "engineering-cycle",
+          "power-budget"
+        ],
+        "glossary": [
+          "capstone",
+          "robot-design",
+          "engineering-cycle",
+          "power-budget"
+        ],
+        "needsHumanVerification": false,
+        "verified": true,
+        "sources": [
+          {
+            "title": "NASA Systems Engineering Handbook (Project Lifecycle)",
+            "url": "https://www.nasa.gov/connect/ebooks/sp-2016-6105-rev2.html"
+          }
+        ],
+        "license": "CC-BY-SA-4.0",
+        "authors": [
+          "RoboForge Team"
+        ],
+        "locale": "en"
+      },
+      "rawMarkdown": "# Capstone Project: Design Your Own Mini-Robot\n\nCongratulations on reaching **Lesson 30**—the culminating milestone of the **Electronics & Embedded Foundations** curriculum! \n\nYou have mastered the physical fundamentals:\n1. **Electricity & Circuit Theory:** Voltage, current, Ohm's law, and Kirchhoff's laws.\n2. **Components & Electronics:** Resistors, LEDs, capacitors, transistors, and diodes.\n3. **Embedded Microcontrollers:** Arduino architecture, digital I/O, ADC analog reading, PWM timers, and UART serial debugging.\n4. **Motion & Power Systems:** DC gearmotors, H-bridges, servo positioners, power budgets, and optical encoders.\n5. **Mobile Robotics & Autonomy:** Differential-drive kinematics, optical line following, and ultrasonic sonar navigation.\n\nNow, you will apply the **complete professional robotics engineering cycle** to design, simulate, build, and document your own robot!\n\n---\n\n## 1. The 4-Stage Robotics Engineering Cycle\n\n```\n[ 1. PLAN ] ------> [ 2. SIMULATE ] ------> [ 3. BUILD ] ------> [ 4. REFLECT ]\n  Goal & BOM           Virtual Twin           Physical Hardware     Troubleshooting\n  Power Budget         Code Verification      Wiring & Assembly     Maker Log & Share\n```\n\n### Stage 1: Plan & Specify\n- **Mission Goal:** What specific task does your robot perform? (e.g. maze navigator, line follower with obstacle stop, remote teleoperated rover).\n- **Bill of Materials (BOM):** Choose standard parts from your Starter or Builder Kit.\n- **Power Budget:** Calculate peak stall current:\n  $$I_{\\text{total}} = 2 \\times I_{\\text{motor\\_stall}} + I_{\\text{arduino}} + I_{\\text{sensors}} + I_{\\text{servo}}$$\n  Ensure your $4\\times\\text{AA}$ battery pack can supply this current without voltage sag below $4.5\\,\\text{V}$.\n- **Pinout Allocation Table:** Map every sensor and driver pin to Arduino I/O, avoiding pin conflicts.\n\n### Stage 2: Simulate in RoboForge First!\nBefore wiring a single physical jumper wire:\n1. Verify component resistor values and driver wiring in the **⚡ Circuit Simulator**.\n2. Test sketch logic and serial outputs in the **🤖 Arduino Simulator**.\n3. Validate steering thresholds and state machines in the **🏎️ 2D Robot Simulator**.\n\n### Stage 3: Assemble Physical Hardware\n- Mount motors, wheels, and caster ball to the chassis plate.\n- Install the L298N motor driver and Arduino Uno securely with standoff screws.\n- Connect power lines, verifying polarity (Red $= +$, Black $= \\text{GND}$).\n- Double-check **common ground**: the battery negative, L298N ground, and Arduino GND must all be tied together!\n\n### Stage 4: Test, Calibrate & Reflect\n- Test subsystems individually:\n  1. Power LED on?\n  2. Motor test: run each wheel forward and reverse for 1 second.\n  3. Sensor test: print sensor values to the Serial Monitor.\n  4. Autonomous loop: place in floor arena and tune control constants ($K_p$ or distance thresholds).\n- Record build notes and photos in your **Workshop Build Log**!\n\n---\n\n## 2. Capstone Evaluation Rubric\n\n| Criterion | Standard | Evidence Required |\n|---|---|---|\n| **1. Engineering Plan** | Clear mission statement, complete BOM, power budget calculation, and pinout table. | Written design notes or schematic. |\n| **2. Virtual Simulation** | Circuit netlist verified, sketch compiled, and autonomous navigation tested in 2D arena. | Successful virtual test run in RoboForge. |\n| **3. Hardware Build** | Neatly wired physical robot conforming to Class III SELV safety directives ($\\le 12\\,\\text{V}$, $\\le 2\\,\\text{A}$). | Physical photos or workshop assembly notes. |\n| **4. Reflection & Learning** | Documented troubleshooting observations: what failed first, how it was solved, and future improvements. | Completed entry in Workshop Build Log. |\n\n---\n\n<Callout type=\"safety\">\n**Capstone Safety Checklist:**\n1. **Low-voltage Class III SELV:** All robot electronics must operate at $\\le 12\\,\\text{V}$ DC and $\\le 2\\,\\text{A}$. Battery packs must be AA or 9V alkaline/NiMH. Never use raw unmanaged LiPo pouch cells or mains power.\n2. **Current-limiting protection:** Ensure an inline slide switch or fuse disconnects the battery pack when the robot is unattended.\n3. **Inspect before powering on:** Perform a manual continuity and short-circuit check between $+V_{\\text{bat}}$ and $\\text{GND}$ using a multimeter in resistance mode before inserting batteries!\n</Callout>\n\n---\n\n## 3. Graduation & The Journey Ahead\n\nCompleting this Foundations curriculum marks your transition from a curious learner to an **authentic robotics engineer**. \n\nYou now understand how the software you write translates into electromagnetic fields, physical gear rotation, and purposeful autonomous motion.\n\nCelebrate your hard work, explore the **Projects** and **Practice** workbenches, and continue building the future!",
+      "quiz": {
+        "id": "q-m05-l30-capstone-robot-design",
+        "items": [
+          {
+            "type": "single",
+            "prompt": "Why is calculating a power budget critical before assembling a physical mobile robot?",
+            "choices": [
+              {
+                "text": "To verify that the battery pack can supply the peak stall current of both motors plus the microcontroller without voltage sagging below the reset threshold",
+                "correct": true
+              },
+              {
+                "text": "To determine how many lines of C++ code the Arduino can store",
+                "correct": false
+              },
+              {
+                "text": "To adjust the color temperature of the built-in LED",
+                "correct": false
+              },
+              {
+                "text": "Power budgets are only necessary for satellites and space probes",
+                "correct": false
+              }
+            ],
+            "explanation": "If motor stall current exceeds battery capacity, voltage drops sharply, causing the Arduino to brown out and continuously reboot."
+          },
+          {
+            "type": "single",
+            "prompt": "What is the single most important safety check to perform with a multimeter before connecting the battery pack to your newly wired chassis?",
+            "choices": [
+              {
+                "text": "Measure the resistance between battery positive (+V) and GND to ensure there is no direct dead short circuit",
+                "correct": true
+              },
+              {
+                "text": "Check if the tires are inflated to 30 PSI",
+                "correct": false
+              },
+              {
+                "text": "Measure the ambient room temperature in Celsius",
+                "correct": false
+              },
+              {
+                "text": "Verify that the chassis acrylic is transparent",
+                "correct": false
+              }
+            ],
+            "explanation": "A continuity or resistance check across power rails prevents catastrophic short-circuit currents, melted jumper wires, or battery damage before power is applied."
+          },
+          {
+            "type": "single",
+            "prompt": "In the 4-stage engineering lifecycle, why should you always 'Simulate First' in software before wiring physical hardware?",
+            "choices": [
+              {
+                "text": "It allows rapid iteration, detects wiring mistakes and logic bugs safely, and prevents damaging expensive hardware components",
+                "correct": true
+              },
+              {
+                "text": "Simulation eliminates the need to ever build real robots",
+                "correct": false
+              },
+              {
+                "text": "Simulation makes the physical motors run twice as fast",
+                "correct": false
+              },
+              {
+                "text": "Hardware cannot be turned on without a simulation license",
+                "correct": false
+              }
+            ],
+            "explanation": "Simulating circuits and algorithms in software saves time, catches errors early, and prevents burning out real components."
           }
         ]
       }

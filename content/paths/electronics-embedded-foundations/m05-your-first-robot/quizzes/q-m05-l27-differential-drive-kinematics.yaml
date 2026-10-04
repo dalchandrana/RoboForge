@@ -1,0 +1,38 @@
+id: q-m05-l27-differential-drive-kinematics
+items:
+  - type: single
+    prompt: "A 2WD mobile robot has wheel radius R = 3.0 cm and wheelbase L = 12.0 cm. If both wheels spin forward at 10 rad/s, what is the robot's forward linear velocity?"
+    choices:
+      - text: "30.0 cm/s"
+        correct: true
+      - text: "15.0 cm/s"
+        correct: false
+      - text: "60.0 cm/s"
+        correct: false
+      - text: "0 cm/s"
+        correct: false
+    explanation: "When both wheels spin forward at omega = 10 rad/s, linear speed is v = R * omega = 3.0 cm * 10 rad/s = 30.0 cm/s."
+  - type: single
+    prompt: "To execute a zero-radius spin to the left in place, what should the motor speeds be?"
+    choices:
+      - text: "Left wheel reverse at -150 PWM, right wheel forward at +150 PWM"
+        correct: true
+      - text: "Left wheel forward at 150 PWM, right wheel forward at 150 PWM"
+        correct: false
+      - text: "Left wheel forward at +150 PWM, right wheel stopped at 0 PWM"
+        correct: false
+      - text: "Left wheel stopped, right wheel stopped"
+        correct: false
+    explanation: "Spinning the left wheel in reverse while driving the right wheel forward produces equal and opposite tangential forces, causing pure counter-clockwise (left) rotation with zero net translation."
+  - type: single
+    prompt: "Why must autonomous mobile robot code never be initially bench-tested on an elevated tabletop without a boundary enclosure?"
+    choices:
+      - text: "Unexpected sensor readings or logic bugs can drive the robot over the edge within a second, causing catastrophic mechanical impact damage"
+        correct: true
+      - text: "Table surfaces damage the rubber wheel rims"
+        correct: false
+      - text: "Microcontrollers cannot receive infrared signals at table height"
+        correct: false
+      - text: "Batteries discharge twice as fast on wooden tables"
+        correct: false
+    explanation: "Autonomous navigation code should always be tested on the floor or in an enclosed arena to prevent expensive falls."

@@ -1,0 +1,152 @@
+---
+id: m05-l28-line-following-robot
+title: "Autonomous Line Follower: Optical Reflectance & Control"
+path: electronics-embedded-foundations
+module: m05-your-first-robot
+order: 28
+level: intermediate
+minutes: 20
+prerequisites:
+  - m05-l27-differential-drive-kinematics
+  - m03-l16-analog-input-sensors
+objectives:
+  - "Understand how TCRT5000 optical reflectance sensors distinguish floor materials"
+  - "Position dual IR sensors in a track straddle configuration"
+  - "Implement discrete bang-bang and smooth proportional closed-loop steering"
+keyIdeas:
+  - "TCRT5000 sensors use an infrared LED and phototransistor to measure surface reflectivity: black tape absorbs IR, white floor reflects IR."
+  - "Dual sensors straddle the track line so that steering corrections keep the line centered between them."
+  - "Bang-bang control uses simple IF/ELSE thresholds: if left sees line, turn left; if right sees line, turn right."
+  - "Proportional control uses analog reflectance differences to steer smoothly without violent zig-zag oscillation."
+tags:
+  - line-follower
+  - tcrt5000
+  - infrared-reflectance
+  - closed-loop-control
+glossary:
+  - line-follower
+  - tcrt5000
+  - infrared-reflectance
+  - proportional-control
+needsHumanVerification: false
+verified: true
+sources:
+  - title: "Vishay TCRT5000 Reflective Optical Sensor Datasheet"
+    url: "https://www.vishay.com/docs/83760/tcrt5000.pdf"
+license: CC-BY-SA-4.0
+authors:
+  - "RoboForge Team"
+locale: en
+---
+
+# Autonomous Line Follower: Optical Reflectance & Control
+
+A **Line Follower Robot** is the quintessential rite-of-passage project in robotics (Project P3). It navigates an unknown path marked by dark electrical tape on a light floor, completely autonomously!
+
+---
+
+## 1. How Infrared Reflectance Sensors Work
+
+The standard line sensor is the **TCRT5000 optical sensor module**. It houses two miniature optoelectronic components pointing downwards toward the floor:
+
+1. **Infrared Emitter LED:** Constantly emits an invisible beam of infrared light (wavelength $\sim 950\,\text{nm}$).
+2. **Phototransistor Receiver:** Measures the intensity of infrared light bouncing back off the surface.
+
+```
+       [ TCRT5000 Module ]
+          (IR LED)  (Phototransistor)
+             |           ^
+      Light  v           |  Reflected
+     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           Floor Surface (Ground)
+```
+
+- **White / Light Floor:** Highly reflective. A large amount of IR light bounces into the phototransistor, pulling the sensor output to LOW (digital 0, high voltage reflection).
+- **Black Electrical Tape:** Absorbs infrared radiation. Very little light bounces back, turning the phototransistor off and yielding a HIGH reading (digital 1, low reflection).
+
+---
+
+## 2. Dual-Sensor Positioning
+
+To track a line reliably, two sensors (Left and Right) are mounted at the front underbelly of the chassis. The distance between the sensors is chosen so they **straddle** the line:
+
+```
+  [Left Sensor]                  [Right Sensor]
+       |                              |
+       v                              v
+  (White Floor)   [Black Tape]   (White Floor)
+```
+
+- When the robot is driving perfectly centered, **both sensors see white floor** (`0, 0`).
+- If the track curves left, the robot continues forward momentarily, causing the **Left sensor to hit black tape** (`1, 0`).
+- If the track curves right, the **Right sensor hits black tape** (`0, 1`).
+
+---
+
+## 3. Control Algorithm: Discrete Bang-Bang
+
+The simplest line following algorithm is **Bang-Bang control**:
+
+| Left Sensor | Right Sensor | Interpretation | Commanded Action | Left Motor | Right Motor |
+|:---:|:---:|---|---|:---:|:---:|
+| **0** (Floor) | **0** (Floor) | Centered on line | Drive straight forward | `+140 PWM` | `+140 PWM` |
+| **1** (Line) | **0** (Floor) | Track curved left | Steer sharply left | `-80 PWM` | `+140 PWM` |
+| **0** (Floor) | **1** (Line) | Track curved right | Steer sharply right | `+140 PWM` | `-80 PWM` |
+| **1** (Line) | **1** (Line) | T-junction or cross | Crawl forward slowly | `+90 PWM` | `+90 PWM` |
+
+In Arduino C++ code:
+
+```cpp
+const int PIN_IR_LEFT = 2;
+const int PIN_IR_RIGHT = 3;
+
+void loop() {
+  bool left = digitalRead(PIN_IR_LEFT) == HIGH;
+  bool right = digitalRead(PIN_IR_RIGHT) == HIGH;
+
+  if (!left && !right) {
+    driveForward(140);
+  } else if (left && !right) {
+    turnLeft(120);
+  } else if (!left && right) {
+    turnRight(120);
+  } else {
+    driveForward(90);
+  }
+}
+```
+
+---
+
+## 4. Upgrading to Smooth Proportional (P) Control
+
+Bang-bang control produces a noticeable "wobble" or zig-zag as the robot bounces between the two sensors. 
+
+By connecting the TCRT5000 analog outputs (`A0` and `A1`) to Arduino ADC channels, we measure continuous reflectance from $0$ to $1023$:
+
+$$\text{Error} = \text{Analog}_{\text{Left}} - \text{Analog}_{\text{Right}}$$
+$$\text{Steering Adjustment} = K_p \times \text{Error}$$
+
+$$\text{PWM}_{\text{Left}} = \text{BasePWM} - \text{Adjustment}$$
+$$\text{PWM}_{\text{Right}} = \text{BasePWM} + \text{Adjustment}$$
+
+When the line is centered, $\text{Error} \approx 0$, and both wheels turn at identical speeds. When the line drifts slightly to the left, a gentle adjustment is applied proportionally, eliminating violent jerky movements!
+
+---
+
+<Callout type="safety">
+**Chassis & Power Safety Directives:**
+1. **Sensor Ground Clearance:** Ensure the TCRT5000 module PCB is mounted $3\text{--}8\,\text{mm}$ above the floor. If mounted too high ($> 15\,\text{mm}$), ambient daylight will overwhelm the phototransistor. If too low ($< 2\,\text{mm}$), it will scrape the floor and short out.
+2. **Current Spikes During Rapid Direction Changes:** When reversing a DC motor rapidly (e.g. from $+140$ to $-80$), back-EMF current spikes can reset the Arduino. Always ensure common ground and separate battery lines for the L298N motor driver.
+3. **Low-voltage requirement:** Do not exceed $9\,\text{V}$ DC on the motor driver supply.
+</Callout>
+
+---
+
+## 5. Summary & Key Takeaways
+
+1. **Optical contrast** allows autonomous path tracking using inexpensive infrared pairs.
+2. **Dual-sensor straddle geometry** makes detecting left vs right track departures straightforward.
+3. **Proportional feedback** softens the aggressive oscillations of bang-bang logic.
+
+Test your knowledge with the quiz below!
