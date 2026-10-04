@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@roboforge/calculators": "workspace:*",
+    "@roboforge/coach": "workspace:*",
     "@roboforge/config": "workspace:*",
     "@roboforge/content-schema": "workspace:*",
     "@roboforge/graders": "workspace:*",

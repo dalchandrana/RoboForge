@@ -7,6 +7,7 @@ import { LearnView } from './views/LearnView';
 import { SettingsView } from './views/SettingsView';
 import { ToolsView } from './views/ToolsView';
 import { SimulatorView } from './views/SimulatorView';
+import { CoachView } from './views/CoachView';
 import { PlaceholderView } from './views/PlaceholderView';
 
 const storage = new StorageService();
@@ -236,21 +237,7 @@ export const App: React.FC = () => {
           />
         )}
 
-        {activeTab === 'coach' && (
-          <PlaceholderView
-            title="Socratic AI Coach"
-            icon="💬"
-            phase="Phase 1"
-            description="Private, on-device AI coach powered by localhost Ollama. Asks guiding questions and never spoils answers."
-            features={[
-              'Hint ladder (0 to 4): conceptual nudges before reveals',
-              'Context-aware: reads your current lesson and circuit netlist',
-              'Hardware safety guardrail intercepts dangerous topics',
-              'AI-Off mode for 100% authored hint experience',
-            ]}
-            onNavigateHome={() => setActiveTab('home')}
-          />
-        )}
+        {activeTab === 'coach' && <CoachView />}
       </main>
 
       {/* Toast Notification */}

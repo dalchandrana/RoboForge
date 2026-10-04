@@ -53,6 +53,9 @@ importers:
       '@roboforge/calculators':
         specifier: workspace:*
         version: link:../../packages/calculators
+      '@roboforge/coach':
+        specifier: workspace:*
+        version: link:../../packages/coach
       '@roboforge/config':
         specifier: workspace:*
         version: link:../../packages/config
@@ -117,7 +120,17 @@ importers:
 
   packages/calculators: {}
 
-  packages/coach: {}
+  packages/coach:
+    dependencies:
+      '@roboforge/config':
+        specifier: workspace:*
+        version: link:../config
+      '@roboforge/content-schema':
+        specifier: workspace:*
+        version: link:../content-schema
+      '@roboforge/sim-circuit':
+        specifier: workspace:*
+        version: link:../sim-circuit
 
   packages/config: {}
 

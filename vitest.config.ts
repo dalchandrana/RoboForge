@@ -22,6 +22,7 @@ export default defineConfig({
         'packages/i18n/src/**',
         'packages/storage/src/**',
         'packages/sim-circuit/src/**',
+        'packages/coach/src/**',
       ],
     },
   },
