@@ -1,5 +1,5 @@
 {
-  "builtAt": "2026-10-04T08:06:43.837Z",
+  "builtAt": "2026-10-04T08:35:43.261Z",
   "paths": {
     "electronics-embedded-foundations": {
       "id": "electronics-embedded-foundations",
@@ -2405,6 +2405,1663 @@
       "cheatSheetMarkdown": "### 2N3906 PNP High-Side Quick Reference\n- **Pinout (TO-92 flat face facing you):** Pin 1 = Emitter (to VCC), Pin 2 = Base (control via resistor), Pin 3 = Collector (out to load).\n- **Switching Logic:**\n  - Base pulled to $V_{\\text{emitter}}$ ($V_{BE} = 0\\,\\text{V}$) $\\to$ **OFF** (open circuit).\n  - Base pulled LOW ($V_B \\le V_{\\text{emitter}} - 0.7\\,\\text{V}$) $\\to$ **ON** (current conducts from Emitter to Collector).\n",
       "safetyNotes": "If supply rail voltage is higher than MCU GPIO voltage, use an intermediate NPN transistor to pull the PNP base down safely.",
       "needsHumanVerification": false
+    }
+  },
+  "projects": {
+    "p1-led-blink-lab": {
+      "id": "p1-led-blink-lab",
+      "title": "LED Blink & Timing Lab",
+      "description": "Build your first physical circuit on a breadboard and control an LED with precise millisecond timing code on the Arduino Uno.",
+      "difficulty": 1,
+      "minutes": 30,
+      "costUSD": {
+        "min": 5,
+        "max": 10
+      },
+      "skills": [
+        "breadboard-prototyping",
+        "digital-output",
+        "current-limiting",
+        "arduino-ide"
+      ],
+      "kit": "starter",
+      "simulatedTwin": "blink",
+      "needsHumanVerification": true,
+      "verifyChecklist": [
+        "Verify 220 ohm resistor maintains LED current below 20mA",
+        "Verify standard 5mm red LED forward voltage is approximately 1.8V to 2.0V",
+        "Confirm Arduino Uno pin 13 delivers 5V digital HIGH"
+      ],
+      "safetyRules": [
+        "Always disconnect the USB cable before placing or moving wires on the breadboard.",
+        "Never connect an LED directly across 5V and GND without a series resistor; doing so causes excess current and permanently burns out the LED.",
+        "Operate exclusively from 5V USB bus power. Do not connect mains power or external battery packs for this basic circuit."
+      ],
+      "bom": [
+        {
+          "name": "Arduino Uno R3 (or compatible)",
+          "qty": 1,
+          "spec": "ATmega328P DIP or SMD development board with USB-B cable",
+          "costUSD": {
+            "min": 4,
+            "max": 8
+          },
+          "alternatives": [
+            "Elegoo Uno R3",
+            "SparkFun RedBoard",
+            "Arduino Nano with mini-breadboard"
+          ],
+          "notes": "Any 5V ATmega328P board will work identically.",
+          "affiliate": false
+        },
+        {
+          "name": "5mm Diffused LED (Red)",
+          "qty": 1,
+          "spec": "Forward voltage 2.0V, max continuous current 20mA",
+          "costUSD": {
+            "min": 0.1,
+            "max": 0.5
+          },
+          "alternatives": [
+            "5mm Green LED (Vf approx 2.2V)",
+            "5mm Yellow LED (Vf approx 2.1V)"
+          ],
+          "notes": "Longer lead is the positive anode (+); shorter lead and flat flat edge is the cathode (-).",
+          "affiliate": false
+        },
+        {
+          "name": "220Ω 1/4W Resistor",
+          "qty": 1,
+          "spec": "Color code: Red-Red-Brown-Gold (220 ohm +/- 5%)",
+          "costUSD": {
+            "min": 0.05,
+            "max": 0.2
+          },
+          "alternatives": [
+            "330 ohm resistor (Orange-Orange-Brown)",
+            "470 ohm resistor (Yellow-Violet-Brown)",
+            "1k ohm resistor (dimmer output)"
+          ],
+          "notes": "Resistors have no polarity; either orientation is fine.",
+          "affiliate": false
+        },
+        {
+          "name": "Half-Size Solderless Breadboard",
+          "qty": 1,
+          "spec": "400 tie-points with standard 0.1 inch (2.54mm) pitch",
+          "costUSD": {
+            "min": 2,
+            "max": 4
+          },
+          "alternatives": [
+            "Mini 170-point breadboard",
+            "Full-size 830-point breadboard"
+          ],
+          "notes": "Columns 1 to 30 share internal 5-hole vertical clips.",
+          "affiliate": false
+        },
+        {
+          "name": "Male-to-Male Jumper Wires",
+          "qty": 2,
+          "spec": "22-26 AWG solid core or flexible DuPont jumpers",
+          "costUSD": {
+            "min": 0.2,
+            "max": 0.5
+          },
+          "alternatives": [
+            "Solid 22 AWG hookup wire stripped at ends"
+          ],
+          "notes": "Use Yellow or Red for signal and Black or Blue for GND.",
+          "affiliate": false
+        }
+      ],
+      "wiring": [
+        {
+          "from": "Arduino Pin 13",
+          "to": "Breadboard Row 10 (Left)",
+          "color": "Yellow",
+          "note": "Digital output control signal"
+        },
+        {
+          "from": "Breadboard Row 10 (Right)",
+          "to": "Breadboard Row 14 (Right)",
+          "color": "Resistor",
+          "note": "220 ohm current-limiting resistor bridging row 10 to row 14"
+        },
+        {
+          "from": "Breadboard Row 14 (Right)",
+          "to": "Breadboard Row 15 (Right)",
+          "color": "LED",
+          "note": "LED Anode (long leg) in Row 14, LED Cathode (short leg) in Row 15"
+        },
+        {
+          "from": "Breadboard Row 15 (Right)",
+          "to": "Arduino GND Header",
+          "color": "Black",
+          "note": "Common ground return path"
+        }
+      ],
+      "steps": [
+        {
+          "step": 1,
+          "title": "Prepare Your Prototyping Station",
+          "description": "Place your Arduino Uno and half-size breadboard on a non-conductive desk mat or wooden surface. Ensure the USB cable is unplugged from your computer.",
+          "check": "Arduino power LED is completely dark."
+        },
+        {
+          "step": 2,
+          "title": "Insert the 220Ω Resistor",
+          "description": "Bend the leads of your 220 ohm resistor (Red-Red-Brown-Gold) into a U-shape. Insert one lead into hole 10-A and the second lead into hole 14-A.",
+          "check": "Resistor leads are firmly seated in the spring clips."
+        },
+        {
+          "step": 3,
+          "title": "Orient and Insert the LED",
+          "description": "Identify the long positive lead (Anode) of your 5mm red LED. Insert the Anode into hole 14-B (sharing electrical contact with the resistor). Insert the short negative lead (Cathode) into hole 15-B.",
+          "check": "Long leg is connected to row 14; short leg is in row 15."
+        },
+        {
+          "step": 4,
+          "title": "Connect Wires to the Arduino",
+          "description": "Plug a yellow jumper wire from Arduino digital pin 13 to breadboard hole 10-B. Plug a black jumper wire from breadboard hole 15-A to any GND pin on the Arduino header.",
+          "check": "Complete loop: Pin 13 -> Resistor -> LED -> GND."
+        },
+        {
+          "step": 5,
+          "title": "Upload Code and Observe",
+          "description": "Connect the USB cable to your computer. Upload the verified blink sketch using the Arduino IDE or test it in the RoboForge Arduino simulator.",
+          "check": "The external LED and the onboard 'L' LED both blink in unison once per second."
+        }
+      ],
+      "code": {
+        "language": "cpp",
+        "source": "// RoboForge Project 1: LED Blink & Timing Lab\n// Demonstrates digital output and non-blocking timing principles\n\nconst int LED_PIN = 13;\n\nvoid setup() {\n  // Configure digital pin 13 as a low-impedance voltage output\n  pinMode(LED_PIN, OUTPUT);\n}\n\nvoid loop() {\n  // Apply 5V to the pin: current flows through resistor and LED to GND\n  digitalWrite(LED_PIN, HIGH);\n  delay(1000); // Wait 1000 milliseconds (1 second)\n\n  // Apply 0V to the pin: current stops flowing\n  digitalWrite(LED_PIN, LOW);\n  delay(1000); // Wait 1000 milliseconds (1 second)\n}\n",
+        "explanation": "pinMode(13, OUTPUT) configures the ATmega328P Port B bit 5 output driver. digitalWrite(13, HIGH) puts 5V on the pin, driving approximately (5V - 2V) / 220Ω = 13.6mA of safe current."
+      },
+      "testChecklist": [
+        "The external red LED turns ON for 1000ms and OFF for 1000ms repeatedly.",
+        "The onboard 'L' indicator on the Arduino Uno flashes at the exact same frequency.",
+        "Touching the 220 ohm resistor after 5 minutes of operation confirms it remains cool (power dissipation is only ~40mW)."
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "LED never lights up at all",
+          "cause": "LED inserted backwards (reverse polarity), loose wire, or incorrect pin.",
+          "remedy": "Unplug USB. Carefully pull out the LED, rotate it 180 degrees so the longer anode lead connects to the resistor, and reinsert. Confirm the yellow wire is in Pin 13."
+        },
+        {
+          "symptom": "LED stays ON continuously without blinking",
+          "cause": "Jumper wire accidentally connected to the 5V power rail instead of Pin 13, or code upload failed.",
+          "remedy": "Check Arduino pin header: ensure the wire is plugged into digital header 13, not the 5V power header."
+        },
+        {
+          "symptom": "LED flashes once very brightly with a snap, then stays dead permanently",
+          "cause": "Resistor was bypassed or missing, sending raw 5V through the LED diode junction.",
+          "remedy": "The LED is burned out. Discard it, inspect your breadboard wiring to ensure the resistor is in series, and insert a new LED."
+        }
+      ],
+      "extensions": [
+        "Change delay(1000) to delay(200) to create a fast warning strobe.",
+        "Implement the Morse code sequence for SOS: 3 short blinks (200ms), 3 long blinks (600ms), 3 short blinks.",
+        "Rewrite the loop using millis() to avoid blocking delays!"
+      ]
+    },
+    "p2-traffic-light-crossing": {
+      "id": "p2-traffic-light-crossing",
+      "title": "Pedestrian Crossing & Traffic Light Controller",
+      "description": "Engineer a realistic intersection controller with Red, Yellow, and Green LEDs plus an interactive pedestrian call button using finite state machine architecture.",
+      "difficulty": 2,
+      "minutes": 45,
+      "costUSD": {
+        "min": 8,
+        "max": 15
+      },
+      "skills": [
+        "finite-state-machine",
+        "digital-input",
+        "internal-pullup",
+        "timing-diagrams"
+      ],
+      "kit": "starter",
+      "simulatedTwin": "traffic-light",
+      "needsHumanVerification": true,
+      "verifyChecklist": [
+        "Verify 3 independent LED channels (Red, Yellow, Green) function without exceeding total microcontroller port current",
+        "Confirm tactile button triggers interrupt / digital read reliably with internal pull-up resistor",
+        "Verify green light stays illuminated for minimum safe duration before transitioning"
+      ],
+      "safetyRules": [
+        "Keep breadboard connections secure. Unplug USB before re-routing jumper wires.",
+        "Never light all LEDs without individual current-limiting resistors.",
+        "Safe low-voltage 5V DC circuit powered strictly from Arduino USB or 5V regulator."
+      ],
+      "bom": [
+        {
+          "name": "Arduino Uno R3 (or compatible)",
+          "qty": 1,
+          "spec": "ATmega328P DIP or SMD development board",
+          "costUSD": {
+            "min": 4,
+            "max": 8
+          },
+          "alternatives": [
+            "Elegoo Uno R3",
+            "Arduino Nano"
+          ],
+          "notes": "Requires at least 4 digital GPIO pins.",
+          "affiliate": false
+        },
+        {
+          "name": "5mm Diffused LED (Red)",
+          "qty": 1,
+          "spec": "Forward voltage 2.0V, 20mA max",
+          "costUSD": {
+            "min": 0.1,
+            "max": 0.5
+          },
+          "alternatives": [
+            "Standard 3mm or 10mm red LED"
+          ],
+          "notes": "Indicates traffic STOP / pedestrian WALK.",
+          "affiliate": false
+        },
+        {
+          "name": "5mm Diffused LED (Yellow)",
+          "qty": 1,
+          "spec": "Forward voltage 2.1V, 20mA max",
+          "costUSD": {
+            "min": 0.1,
+            "max": 0.5
+          },
+          "alternatives": [
+            "Standard 5mm amber/orange LED"
+          ],
+          "notes": "Indicates traffic CAUTION / transition.",
+          "affiliate": false
+        },
+        {
+          "name": "5mm Diffused LED (Green)",
+          "qty": 1,
+          "spec": "Forward voltage 2.2V, 20mA max",
+          "costUSD": {
+            "min": 0.1,
+            "max": 0.5
+          },
+          "alternatives": [
+            "Standard 5mm green LED"
+          ],
+          "notes": "Indicates traffic GO.",
+          "affiliate": false
+        },
+        {
+          "name": "220Ω 1/4W Resistors",
+          "qty": 3,
+          "spec": "Red-Red-Brown-Gold (220 ohm +/- 5%)",
+          "costUSD": {
+            "min": 0.15,
+            "max": 0.6
+          },
+          "alternatives": [
+            "330 ohm resistors"
+          ],
+          "notes": "One resistor dedicated per LED channel to prevent uneven current hogging.",
+          "affiliate": false
+        },
+        {
+          "name": "6mm Tactile Pushbutton",
+          "qty": 1,
+          "spec": "SPST Momentary NO (Normally Open), 4-pin through-hole",
+          "costUSD": {
+            "min": 0.1,
+            "max": 0.4
+          },
+          "alternatives": [
+            "Micro switch",
+            "Touch sensor module"
+          ],
+          "notes": "Opposite pins across the center divider are connected internally.",
+          "affiliate": false
+        },
+        {
+          "name": "Half-Size Solderless Breadboard",
+          "qty": 1,
+          "spec": "400 tie-points",
+          "costUSD": {
+            "min": 2,
+            "max": 4
+          },
+          "alternatives": [
+            "Full-size 830 tie-point breadboard"
+          ],
+          "notes": "Used to arrange the 3-light traffic column neatly.",
+          "affiliate": false
+        },
+        {
+          "name": "Male-to-Male Jumper Wires",
+          "qty": 7,
+          "spec": "22-26 AWG DuPont jumpers",
+          "costUSD": {
+            "min": 0.5,
+            "max": 1
+          },
+          "alternatives": [
+            "Solid breadboard hookup wire"
+          ],
+          "notes": "Use Red, Yellow, Green jumpers for matching signal lines.",
+          "affiliate": false
+        }
+      ],
+      "wiring": [
+        {
+          "from": "Arduino Pin 12",
+          "to": "Breadboard Row 5 (Red LED Anode via 220Ω)",
+          "color": "Red",
+          "note": "Digital control for Red Stop Light"
+        },
+        {
+          "from": "Arduino Pin 11",
+          "to": "Breadboard Row 10 (Yellow LED Anode via 220Ω)",
+          "color": "Yellow",
+          "note": "Digital control for Yellow Caution Light"
+        },
+        {
+          "from": "Arduino Pin 10",
+          "to": "Breadboard Row 15 (Green LED Anode via 220Ω)",
+          "color": "Green",
+          "note": "Digital control for Green Go Light"
+        },
+        {
+          "from": "Breadboard Ground Rail (-)",
+          "to": "Arduino GND Header",
+          "color": "Black",
+          "note": "Common ground for all 3 LEDs and button"
+        },
+        {
+          "from": "Arduino Pin 2",
+          "to": "Breadboard Row 22 (Button Terminal 1)",
+          "color": "Blue",
+          "note": "Pedestrian crosswalk request button input"
+        },
+        {
+          "from": "Breadboard Row 24 (Button Terminal 2)",
+          "to": "Breadboard Ground Rail (-)",
+          "color": "Black",
+          "note": "Pulls Pin 2 LOW when button is pressed"
+        }
+      ],
+      "steps": [
+        {
+          "step": 1,
+          "title": "Setup Ground Rail",
+          "description": "Plug a black jumper wire from any Arduino GND header into the long blue/black negative (-) power rail on the side of your breadboard.",
+          "check": "Ground rail is now bonded to Arduino reference 0V."
+        },
+        {
+          "step": 2,
+          "title": "Mount the 3 Traffic LEDs",
+          "description": "Insert the Red LED into rows 4 and 5, Yellow LED into rows 9 and 10, and Green LED into rows 14 and 15. Place the long positive anodes into rows 5, 10, and 15 respectively.",
+          "check": "All short cathode leads are in rows 4, 9, and 14."
+        },
+        {
+          "step": 3,
+          "title": "Connect Current Limiting Resistors & Ground",
+          "description": "Place three 220 ohm resistors bridging the cathode rows (4, 9, 14) directly into the breadboard Ground rail (-).",
+          "check": "Every LED cathode has a dedicated path through 220Ω to the ground rail."
+        },
+        {
+          "step": 4,
+          "title": "Insert Pushbutton with Straddle Position",
+          "description": "Place the 6mm tactile button bridging the center trough (rows 22 and 24). Connect Arduino Pin 2 to row 22, and wire row 24 to the Ground rail (-).",
+          "check": "Button straddles the center divide with good mechanical grip."
+        },
+        {
+          "step": 5,
+          "title": "Connect Signal Control Jumpers",
+          "description": "Connect Arduino Pin 12 to row 5 (Red), Pin 11 to row 10 (Yellow), and Pin 10 to row 15 (Green).",
+          "check": "Red = Pin 12, Yellow = Pin 11, Green = Pin 10, Button = Pin 2."
+        },
+        {
+          "step": 6,
+          "title": "Upload and Test State Sequencing",
+          "description": "Upload the sketch. Observe the steady Green state. Press the pedestrian button and observe the transition sequence: Green -> Yellow (2s) -> Red (5s) -> Green.",
+          "check": "State changes smoothly and button triggers crosswalk sequence."
+        }
+      ],
+      "code": {
+        "language": "cpp",
+        "source": "// RoboForge Project 2: Pedestrian Crossing & Traffic Light\n// Finite State Machine with Non-Blocking Pushbutton Request\n\nconst int PIN_RED = 12;\nconst int PIN_YELLOW = 11;\nconst int PIN_GREEN = 10;\nconst int PIN_BUTTON = 2;\n\nenum TrafficState {\n  STATE_GREEN,\n  STATE_YELLOW,\n  STATE_RED_PEDESTRIAN\n};\n\nTrafficState currentState = STATE_GREEN;\nbool pedestrianRequested = false;\nunsigned long stateStartTime = 0;\n\nvoid setLights(bool r, bool y, bool g) {\n  digitalWrite(PIN_RED, r ? HIGH : LOW);\n  digitalWrite(PIN_YELLOW, y ? HIGH : LOW);\n  digitalWrite(PIN_GREEN, g ? HIGH : LOW);\n}\n\nvoid setup() {\n  pinMode(PIN_RED, OUTPUT);\n  pinMode(PIN_YELLOW, OUTPUT);\n  pinMode(PIN_GREEN, OUTPUT);\n\n  // Enable internal 20k pull-up resistor: reads HIGH when open, LOW when pressed\n  pinMode(PIN_BUTTON, INPUT_PULLUP);\n\n  setLights(false, false, true); // Start with Green\n  stateStartTime = millis();\n}\n\nvoid loop() {\n  // Check for pedestrian request button press (active LOW)\n  if (digitalRead(PIN_BUTTON) == LOW) {\n    pedestrianRequested = true;\n  }\n\n  unsigned long currentDuration = millis() - stateStartTime;\n\n  switch (currentState) {\n    case STATE_GREEN:\n      // Stay green for at least 5 seconds before honoring pedestrian request\n      if (pedestrianRequested && currentDuration >= 5000) {\n        currentState = STATE_YELLOW;\n        setLights(false, true, false);\n        stateStartTime = millis();\n      }\n      break;\n\n    case STATE_YELLOW:\n      // Yellow caution light for 2 seconds\n      if (currentDuration >= 2000) {\n        currentState = STATE_RED_PEDESTRIAN;\n        setLights(true, false, false);\n        stateStartTime = millis();\n      }\n      break;\n\n    case STATE_RED_PEDESTRIAN:\n      // Red stop light for vehicles (safe pedestrian crossing) for 5 seconds\n      if (currentDuration >= 5000) {\n        currentState = STATE_GREEN;\n        setLights(false, false, true);\n        pedestrianRequested = false;\n        stateStartTime = millis();\n      }\n      break;\n  }\n}\n",
+        "explanation": "Using an enum-based Finite State Machine avoids delay() freezes, ensuring the button click is immediately registered even while waiting in the green state."
+      },
+      "testChecklist": [
+        "Default resting state is GREEN with Red and Yellow OFF.",
+        "Pressing the pedestrian button flags a crossing request.",
+        "Traffic light transitions from Green to Yellow for 2000ms, then Red for 5000ms.",
+        "After crossing time elapses, system returns cleanly to Green state."
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "Button press does nothing; light stays green indefinitely",
+          "cause": "Button not properly connected to ground or plugged into wrong rows on breadboard.",
+          "remedy": "Tactile buttons have 2 internal pairs. Ensure Pin 2 is on one terminal and GND is on the diagonal terminal, or test continuity."
+        },
+        {
+          "symptom": "Traffic light immediately switches to yellow as soon as it turns green",
+          "cause": "Button is stuck closed, wired to GND continuously, or INPUT_PULLUP not configured in code.",
+          "remedy": "Verify code has pinMode(PIN_BUTTON, INPUT_PULLUP). Remove button wire temporarily to verify if light stays green."
+        },
+        {
+          "symptom": "One of the LEDs (e.g. Yellow) is dim compared to others",
+          "cause": "Resistor value mismatch (e.g. used 2.2kΩ instead of 220Ω).",
+          "remedy": "Check color rings on the resistor: Red-Red-Brown is 220Ω, Red-Red-Red is 2.2kΩ."
+        }
+      ],
+      "extensions": [
+        "Add a piezo buzzer that beeps slowly during Yellow and rapidly during Red (Walk) for visually impaired pedestrians.",
+        "Add a 7-segment display or Serial Monitor countdown timer showing remaining crossing seconds."
+      ]
+    },
+    "p3-autonomous-line-follower": {
+      "id": "p3-autonomous-line-follower",
+      "title": "Autonomous Dual-Sensor Line-Following Robot",
+      "description": "Assemble a 2-wheel differential-drive mobile robot chassis, wire an L298N motor driver module with dual IR reflectance sensors, and program an autonomous trajectory tracking algorithm.",
+      "difficulty": 3,
+      "minutes": 90,
+      "costUSD": {
+        "min": 25,
+        "max": 35
+      },
+      "skills": [
+        "differential-drive",
+        "motor-driver-h-bridge",
+        "ir-reflectance-sensing",
+        "closed-loop-feedback"
+      ],
+      "kit": "starter",
+      "simulatedTwin": "robot-2d",
+      "needsHumanVerification": true,
+      "verifyChecklist": [
+        "Verify dual IR sensors correctly differentiate between black electrical tape and white poster board",
+        "Verify L298N motor driver 12V terminal receives external 6V battery pack (never Arduino 5V)",
+        "Verify Arduino GND and Battery GND are firmly tied together in a common ground reference",
+        "Check that TT motors spin in opposite directions when turning left or right"
+      ],
+      "safetyRules": [
+        "NEVER connect motor power directly to the Arduino Uno 5V or 3.3V header pins. DC motors can draw stall surges up to 800mA, destroying the onboard 5V linear regulator.",
+        "Use a 4xAA battery holder (6.0V DC) or a 5V USB power bank. Never exceed 9V DC into yellow TT gearmotors.",
+        "Always install an on/off toggle switch in series with the battery pack so you can instantly kill power if the robot runs off the table.",
+        "Tie the battery negative (-) lead directly to Arduino GND. Without a shared common ground, control signals will float unpredictably."
+      ],
+      "bom": [
+        {
+          "name": "Arduino Uno R3 (or compatible)",
+          "qty": 1,
+          "spec": "ATmega328P development board",
+          "costUSD": {
+            "min": 4,
+            "max": 8
+          },
+          "alternatives": [
+            "Arduino Nano with expansion shield"
+          ],
+          "notes": "Controls direction and PWM speed signals.",
+          "affiliate": false
+        },
+        {
+          "name": "L298N Dual H-Bridge Motor Driver Module",
+          "qty": 1,
+          "spec": "Dual channel, 2A peak per bridge with aluminum heat sink",
+          "costUSD": {
+            "min": 2,
+            "max": 4
+          },
+          "alternatives": [
+            "L293D motor shield",
+            "TB6612FNG dual motor driver module"
+          ],
+          "notes": "Requires 5V logic supply and 6V-12V motor supply.",
+          "affiliate": false
+        },
+        {
+          "name": "Yellow TT DC Gearmotors with Rubber Wheels",
+          "qty": 2,
+          "spec": "1:48 reduction gear ratio, 3V-6V operating range",
+          "costUSD": {
+            "min": 3,
+            "max": 6
+          },
+          "alternatives": [
+            "N20 metal micro gearmotors"
+          ],
+          "notes": "Solder 100nF ceramic noise capacitor across terminals if available.",
+          "affiliate": false
+        },
+        {
+          "name": "Dual IR Line Tracker Sensor Modules (TCRT5000)",
+          "qty": 2,
+          "spec": "Infrared emitter + phototransistor with LM393 comparator trimpot",
+          "costUSD": {
+            "min": 1.5,
+            "max": 3
+          },
+          "alternatives": [
+            "2-channel or 4-channel tracking bar module",
+            "LDR photoresistor divider pair for light-seeking variant"
+          ],
+          "notes": "Digital DO pin outputs HIGH on black line, LOW on white surface.",
+          "affiliate": false
+        },
+        {
+          "name": "2WD Robot Chassis Acrylic Kit",
+          "qty": 1,
+          "spec": "Laser-cut base plate, motor mounting brackets, and front caster ball",
+          "costUSD": {
+            "min": 5,
+            "max": 9
+          },
+          "alternatives": [
+            "Cardboard or 3D-printed chassis plate"
+          ],
+          "notes": "Provides rigid mounting for motors, battery, and controller.",
+          "affiliate": false
+        },
+        {
+          "name": "4xAA Battery Holder with On/Off Switch",
+          "qty": 1,
+          "spec": "Series 4-cell AA holder producing 6V nominal",
+          "costUSD": {
+            "min": 1.5,
+            "max": 3
+          },
+          "alternatives": [
+            "5V 2A USB power bank with USB-to-screw terminal breakout"
+          ],
+          "notes": "Do not use standard 9V smoke alarm batteries (high internal impedance).",
+          "affiliate": false
+        },
+        {
+          "name": "DuPont Jumper Wires (M-M and M-F)",
+          "qty": 16,
+          "spec": "Female-to-Male and Male-to-Male 20cm jumper cables",
+          "costUSD": {
+            "min": 1,
+            "max": 2
+          },
+          "alternatives": [
+            "Solid copper hookup wire"
+          ],
+          "notes": "M-F wires connect Arduino headers to L298N and sensor pins.",
+          "affiliate": false
+        }
+      ],
+      "wiring": [
+        {
+          "from": "4xAA Battery Positive (+6V)",
+          "to": "L298N Screw Terminal (+12V Power In)",
+          "color": "Red",
+          "note": "Dedicated motor power supply"
+        },
+        {
+          "from": "4xAA Battery Negative (GND)",
+          "to": "L298N Screw Terminal (GND)",
+          "color": "Black",
+          "note": "Main power ground"
+        },
+        {
+          "from": "L298N Screw Terminal (GND)",
+          "to": "Arduino Uno GND Header",
+          "color": "Black",
+          "note": "CRITICAL: Common Ground bonding link"
+        },
+        {
+          "from": "Arduino 5V Header",
+          "to": "L298N 5V Logic In (if onboard 5V regulator jumper removed)",
+          "color": "Red",
+          "note": "Provides stable logic rail"
+        },
+        {
+          "from": "Arduino Pin 5 (PWM)",
+          "to": "L298N IN1 (Left Motor Forward)",
+          "color": "Blue",
+          "note": "Direction logic 1"
+        },
+        {
+          "from": "Arduino Pin 6 (PWM)",
+          "to": "L298N IN2 (Left Motor Reverse)",
+          "color": "Blue",
+          "note": "Direction logic 2"
+        },
+        {
+          "from": "Arduino Pin 9 (PWM)",
+          "to": "L298N IN3 (Right Motor Forward)",
+          "color": "Yellow",
+          "note": "Direction logic 3"
+        },
+        {
+          "from": "Arduino Pin 10 (PWM)",
+          "to": "L298N IN4 (Right Motor Reverse)",
+          "color": "Yellow",
+          "note": "Direction logic 4"
+        },
+        {
+          "from": "Left IR Sensor DO",
+          "to": "Arduino Digital Pin 2",
+          "color": "Green",
+          "note": "Detects left line edge"
+        },
+        {
+          "from": "Right IR Sensor DO",
+          "to": "Arduino Digital Pin 3",
+          "color": "Orange",
+          "note": "Detects right line edge"
+        },
+        {
+          "from": "Arduino 5V & GND",
+          "to": "IR Sensors VCC & GND",
+          "color": "Red & Black",
+          "note": "5V logic power for sensor comparators"
+        }
+      ],
+      "steps": [
+        {
+          "step": 1,
+          "title": "Assemble the Mechanical Chassis",
+          "description": "Bolt the two yellow TT gearmotors into the chassis brackets using the long M3 screws. Attach the rubber wheels to the dual output axles. Fasten the front omnidirectional caster wheel.",
+          "check": "Chassis rests stably on 2 drive wheels and 1 front caster."
+        },
+        {
+          "step": 2,
+          "title": "Mount Sensors on the Underside",
+          "description": "Secure the two TCRT5000 IR sensor modules pointing downward toward the ground, approximately 5mm to 10mm above the floor surface, spaced roughly 2cm apart (straddling a standard 3/4 inch black electrical tape line).",
+          "check": "Both sensor IR LEDs face down with clear line of sight to the floor."
+        },
+        {
+          "step": 3,
+          "title": "Wire the Motors to L298N Out Terminals",
+          "description": "Connect Left motor pair wires to OUT1 & OUT2 screw terminals. Connect Right motor pair wires to OUT3 & OUT4 screw terminals.",
+          "check": "Screws tightened firmly with no stray copper whiskers."
+        },
+        {
+          "step": 4,
+          "title": "Complete Power & Common Ground Wiring",
+          "description": "Connect the battery positive wire to L298N 12V terminal. Connect battery negative to L298N GND terminal. Run a jumper wire from L298N GND directly to an Arduino GND pin.",
+          "check": "CRITICAL CHECK: L298N GND and Arduino GND are electrically connected!"
+        },
+        {
+          "step": 5,
+          "title": "Connect Logic Signals to Arduino",
+          "description": "Route jumpers from Arduino pins 5, 6, 9, 10 to L298N IN1, IN2, IN3, IN4. Connect Left IR sensor DO to Pin 2, Right IR sensor DO to Pin 3.",
+          "check": "All 6 control signal jumpers verified against wiring table."
+        },
+        {
+          "step": 6,
+          "title": "Calibrate Sensitivity and Track",
+          "description": "Place robot over white paper with black tape line. Turn onboard potentiometer on each TCRT5000 until the onboard sensor indicator LED turns ON only over the black tape and OFF over white paper.",
+          "check": "Sensor LEDs respond crisply when sliding robot across the tape."
+        }
+      ],
+      "code": {
+        "language": "cpp",
+        "source": "// RoboForge Project 3: Autonomous Dual-Sensor Line-Following Robot\n// Two-sensor Bang-Bang / Differential Steer Algorithm\n\n// Left Motor Pins (L298N IN1, IN2)\nconst int L_FWD = 5;\nconst int L_REV = 6;\n\n// Right Motor Pins (L298N IN3, IN4)\nconst int R_FWD = 9;\nconst int R_REV = 10;\n\n// Line Sensor Pins\nconst int SENSOR_LEFT = 2;\nconst int SENSOR_RIGHT = 3;\n\n// Base speed (0-255 PWM duty cycle)\nconst int SPEED_FWD = 160;\nconst int SPEED_TURN = 140;\n\nvoid setLeftMotor(int speed) {\n  if (speed >= 0) {\n    analogWrite(L_FWD, speed);\n    analogWrite(L_REV, 0);\n  } else {\n    analogWrite(L_FWD, 0);\n    analogWrite(L_REV, -speed);\n  }\n}\n\nvoid setRightMotor(int speed) {\n  if (speed >= 0) {\n    analogWrite(R_FWD, speed);\n    analogWrite(R_REV, 0);\n  } else {\n    analogWrite(R_FWD, 0);\n    analogWrite(R_REV, -speed);\n  }\n}\n\nvoid setup() {\n  pinMode(L_FWD, OUTPUT);\n  pinMode(L_REV, OUTPUT);\n  pinMode(R_FWD, OUTPUT);\n  pinMode(R_REV, OUTPUT);\n\n  pinMode(SENSOR_LEFT, INPUT);\n  pinMode(SENSOR_RIGHT, INPUT);\n}\n\nvoid loop() {\n  // TCRT5000: HIGH = Black line detected, LOW = White floor\n  int leftDetect = digitalRead(SENSOR_LEFT);\n  int rightDetect = digitalRead(SENSOR_RIGHT);\n\n  if (leftDetect == LOW && rightDetect == LOW) {\n    // Line is centered between the two sensors: DRIVE FORWARD\n    setLeftMotor(SPEED_FWD);\n    setRightMotor(SPEED_FWD);\n  } \n  else if (leftDetect == HIGH && rightDetect == LOW) {\n    // Robot is veering right: TURN SHARP LEFT\n    setLeftMotor(0);\n    setRightMotor(SPEED_TURN);\n  } \n  else if (leftDetect == LOW && rightDetect == HIGH) {\n    // Robot is veering left: TURN SHARP RIGHT\n    setLeftMotor(SPEED_TURN);\n    setRightMotor(0);\n  } \n  else {\n    // Both detected black (intersection or T-junction): STOP or crawl\n    setLeftMotor(SPEED_FWD / 2);\n    setRightMotor(SPEED_FWD / 2);\n  }\n}\n",
+        "explanation": "Differential steering controls the trajectory: turning left requires stopping or slowing the left motor while driving the right motor, creating a pivot turn around the left wheel."
+      },
+      "testChecklist": [
+        "With wheels elevated in the air, testing sensors by hand spins the correct opposing wheel.",
+        "On a test oval track made with 3/4 inch black electrical tape on white poster board, robot completes full laps autonomously.",
+        "Robot successfully negotiates 90-degree curved turns without losing the track line."
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "Motors hum or buzz loudly but wheels do not rotate",
+          "cause": "PWM speed value is too low to overcome gearbox static friction, or battery voltage has dropped below 4.5V.",
+          "remedy": "Increase SPEED_FWD from 160 to 200 in the code, or insert fresh AA batteries."
+        },
+        {
+          "symptom": "Robot drives backward instead of forward",
+          "cause": "Motor polarity reversed on the L298N OUT screw terminals.",
+          "remedy": "Swap the two wires connected to OUT1 & OUT2 (or OUT3 & OUT4) on the screw terminal block."
+        },
+        {
+          "symptom": "Robot shakes erratically back and forth on the line and never moves forward",
+          "cause": "Sensors are mounted too close together or steering reaction is inverted (turning into the line rather than away).",
+          "remedy": "Widen sensor spacing slightly and verify left sensor steers left, not right."
+        },
+        {
+          "symptom": "Arduino Uno resets whenever motors start spinning",
+          "cause": "Voltage sag or electrical noise caused by lack of common ground or powering Arduino from weak motor batteries.",
+          "remedy": "Power Arduino Uno via USB power bank or fresh 9V battery while using 4xAA exclusively for motors. Ensure GNDs are tied."
+        }
+      ],
+      "extensions": [
+        "Implement 3-state PID (Proportional-Integral-Derivative) steering using analogRead() reflectance values.",
+        "Add a start/stop countdown button and lap timer displayed over Serial Monitor."
+      ]
+    },
+    "p4-ultrasonic-obstacle-avoider": {
+      "id": "p4-ultrasonic-obstacle-avoider",
+      "title": "Obstacle-Avoiding Ultrasonic Smart Car",
+      "description": "Equip your mobile robot with an active pan-scanning ultrasonic radar using an HC-SR04 sonar module and an SG90 micro-servo to map open pathways and navigate rooms autonomously.",
+      "difficulty": 3,
+      "minutes": 90,
+      "costUSD": {
+        "min": 30,
+        "max": 45
+      },
+      "skills": [
+        "ultrasonic-echolocation",
+        "servo-actuation",
+        "reactive-navigation",
+        "pwm-speed-control"
+      ],
+      "kit": "builder",
+      "simulatedTwin": "robot-2d",
+      "needsHumanVerification": true,
+      "verifyChecklist": [
+        "Verify HC-SR04 Trigger pulse width meets minimum 10 microsecond requirement",
+        "Verify speed of sound conversion formula: distance_cm = duration_us / 58.2",
+        "Verify SG90 servo rotates smoothly across 0, 90, and 180 degrees without mechanical binding",
+        "Verify external battery pack supplies both L298N and SG90 servo with shared common ground"
+      ],
+      "safetyRules": [
+        "Never power the SG90 servo and L298N motors from the Arduino 5V header. The servo and motors can jointly draw over 1.2A during stalls and turns, causing severe voltage drops and resetting the Arduino.",
+        "Operate with a 4xAA battery pack (6V DC nominal). Do not use LiPo batteries without dedicated low-voltage cutoff protection.",
+        "Verify clear space around the front servo horn so the sensor does not collide with the chassis during full 180-degree pans."
+      ],
+      "bom": [
+        {
+          "name": "Arduino Uno R3 (or compatible)",
+          "qty": 1,
+          "spec": "ATmega328P development board",
+          "costUSD": {
+            "min": 4,
+            "max": 8
+          },
+          "alternatives": [
+            "Arduino Nano"
+          ],
+          "notes": "Main decision and timing controller.",
+          "affiliate": false
+        },
+        {
+          "name": "HC-SR04 Ultrasonic Distance Sensor",
+          "qty": 1,
+          "spec": "40 kHz sonar transducer pair, 2cm to 400cm range, 5V operating voltage",
+          "costUSD": {
+            "min": 1.5,
+            "max": 3.5
+          },
+          "alternatives": [
+            "US-015 high-precision sonar module",
+            "RCWL-1601 3V/5V compatible sonar"
+          ],
+          "notes": "4 pins: VCC, Trig, Echo, GND.",
+          "affiliate": false
+        },
+        {
+          "name": "SG90 9g Micro Servo Motor",
+          "qty": 1,
+          "spec": "Miniature nylon gear servo, 1.8 kg-cm torque at 4.8V, 50 Hz PWM",
+          "costUSD": {
+            "min": 2,
+            "max": 4
+          },
+          "alternatives": [
+            "MG90S metal gear micro servo"
+          ],
+          "notes": "Rotates ultrasonic head to look Left (160 deg), Center (90 deg), and Right (20 deg).",
+          "affiliate": false
+        },
+        {
+          "name": "Ultrasonic Pan Bracket Mount",
+          "qty": 1,
+          "spec": "Acrylic or 3D-printed bracket joining HC-SR04 to SG90 servo horn",
+          "costUSD": {
+            "min": 1,
+            "max": 2.5
+          },
+          "alternatives": [
+            "Cardboard cutout or zip-tie fixture"
+          ],
+          "notes": "Keeps sensor perpendicular to scanning plane.",
+          "affiliate": false
+        },
+        {
+          "name": "L298N Dual H-Bridge Motor Driver",
+          "qty": 1,
+          "spec": "Dual channel, 2A peak per bridge",
+          "costUSD": {
+            "min": 2,
+            "max": 4
+          },
+          "alternatives": [
+            "TB6612FNG driver"
+          ],
+          "notes": "Drives left and right TT gearmotors.",
+          "affiliate": false
+        },
+        {
+          "name": "2WD Robot Chassis with 2x TT Motors",
+          "qty": 1,
+          "spec": "Differential drive base plate with rubber tires and caster",
+          "costUSD": {
+            "min": 8,
+            "max": 14
+          },
+          "alternatives": [
+            "Recycled plastic or acrylic chassis base"
+          ],
+          "notes": "Base platform for the mobile vehicle.",
+          "affiliate": false
+        },
+        {
+          "name": "4xAA Battery Holder with Switch",
+          "qty": 1,
+          "spec": "6V DC battery pack",
+          "costUSD": {
+            "min": 1.5,
+            "max": 3
+          },
+          "alternatives": [
+            "5V 2.4A USB battery bank with dual output"
+          ],
+          "notes": "Powers high-current motors and servo.",
+          "affiliate": false
+        },
+        {
+          "name": "DuPont Jumper Wires (M-M and M-F)",
+          "qty": 20,
+          "spec": "Assorted ribbon jumper wires",
+          "costUSD": {
+            "min": 1.5,
+            "max": 3
+          },
+          "alternatives": [
+            "Flexible stranded hookup wire"
+          ],
+          "notes": "Color code Red=Power, Black=GND, Colors=Signals.",
+          "affiliate": false
+        }
+      ],
+      "wiring": [
+        {
+          "from": "HC-SR04 VCC & GND",
+          "to": "Arduino 5V & GND Headers",
+          "color": "Red & Black",
+          "note": "Clean 5V logic power for sensor electronics"
+        },
+        {
+          "from": "HC-SR04 Trig Pin",
+          "to": "Arduino Digital Pin 7",
+          "color": "Yellow",
+          "note": "Transmits 10us ultrasonic trigger pulse"
+        },
+        {
+          "from": "HC-SR04 Echo Pin",
+          "to": "Arduino Digital Pin 8",
+          "color": "Green",
+          "note": "Receives round-trip echo pulse duration"
+        },
+        {
+          "from": "SG90 Servo Signal (Orange)",
+          "to": "Arduino Digital Pin 11 (PWM)",
+          "color": "Orange",
+          "note": "50 Hz servo position control signal"
+        },
+        {
+          "from": "SG90 Servo Power (Red & Brown)",
+          "to": "Battery +6V Rail & Common GND",
+          "color": "Red & Brown",
+          "note": "Connect directly to battery rail with common ground to prevent reset"
+        },
+        {
+          "from": "L298N Control Inputs (IN1, IN2, IN3, IN4)",
+          "to": "Arduino Digital Pins 5, 6, 9, 10",
+          "color": "Assorted",
+          "note": "Dual motor speed and direction commands"
+        },
+        {
+          "from": "L298N GND & Battery Negative",
+          "to": "Arduino GND Header",
+          "color": "Black",
+          "note": "CRITICAL: Common ground return"
+        }
+      ],
+      "steps": [
+        {
+          "step": 1,
+          "title": "Mount SG90 Servo to Front of Chassis",
+          "description": "Affix the micro-servo to the front nose of the robot chassis using the included mounting screws or heavy-duty foam tape, oriented with the output spline pointing straight up.",
+          "check": "Servo body is rigidly anchored with vertical output shaft."
+        },
+        {
+          "step": 2,
+          "title": "Center the Servo at 90 Degrees",
+          "description": "Before attaching the sensor bracket, power the servo and set its position to 90 degrees using a quick test sketch. This ensures your mechanical zero is centered.",
+          "check": "Servo arm is locked at exactly 90 degrees."
+        },
+        {
+          "step": 3,
+          "title": "Attach Ultrasonic Bracket and HC-SR04",
+          "description": "Snap the HC-SR04 sensor into the acrylic mounting plate and press the bracket horn onto the centered servo spline pointing directly forward.",
+          "check": "HC-SR04 'eyes' gaze directly forward when servo is at 90 degrees."
+        },
+        {
+          "step": 4,
+          "title": "Wire Ultrasonic Pins to Arduino",
+          "description": "Connect HC-SR04 VCC to Arduino 5V, GND to GND, Trig to digital pin 7, and Echo to digital pin 8.",
+          "check": "4-wire ribbon cable connected without twist."
+        },
+        {
+          "step": 5,
+          "title": "Connect Servo and Motors Power",
+          "description": "Connect the servo Red (+) wire to the battery 6V rail, Brown (-) to GND, and Orange signal to Pin 11. Connect the L298N to battery power and ensure Arduino GND is bridged to the battery negative lead.",
+          "check": "Common ground confirmed with multimeter continuity beep."
+        },
+        {
+          "step": 6,
+          "title": "Upload Autonomous Navigation Algorithm",
+          "description": "Upload the sketch. Disconnect USB, turn on battery switch, and set car on the floor. Car drives forward until an obstacle is detected within 25cm, pauses, scans left and right, and turns toward the clearer path.",
+          "check": "Robot drives, halts in front of a wall, turns away, and resumes driving."
+        }
+      ],
+      "code": {
+        "language": "cpp",
+        "source": "// RoboForge Project 4: Obstacle-Avoiding Ultrasonic Smart Car\n// Look-Ahead Sonar Scanning with Decision Tree Navigation\n\n#include <Servo.h>\n\n// Sonar Pins\nconst int PIN_TRIG = 7;\nconst int PIN_ECHO = 8;\n\n// Servo Pin\nconst int PIN_SERVO = 11;\nServo headServo;\n\n// Motor Driver Pins (L298N)\nconst int L_FWD = 5;\nconst int L_REV = 6;\nconst int R_FWD = 9;\nconst int R_REV = 10;\n\nconst int SAFE_DISTANCE_CM = 25; // Obstacle trigger threshold\n\nlong measureDistanceCM() {\n  digitalWrite(PIN_TRIG, LOW);\n  delayMicroseconds(2);\n  digitalWrite(PIN_TRIG, HIGH);\n  delayMicroseconds(10);\n  digitalWrite(PIN_TRIG, LOW);\n\n  // Read echo pulse duration in microseconds (timeout 25ms = ~4 meters)\n  long duration = pulseIn(PIN_ECHO, HIGH, 25000);\n  if (duration == 0) return 300; // No echo received, clear open space\n\n  return duration / 58.2; // Speed of sound conversion: 343 m/s\n}\n\nvoid setMotors(int leftSpeed, int rightSpeed) {\n  if (leftSpeed >= 0) {\n    analogWrite(L_FWD, leftSpeed);\n    analogWrite(L_REV, 0);\n  } else {\n    analogWrite(L_FWD, 0);\n    analogWrite(L_REV, -leftSpeed);\n  }\n\n  if (rightSpeed >= 0) {\n    analogWrite(R_FWD, rightSpeed);\n    analogWrite(R_REV, 0);\n  } else {\n    analogWrite(R_FWD, 0);\n    analogWrite(R_REV, -rightSpeed);\n  }\n}\n\nvoid setup() {\n  pinMode(PIN_TRIG, OUTPUT);\n  pinMode(PIN_ECHO, INPUT);\n\n  pinMode(L_FWD, OUTPUT);\n  pinMode(L_REV, OUTPUT);\n  pinMode(R_FWD, OUTPUT);\n  pinMode(R_REV, OUTPUT);\n\n  headServo.attach(PIN_SERVO);\n  headServo.write(90); // Center forward\n  delay(500);\n}\n\nvoid loop() {\n  headServo.write(90); // Look straight ahead\n  long frontDist = measureDistanceCM();\n\n  if (frontDist > SAFE_DISTANCE_CM) {\n    // Path is clear: DRIVE FORWARD\n    setMotors(170, 170);\n    delay(60);\n  } else {\n    // Obstacle detected! STOP immediately\n    setMotors(0, 0);\n    delay(200);\n\n    // Reverse slightly to create turning clearance\n    setMotors(-150, -150);\n    delay(250);\n    setMotors(0, 0);\n\n    // Scan Left\n    headServo.write(160);\n    delay(350);\n    long leftDist = measureDistanceCM();\n\n    // Scan Right\n    headServo.write(20);\n    delay(400);\n    long rightDist = measureDistanceCM();\n\n    // Return head to center\n    headServo.write(90);\n    delay(200);\n\n    // Decide direction: choose side with greater clearance\n    if (leftDist > rightDist && leftDist > SAFE_DISTANCE_CM) {\n      // Turn Left\n      setMotors(-160, 160);\n      delay(350);\n    } else if (rightDist >= leftDist && rightDist > SAFE_DISTANCE_CM) {\n      // Turn Right\n      setMotors(160, -160);\n      delay(350);\n    } else {\n      // Dead end on both sides: 180-degree spin around\n      setMotors(170, -170);\n      delay(650);\n    }\n    setMotors(0, 0);\n  }\n}\n",
+        "explanation": "The algorithm measures distance via time-of-flight echo reflection. When the path drops below 25cm, it enters an active scan state, using the servo to compare left vs right openness before executing a pivot turn."
+      },
+      "testChecklist": [
+        "Robot detects a cardboard box placed 25cm ahead and comes to a full stop.",
+        "Micro-servo smoothly turns left and right to inspect surroundings.",
+        "Robot turns toward the side with the higher distance reading and continues forward.",
+        "In a dead end corner, robot reverses and completes a spin turn to escape."
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "Ultrasonic sensor always reports 0 cm or 300 cm regardless of obstacles",
+          "cause": "Trig and Echo pins swapped, or Echo wire loose.",
+          "remedy": "Verify Arduino Pin 7 is wired to Trig and Pin 8 is wired to Echo."
+        },
+        {
+          "symptom": "Arduino reboots (LED flashes) whenever the servo moves",
+          "cause": "Servo power is connected to Arduino 5V pin instead of external battery rail.",
+          "remedy": "Move servo red power wire directly to the battery rail with common ground to isolate inductive surge current."
+        },
+        {
+          "symptom": "Sensor does not detect soft objects like curtains or plush toys",
+          "cause": "Ultrasonic sound waves are absorbed by soft porous fabrics rather than reflecting back.",
+          "remedy": "This is a physical limitation of acoustics. Test against hard acoustic reflective surfaces like wood, plastic, or drywall."
+        }
+      ],
+      "extensions": [
+        "Add an OLED display to show live distance radar sweeps.",
+        "Add a piezo buzzer sound effect whenever an obstacle triggers an evasive maneuver."
+      ]
+    },
+    "p5-servo-robotic-arm": {
+      "id": "p5-servo-robotic-arm",
+      "title": "Articulated 2-DOF Robotic Arm",
+      "description": "Construct a 2-degree-of-freedom robotic arm with azimuth (base rotation) and elevation (shoulder lift) axes. Control arm kinematics using dual analog potentiometers with software smoothing.",
+      "difficulty": 4,
+      "minutes": 120,
+      "costUSD": {
+        "min": 25,
+        "max": 40
+      },
+      "skills": [
+        "servo-control",
+        "analog-teleoperation",
+        "mechanical-linkage",
+        "signal-smoothing-filters"
+      ],
+      "kit": "builder",
+      "simulatedTwin": "servo-arm",
+      "needsHumanVerification": true,
+      "verifyChecklist": [
+        "Verify mechanical joint limits: Base rotates 0 to 180 degrees without wire snagging",
+        "Verify shoulder elevation joint does not exceed torque rating of the SG90 (1.8 kg-cm)",
+        "Verify external 5V 2A power rail supplies servos with stable voltage under load",
+        "Confirm exponential moving average (EMA) filter eliminates potentiometer ADC jitter"
+      ],
+      "safetyRules": [
+        "Always power the robotic arm servos from a dedicated external 5V-6V power supply (such as 4xAA battery pack or regulated 5V 2A wall adapter). Powering two servos simultaneously from the Arduino 5V regulator will overheat and fry the regulator.",
+        "Keep fingers away from acrylic scissor linkages and servo horn hubs during movement to avoid pinch injuries.",
+        "Always connect external power GND and Arduino GND together to maintain a common 0V voltage reference."
+      ],
+      "bom": [
+        {
+          "name": "Arduino Uno R3 (or compatible)",
+          "qty": 1,
+          "spec": "ATmega328P microcontroller board",
+          "costUSD": {
+            "min": 4,
+            "max": 8
+          },
+          "alternatives": [
+            "Arduino Nano"
+          ],
+          "notes": "Reads analog joystick/potentiometer inputs and outputs 50 Hz PWM.",
+          "affiliate": false
+        },
+        {
+          "name": "SG90 9g Micro Servos",
+          "qty": 2,
+          "spec": "50 Hz PWM position servo, 4.8V-6.0V, 1.8 kg-cm torque",
+          "costUSD": {
+            "min": 4,
+            "max": 8
+          },
+          "alternatives": [
+            "MG90S metal gear micro servos (recommended for higher durability)"
+          ],
+          "notes": "Servo 1 = Base rotation (Azimuth); Servo 2 = Shoulder joint (Elevation).",
+          "affiliate": false
+        },
+        {
+          "name": "10kΩ Rotary Potentiometers",
+          "qty": 2,
+          "spec": "Linear taper (B10K), 3-pin through-hole with knurled shaft",
+          "costUSD": {
+            "min": 1,
+            "max": 2.5
+          },
+          "alternatives": [
+            "2-axis analog thumb joystick module (e.g. KY-023)"
+          ],
+          "notes": "Acts as physical manual control console.",
+          "affiliate": false
+        },
+        {
+          "name": "2-DOF Arm Mechanical Frame Kit",
+          "qty": 1,
+          "spec": "Laser-cut acrylic or 3D-printed base bracket and upper arm link",
+          "costUSD": {
+            "min": 6,
+            "max": 12
+          },
+          "alternatives": [
+            "Heavy cardboard or craft plywood links with M3 bolts"
+          ],
+          "notes": "Provides the mechanical pivot points and base stability.",
+          "affiliate": false
+        },
+        {
+          "name": "Half-Size Breadboard",
+          "qty": 1,
+          "spec": "400 tie-points",
+          "costUSD": {
+            "min": 2,
+            "max": 4
+          },
+          "alternatives": [
+            "Mini breadboard"
+          ],
+          "notes": "Distributes potentiometer voltage divider rails and external servo power.",
+          "affiliate": false
+        },
+        {
+          "name": "External 5V 2A Power Source (or 4xAA Pack)",
+          "qty": 1,
+          "spec": "Regulated 5V DC power adapter with terminal block or 4xAA battery holder",
+          "costUSD": {
+            "min": 3,
+            "max": 7
+          },
+          "alternatives": [
+            "USB power bank with high current output"
+          ],
+          "notes": "Provides clean surge current for servo motion.",
+          "affiliate": false
+        },
+        {
+          "name": "DuPont Jumper Wires (M-M and M-F)",
+          "qty": 18,
+          "spec": "Assorted ribbon cables",
+          "costUSD": {
+            "min": 1.5,
+            "max": 3
+          },
+          "alternatives": [
+            "Hookup wire"
+          ],
+          "notes": "Wire routing should leave enough slack for full 180-degree arm travel.",
+          "affiliate": false
+        }
+      ],
+      "wiring": [
+        {
+          "from": "Potentiometer 1 Outer Pins",
+          "to": "Arduino 5V & Arduino GND Rails",
+          "color": "Red & Black",
+          "note": "Linear voltage divider reference for Base Azimuth"
+        },
+        {
+          "from": "Potentiometer 1 Wiper (Center)",
+          "to": "Arduino Analog In A0",
+          "color": "Blue",
+          "note": "Reads 0V-5V analog voltage corresponding to 0-1023 ADC"
+        },
+        {
+          "from": "Potentiometer 2 Outer Pins",
+          "to": "Arduino 5V & Arduino GND Rails",
+          "color": "Red & Black",
+          "note": "Linear voltage divider reference for Shoulder Elevation"
+        },
+        {
+          "from": "Potentiometer 2 Wiper (Center)",
+          "to": "Arduino Analog In A1",
+          "color": "Orange",
+          "note": "Reads 0V-5V analog voltage corresponding to 0-1023 ADC"
+        },
+        {
+          "from": "Servo 1 Signal (Orange)",
+          "to": "Arduino Digital Pin 9 (PWM)",
+          "color": "Orange",
+          "note": "Base rotation PWM signal"
+        },
+        {
+          "from": "Servo 2 Signal (Orange)",
+          "to": "Arduino Digital Pin 10 (PWM)",
+          "color": "Yellow",
+          "note": "Shoulder elevation PWM signal"
+        },
+        {
+          "from": "Servo 1 & 2 VCC (Red)",
+          "to": "External 5V Power Rail (+)",
+          "color": "Red",
+          "note": "External high-current power bus"
+        },
+        {
+          "from": "External GND Rail (-)",
+          "to": "Arduino GND Header",
+          "color": "Black",
+          "note": "CRITICAL: Common ground reference"
+        }
+      ],
+      "steps": [
+        {
+          "step": 1,
+          "title": "Zero-Calibrate Servos Before Assembly",
+          "description": "Connect both servos to Arduino, run the servo calibration sketch, and write 90 degrees to both. Mark the center point. NEVER attempt to force-rotate servo gears past their mechanical stops by hand.",
+          "check": "Both servos are electrically locked at their 90-degree midpoint."
+        },
+        {
+          "step": 2,
+          "title": "Assemble the Base Turntable",
+          "description": "Mount the Base servo into the stationary base plate with the spline pointing up. Screw the rotating upper shoulder bracket directly into the servo horn.",
+          "check": "Upper bracket rotates smoothly across a full 180-degree sweep without binding."
+        },
+        {
+          "step": 3,
+          "title": "Mount the Shoulder Lift Joint",
+          "description": "Install the Elevation servo horizontally into the rotating bracket. Secure the arm beam to the elevation servo horn at a resting 45-degree angle.",
+          "check": "Arm can swing from parallel to the table (0 deg) to vertical (90 deg)."
+        },
+        {
+          "step": 4,
+          "title": "Wire Potentiometers on Breadboard",
+          "description": "Place the two 10k potentiometers on the breadboard. Connect their left pins to 5V, right pins to GND, and wipers to Arduino A0 and A1 respectively.",
+          "check": "Wipers swing smoothly between 0V and 5V."
+        },
+        {
+          "step": 5,
+          "title": "Wire External Power and Common Ground",
+          "description": "Wire external 5V power supply to the breadboard side rail. Connect servo Red wires to external 5V, servo Brown wires to external GND, and link external GND to Arduino GND.",
+          "check": "Common ground confirmed between Arduino and external servo supply."
+        },
+        {
+          "step": 6,
+          "title": "Upload Teleoperation & Filter Sketch",
+          "description": "Upload the sketch. Rotate Potentiometer 1 to guide the base left and right; rotate Potentiometer 2 to raise and lower the arm beam.",
+          "check": "Arm follows hand movements gracefully without vibration or sudden jerks."
+        }
+      ],
+      "code": {
+        "language": "cpp",
+        "source": "// RoboForge Project 5: Articulated 2-DOF Robotic Arm\n// Teleoperation with Exponential Moving Average (EMA) Jitter Filter\n\n#include <Servo.h>\n\nconst int PIN_POT_BASE = A0;\nconst int PIN_POT_SHOULDER = A1;\n\nconst int PIN_SERVO_BASE = 9;\nconst int PIN_SERVO_SHOULDER = 10;\n\nServo servoBase;\nServo servoShoulder;\n\n// Filtered angle states (floating point for precision)\nfloat filteredBase = 90.0;\nfloat filteredShoulder = 90.0;\n\n// Smoothing coefficient: 0.1 = very smooth/gradual, 0.5 = fast response\nconst float ALPHA = 0.15;\n\nvoid setup() {\n  servoBase.attach(PIN_SERVO_BASE);\n  servoShoulder.attach(PIN_SERVO_SHOULDER);\n\n  servoBase.write(90);\n  servoShoulder.write(90);\n  delay(500);\n}\n\nvoid loop() {\n  // Read 10-bit raw ADC (0 - 1023)\n  int rawBase = analogRead(PIN_POT_BASE);\n  int rawShoulder = analogRead(PIN_POT_SHOULDER);\n\n  // Map ADC range to physical servo travel limits (0 to 180 degrees)\n  float targetBase = map(rawBase, 0, 1023, 10, 170);\n  float targetShoulder = map(rawShoulder, 0, 1023, 20, 160);\n\n  // Apply Exponential Moving Average filter: Y[n] = (1 - alpha)*Y[n-1] + alpha*X[n]\n  filteredBase = (1.0 - ALPHA) * filteredBase + ALPHA * targetBase;\n  filteredShoulder = (1.0 - ALPHA) * filteredShoulder + ALPHA * targetShoulder;\n\n  // Command servos with filtered integer angles\n  servoBase.write((int)filteredBase);\n  servoShoulder.write((int)filteredShoulder);\n\n  // Short delay for 50Hz control loop pacing\n  delay(20);\n}\n",
+        "explanation": "Raw ADC readings from carbon track potentiometers suffer from small electrical noise fluctuations. The exponential moving average filter suppresses high-frequency jitter, producing smooth, lifelike cinematic arm movements."
+      },
+      "testChecklist": [
+        "Turning Potentiometer 1 sweeps base from 10 to 170 degrees.",
+        "Turning Potentiometer 2 lifts and lowers the arm smoothly without motor stall chatter.",
+        "Releasing the potentiometers leaves the arm held rigidly in position without trembling."
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "Arm trembles, buzzes, or jitters rapidly when resting in one spot",
+          "cause": "Electrical noise on the analog potentiometer wires or lack of low-pass filtering.",
+          "remedy": "Reduce the ALPHA constant in code from 0.15 to 0.08 to increase smoothing, or place a 100nF ceramic capacitor between each analog pin (A0, A1) and GND."
+        },
+        {
+          "symptom": "Shoulder servo drops abruptly under its own weight and makes a clicking gear sound",
+          "cause": "Mechanical arm beam is too long or heavy for 9g plastic gears; torque limit exceeded.",
+          "remedy": "Shorten the arm beam or upgrade the elevation servo to an MG90S metal-gear servo."
+        },
+        {
+          "symptom": "Servos twitch erratically whenever both move at the same time",
+          "cause": "Power supply is dipping below 4.5V under simultaneous load.",
+          "remedy": "Ensure external supply can supply at least 1.5A to 2.0A at 5V. Add a 470uF electrolytic capacitor across the external power rail."
+        }
+      ],
+      "extensions": [
+        "Record & Playback Mode: Press a button to save 5 waypoints in EEPROM, then loop the sequence autonomously.",
+        "Inverse Kinematics: Map Cartesian coordinates (X, Y in centimeters) to Joint angles using trigonometry: theta1 = atan2(y, x), theta2 = acos((r^2 - L1^2 - L2^2)/(2*L1*L2))."
+      ]
+    }
+  },
+  "kits": {
+    "builder-kit": {
+      "id": "builder-kit",
+      "title": "RoboForge Official Builder Kit",
+      "tier": "builder",
+      "description": "The advanced robotics expansion kit containing precision ultrasonic sonar, miniature servo actuators, mechanical articulated arm linkages, and multi-sensor modules for Projects P1 through P5.",
+      "targetAudience": "Intermediate robotics builders, hobbyists, and secondary school robotics clubs",
+      "estimatedCostUSD": {
+        "min": 58,
+        "max": 75
+      },
+      "safetyRating": "Low-voltage DC strictly under 9V and 2A (Class III SELV compliant)",
+      "items": [
+        {
+          "name": "Arduino Uno R3 (or 100% Compatible Clone)",
+          "qty": 1,
+          "spec": "ATmega328P 16MHz DIP or SMD board with USB interface",
+          "costUSD": {
+            "min": 4.5,
+            "max": 9
+          },
+          "alternatives": [
+            "Elegoo Uno R3",
+            "Arduino Uno Genuine"
+          ],
+          "notes": "Main controller for both mobile and articulated projects.",
+          "affiliate": false
+        },
+        {
+          "name": "Half-Size Solderless Breadboard",
+          "qty": 2,
+          "spec": "400 tie-points each with interlocking tongue-and-groove sides",
+          "costUSD": {
+            "min": 3.5,
+            "max": 6
+          },
+          "alternatives": [
+            "Full-size 830-point breadboard"
+          ],
+          "notes": "One for mobile base, one for desktop arm console.",
+          "affiliate": false
+        },
+        {
+          "name": "HC-SR04 Ultrasonic Distance Sensor",
+          "qty": 1,
+          "spec": "40 kHz sonar transducer pair, 2cm-400cm range, 5V logic",
+          "costUSD": {
+            "min": 1.5,
+            "max": 3.5
+          },
+          "alternatives": [
+            "US-015 high-precision sonar module",
+            "RCWL-1601 sonar"
+          ],
+          "notes": "For active radar obstacle avoidance.",
+          "affiliate": false
+        },
+        {
+          "name": "SG90 9g Micro Servos",
+          "qty": 3,
+          "spec": "Nylon gear 50 Hz PWM position servos (1.8 kg-cm torque at 4.8V)",
+          "costUSD": {
+            "min": 5,
+            "max": 9
+          },
+          "alternatives": [
+            "TowerPro SG90",
+            "MG90S metal-gear micro servos"
+          ],
+          "notes": "1x for radar pan, 2x for articulated robotic arm.",
+          "affiliate": false
+        },
+        {
+          "name": "Ultrasonic Pan Servo Mount Bracket",
+          "qty": 1,
+          "spec": "Acrylic or molded mounting bracket pairing HC-SR04 to SG90 horn",
+          "costUSD": {
+            "min": 1,
+            "max": 2.5
+          },
+          "alternatives": [
+            "3D-printed PETG bracket"
+          ],
+          "notes": "Fastens sensor securely to servo output spline.",
+          "affiliate": false
+        },
+        {
+          "name": "2-DOF Robotic Arm Frame & Linkage Kit",
+          "qty": 1,
+          "spec": "Laser-cut acrylic arm chassis with base turntable and shoulder arm",
+          "costUSD": {
+            "min": 6,
+            "max": 12
+          },
+          "alternatives": [
+            "MeArm miniature robot arm chassis",
+            "3D-printed 2-DOF arm parts"
+          ],
+          "notes": "Includes all M3 hardware fasteners and nylon spacers.",
+          "affiliate": false
+        },
+        {
+          "name": "10kΩ Rotary Potentiometers (Linear B10K)",
+          "qty": 2,
+          "spec": "Breadboard-friendly 3-terminal rotary controls with knobs",
+          "costUSD": {
+            "min": 1.2,
+            "max": 2.5
+          },
+          "alternatives": [
+            "Analog 2-axis joystick module (KY-023)"
+          ],
+          "notes": "For teleoperation of Base Azimuth and Shoulder Elevation.",
+          "affiliate": false
+        },
+        {
+          "name": "L298N Dual H-Bridge Motor Driver Module",
+          "qty": 1,
+          "spec": "Dual 2A full-bridge driver with onboard 5V logic regulator",
+          "costUSD": {
+            "min": 2.2,
+            "max": 4
+          },
+          "alternatives": [
+            "TB6612FNG Dual Driver"
+          ],
+          "notes": "Controls left and right drive wheels.",
+          "affiliate": false
+        },
+        {
+          "name": "2WD Robot Chassis with Yellow TT Motors",
+          "qty": 1,
+          "spec": "Acrylic base plate with 2x 1:48 TT motors and front caster",
+          "costUSD": {
+            "min": 7,
+            "max": 12
+          },
+          "alternatives": [
+            "Any differential 2WD chassis"
+          ],
+          "notes": "Equipped with rubber traction tires.",
+          "affiliate": false
+        },
+        {
+          "name": "Dual IR Line Tracker Sensor Modules",
+          "qty": 2,
+          "spec": "TCRT5000 IR reflectance modules with digital and analog outputs",
+          "costUSD": {
+            "min": 1.5,
+            "max": 3
+          },
+          "alternatives": [
+            "SparkFun RedBot Sensor"
+          ],
+          "notes": "Provides ground reflectance edge detection.",
+          "affiliate": false
+        },
+        {
+          "name": "4xAA Battery Holder with On/Off Switch",
+          "qty": 1,
+          "spec": "6V battery enclosure with slide switch and stripped wire leads",
+          "costUSD": {
+            "min": 1.5,
+            "max": 3
+          },
+          "alternatives": [
+            "5V 2A USB power bank"
+          ],
+          "notes": "Provides clean surge current for DC motors and servos.",
+          "affiliate": false
+        },
+        {
+          "name": "Regulated 5V 2A Wall Adapter with DC Terminal Block",
+          "qty": 1,
+          "spec": "Universal 100-240V AC to 5V DC 2A regulated switching adapter",
+          "costUSD": {
+            "min": 4,
+            "max": 8
+          },
+          "alternatives": [
+            "USB-A to terminal block power cable"
+          ],
+          "notes": "For stationary desktop arm teleoperation testing.",
+          "affiliate": false
+        },
+        {
+          "name": "Assorted DuPont Jumpers (M-M, M-F, F-F 40-pin bundle)",
+          "qty": 60,
+          "spec": "Multicolored 20cm ribbon cables",
+          "costUSD": {
+            "min": 3,
+            "max": 5
+          },
+          "alternatives": [
+            "Custom solid breadboard wires"
+          ],
+          "notes": "Comprehensive wiring kit for all module sensors and actuators.",
+          "affiliate": false
+        },
+        {
+          "name": "Passive Components Pack (Resistors, LEDs, Capacitors)",
+          "qty": 1,
+          "spec": "30x resistors (220Ω, 1k, 10k), 15x LEDs, 4x 100nF capacitors, 2x 100uF electrolytic capacitors",
+          "costUSD": {
+            "min": 2.5,
+            "max": 4.5
+          },
+          "alternatives": [
+            "Standard components grab bag"
+          ],
+          "notes": "Includes bypass capacitors to prevent servo power supply brownouts.",
+          "affiliate": false
+        }
+      ]
+    },
+    "starter-kit": {
+      "id": "starter-kit",
+      "title": "RoboForge Official Starter Kit",
+      "tier": "starter",
+      "description": "The complete, vendor-neutral hardware bill of materials for Modules 1 through 3 and Projects P1 (LED Blink), P2 (Traffic Light), and P3 (Line Follower Robot).",
+      "targetAudience": "Beginner students (ages 12+) and first-time robotics learners",
+      "estimatedCostUSD": {
+        "min": 32,
+        "max": 42
+      },
+      "safetyRating": "Low-voltage DC strictly under 9V and 2A (Class III SELV compliant)",
+      "items": [
+        {
+          "name": "Arduino Uno R3 (or 100% Compatible Clone)",
+          "qty": 1,
+          "spec": "ATmega328P 16MHz DIP or SMD board with USB-B or USB-C interface and CH340 / 16U2 serial",
+          "costUSD": {
+            "min": 4.5,
+            "max": 9
+          },
+          "alternatives": [
+            "Elegoo Uno R3",
+            "SparkFun RedBoard",
+            "Arduino Uno R3 Genuine"
+          ],
+          "notes": "Must have standard Arduino pinout and 5V logic.",
+          "affiliate": false
+        },
+        {
+          "name": "Half-Size Solderless Breadboard",
+          "qty": 1,
+          "spec": "400 tie-points (30 rows, 2 power rails, standard 2.54mm pitch)",
+          "costUSD": {
+            "min": 2,
+            "max": 3.5
+          },
+          "alternatives": [
+            "BusBoard BB400",
+            "Adafruit Half-size Breadboard"
+          ],
+          "notes": "Nickel-plated phosphor bronze spring clips recommended.",
+          "affiliate": false
+        },
+        {
+          "name": "65-Piece Flexible Jumper Wire Bundle",
+          "qty": 1,
+          "spec": "Male-to-Male multicolored DuPont jumper wires (assorted lengths)",
+          "costUSD": {
+            "min": 2,
+            "max": 3.5
+          },
+          "alternatives": [
+            "Pre-formed solid copper wire kit"
+          ],
+          "notes": "Includes Red, Black, Yellow, Green, Blue, White colors.",
+          "affiliate": false
+        },
+        {
+          "name": "Female-to-Male DuPont Ribbon Jumpers",
+          "qty": 20,
+          "spec": "20cm length 28 AWG ribbon cables",
+          "costUSD": {
+            "min": 1.5,
+            "max": 2.5
+          },
+          "alternatives": [
+            "Adafruit Premium M-F jumpers"
+          ],
+          "notes": "Essential for linking Arduino pin headers to motor drivers and sensor breakout pins.",
+          "affiliate": false
+        },
+        {
+          "name": "Resistor Assortment Pack (1/4W Metal Film)",
+          "qty": 30,
+          "spec": "10x 220Ω, 10x 1kΩ, 10x 10kΩ (+/- 1% or 5%)",
+          "costUSD": {
+            "min": 1,
+            "max": 2
+          },
+          "alternatives": [
+            "Generic 1/4W carbon film resistors"
+          ],
+          "notes": "Covers LED current limiting, pull-up/pull-down, and divider networks.",
+          "affiliate": false
+        },
+        {
+          "name": "5mm Diffused LEDs (Pack of 15)",
+          "qty": 15,
+          "spec": "5x Red (Vf 2.0V), 5x Green (Vf 2.2V), 5x Yellow (Vf 2.1V)",
+          "costUSD": {
+            "min": 1,
+            "max": 2
+          },
+          "alternatives": [
+            "Kingbright 5mm LED pack"
+          ],
+          "notes": "Diffused lens provides wide viewing angle and gentle glow.",
+          "affiliate": false
+        },
+        {
+          "name": "6mm Tactile Momentary Pushbuttons",
+          "qty": 5,
+          "spec": "4-pin through-hole SPST normally-open switches",
+          "costUSD": {
+            "min": 0.5,
+            "max": 1.2
+          },
+          "alternatives": [
+            "Omron B3F series"
+          ],
+          "notes": "Fits securely across breadboard center trough.",
+          "affiliate": false
+        },
+        {
+          "name": "10kΩ Rotary Potentiometer",
+          "qty": 1,
+          "spec": "B10K linear taper, breadboard-friendly 3-pin pitch",
+          "costUSD": {
+            "min": 0.6,
+            "max": 1.5
+          },
+          "alternatives": [
+            "Bourns 3386 or standard trimpot"
+          ],
+          "notes": "Used as analog voltage divider input.",
+          "affiliate": false
+        },
+        {
+          "name": "Dual IR Line Tracker Sensor Modules (TCRT5000)",
+          "qty": 2,
+          "spec": "940nm IR phototransistor pair with onboard LM393 comparator and trimmer",
+          "costUSD": {
+            "min": 1.5,
+            "max": 3
+          },
+          "alternatives": [
+            "Pololu QTR-1A reflectance sensors",
+            "Keyestudio Line Tracker"
+          ],
+          "notes": "Digital output DO and Analog output AO.",
+          "affiliate": false
+        },
+        {
+          "name": "L298N Dual H-Bridge Motor Driver Module",
+          "qty": 1,
+          "spec": "Dual full-bridge driver with aluminum heatsink and 5V screw terminals",
+          "costUSD": {
+            "min": 2.2,
+            "max": 4
+          },
+          "alternatives": [
+            "TB6612FNG Dual Motor Driver",
+            "L293D Shield"
+          ],
+          "notes": "Controls two independent DC motors bidirectional.",
+          "affiliate": false
+        },
+        {
+          "name": "2WD Smart Robot Car Chassis Kit",
+          "qty": 1,
+          "spec": "Laser-cut base plate, 2x TT DC gearmotors (1:48), 2x rubber tires, 1x front caster",
+          "costUSD": {
+            "min": 7,
+            "max": 12
+          },
+          "alternatives": [
+            "Generic yellow 2WD car kit"
+          ],
+          "notes": "Includes motor mounting brackets, encoder discs, and screws.",
+          "affiliate": false
+        },
+        {
+          "name": "4xAA Battery Holder with DC Barrel or Lead Wires",
+          "qty": 1,
+          "spec": "6V nominal battery box with integrated ON/OFF slide switch",
+          "costUSD": {
+            "min": 1.5,
+            "max": 3
+          },
+          "alternatives": [
+            "5V 2A USB power bank"
+          ],
+          "notes": "Supplies high surge current for motors safely.",
+          "affiliate": false
+        },
+        {
+          "name": "9V Battery Snap with 2.1mm DC Barrel Plug",
+          "qty": 1,
+          "spec": "Center-positive 2.1x5.5mm DC plug",
+          "costUSD": {
+            "min": 0.5,
+            "max": 1
+          },
+          "alternatives": [
+            "USB to DC barrel cable"
+          ],
+          "notes": "For optional untethered Arduino logic power.",
+          "affiliate": false
+        }
+      ]
     }
   }
 }

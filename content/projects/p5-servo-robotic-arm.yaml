@@ -1,0 +1,225 @@
+id: p5-servo-robotic-arm
+title: "Articulated 2-DOF Robotic Arm"
+description: "Construct a 2-degree-of-freedom robotic arm with azimuth (base rotation) and elevation (shoulder lift) axes. Control arm kinematics using dual analog potentiometers with software smoothing."
+difficulty: 4
+minutes: 120
+costUSD:
+  min: 25
+  max: 40
+skills:
+  - servo-control
+  - analog-teleoperation
+  - mechanical-linkage
+  - signal-smoothing-filters
+kit: builder
+simulatedTwin: "servo-arm"
+needsHumanVerification: true
+verifyChecklist:
+  - "Verify mechanical joint limits: Base rotates 0 to 180 degrees without wire snagging"
+  - "Verify shoulder elevation joint does not exceed torque rating of the SG90 (1.8 kg-cm)"
+  - "Verify external 5V 2A power rail supplies servos with stable voltage under load"
+  - "Confirm exponential moving average (EMA) filter eliminates potentiometer ADC jitter"
+safetyRules:
+  - "Always power the robotic arm servos from a dedicated external 5V-6V power supply (such as 4xAA battery pack or regulated 5V 2A wall adapter). Powering two servos simultaneously from the Arduino 5V regulator will overheat and fry the regulator."
+  - "Keep fingers away from acrylic scissor linkages and servo horn hubs during movement to avoid pinch injuries."
+  - "Always connect external power GND and Arduino GND together to maintain a common 0V voltage reference."
+bom:
+  - name: "Arduino Uno R3 (or compatible)"
+    qty: 1
+    spec: "ATmega328P microcontroller board"
+    costUSD:
+      min: 4
+      max: 8
+    alternatives:
+      - "Arduino Nano"
+    notes: "Reads analog joystick/potentiometer inputs and outputs 50 Hz PWM."
+    affiliate: false
+  - name: "SG90 9g Micro Servos"
+    qty: 2
+    spec: "50 Hz PWM position servo, 4.8V-6.0V, 1.8 kg-cm torque"
+    costUSD:
+      min: 4
+      max: 8
+    alternatives:
+      - "MG90S metal gear micro servos (recommended for higher durability)"
+    notes: "Servo 1 = Base rotation (Azimuth); Servo 2 = Shoulder joint (Elevation)."
+    affiliate: false
+  - name: "10kΩ Rotary Potentiometers"
+    qty: 2
+    spec: "Linear taper (B10K), 3-pin through-hole with knurled shaft"
+    costUSD:
+      min: 1
+      max: 2.5
+    alternatives:
+      - "2-axis analog thumb joystick module (e.g. KY-023)"
+    notes: "Acts as physical manual control console."
+    affiliate: false
+  - name: "2-DOF Arm Mechanical Frame Kit"
+    qty: 1
+    spec: "Laser-cut acrylic or 3D-printed base bracket and upper arm link"
+    costUSD:
+      min: 6
+      max: 12
+    alternatives:
+      - "Heavy cardboard or craft plywood links with M3 bolts"
+    notes: "Provides the mechanical pivot points and base stability."
+    affiliate: false
+  - name: "Half-Size Breadboard"
+    qty: 1
+    spec: "400 tie-points"
+    costUSD:
+      min: 2
+      max: 4
+    alternatives:
+      - "Mini breadboard"
+    notes: "Distributes potentiometer voltage divider rails and external servo power."
+    affiliate: false
+  - name: "External 5V 2A Power Source (or 4xAA Pack)"
+    qty: 1
+    spec: "Regulated 5V DC power adapter with terminal block or 4xAA battery holder"
+    costUSD:
+      min: 3
+      max: 7
+    alternatives:
+      - "USB power bank with high current output"
+    notes: "Provides clean surge current for servo motion."
+    affiliate: false
+  - name: "DuPont Jumper Wires (M-M and M-F)"
+    qty: 18
+    spec: "Assorted ribbon cables"
+    costUSD:
+      min: 1.5
+      max: 3
+    alternatives:
+      - "Hookup wire"
+    notes: "Wire routing should leave enough slack for full 180-degree arm travel."
+    affiliate: false
+wiring:
+  - from: "Potentiometer 1 Outer Pins"
+    to: "Arduino 5V & Arduino GND Rails"
+    color: "Red & Black"
+    note: "Linear voltage divider reference for Base Azimuth"
+  - from: "Potentiometer 1 Wiper (Center)"
+    to: "Arduino Analog In A0"
+    color: "Blue"
+    note: "Reads 0V-5V analog voltage corresponding to 0-1023 ADC"
+  - from: "Potentiometer 2 Outer Pins"
+    to: "Arduino 5V & Arduino GND Rails"
+    color: "Red & Black"
+    note: "Linear voltage divider reference for Shoulder Elevation"
+  - from: "Potentiometer 2 Wiper (Center)"
+    to: "Arduino Analog In A1"
+    color: "Orange"
+    note: "Reads 0V-5V analog voltage corresponding to 0-1023 ADC"
+  - from: "Servo 1 Signal (Orange)"
+    to: "Arduino Digital Pin 9 (PWM)"
+    color: "Orange"
+    note: "Base rotation PWM signal"
+  - from: "Servo 2 Signal (Orange)"
+    to: "Arduino Digital Pin 10 (PWM)"
+    color: "Yellow"
+    note: "Shoulder elevation PWM signal"
+  - from: "Servo 1 & 2 VCC (Red)"
+    to: "External 5V Power Rail (+)"
+    color: "Red"
+    note: "External high-current power bus"
+  - from: "External GND Rail (-)"
+    to: "Arduino GND Header"
+    color: "Black"
+    note: "CRITICAL: Common ground reference"
+steps:
+  - step: 1
+    title: "Zero-Calibrate Servos Before Assembly"
+    description: "Connect both servos to Arduino, run the servo calibration sketch, and write 90 degrees to both. Mark the center point. NEVER attempt to force-rotate servo gears past their mechanical stops by hand."
+    check: "Both servos are electrically locked at their 90-degree midpoint."
+  - step: 2
+    title: "Assemble the Base Turntable"
+    description: "Mount the Base servo into the stationary base plate with the spline pointing up. Screw the rotating upper shoulder bracket directly into the servo horn."
+    check: "Upper bracket rotates smoothly across a full 180-degree sweep without binding."
+  - step: 3
+    title: "Mount the Shoulder Lift Joint"
+    description: "Install the Elevation servo horizontally into the rotating bracket. Secure the arm beam to the elevation servo horn at a resting 45-degree angle."
+    check: "Arm can swing from parallel to the table (0 deg) to vertical (90 deg)."
+  - step: 4
+    title: "Wire Potentiometers on Breadboard"
+    description: "Place the two 10k potentiometers on the breadboard. Connect their left pins to 5V, right pins to GND, and wipers to Arduino A0 and A1 respectively."
+    check: "Wipers swing smoothly between 0V and 5V."
+  - step: 5
+    title: "Wire External Power and Common Ground"
+    description: "Wire external 5V power supply to the breadboard side rail. Connect servo Red wires to external 5V, servo Brown wires to external GND, and link external GND to Arduino GND."
+    check: "Common ground confirmed between Arduino and external servo supply."
+  - step: 6
+    title: "Upload Teleoperation & Filter Sketch"
+    description: "Upload the sketch. Rotate Potentiometer 1 to guide the base left and right; rotate Potentiometer 2 to raise and lower the arm beam."
+    check: "Arm follows hand movements gracefully without vibration or sudden jerks."
+code:
+  language: "cpp"
+  source: |
+    // RoboForge Project 5: Articulated 2-DOF Robotic Arm
+    // Teleoperation with Exponential Moving Average (EMA) Jitter Filter
+
+    #include <Servo.h>
+
+    const int PIN_POT_BASE = A0;
+    const int PIN_POT_SHOULDER = A1;
+
+    const int PIN_SERVO_BASE = 9;
+    const int PIN_SERVO_SHOULDER = 10;
+
+    Servo servoBase;
+    Servo servoShoulder;
+
+    // Filtered angle states (floating point for precision)
+    float filteredBase = 90.0;
+    float filteredShoulder = 90.0;
+
+    // Smoothing coefficient: 0.1 = very smooth/gradual, 0.5 = fast response
+    const float ALPHA = 0.15;
+
+    void setup() {
+      servoBase.attach(PIN_SERVO_BASE);
+      servoShoulder.attach(PIN_SERVO_SHOULDER);
+
+      servoBase.write(90);
+      servoShoulder.write(90);
+      delay(500);
+    }
+
+    void loop() {
+      // Read 10-bit raw ADC (0 - 1023)
+      int rawBase = analogRead(PIN_POT_BASE);
+      int rawShoulder = analogRead(PIN_POT_SHOULDER);
+
+      // Map ADC range to physical servo travel limits (0 to 180 degrees)
+      float targetBase = map(rawBase, 0, 1023, 10, 170);
+      float targetShoulder = map(rawShoulder, 0, 1023, 20, 160);
+
+      // Apply Exponential Moving Average filter: Y[n] = (1 - alpha)*Y[n-1] + alpha*X[n]
+      filteredBase = (1.0 - ALPHA) * filteredBase + ALPHA * targetBase;
+      filteredShoulder = (1.0 - ALPHA) * filteredShoulder + ALPHA * targetShoulder;
+
+      // Command servos with filtered integer angles
+      servoBase.write((int)filteredBase);
+      servoShoulder.write((int)filteredShoulder);
+
+      // Short delay for 50Hz control loop pacing
+      delay(20);
+    }
+  explanation: "Raw ADC readings from carbon track potentiometers suffer from small electrical noise fluctuations. The exponential moving average filter suppresses high-frequency jitter, producing smooth, lifelike cinematic arm movements."
+testChecklist:
+  - "Turning Potentiometer 1 sweeps base from 10 to 170 degrees."
+  - "Turning Potentiometer 2 lifts and lowers the arm smoothly without motor stall chatter."
+  - "Releasing the potentiometers leaves the arm held rigidly in position without trembling."
+troubleshooting:
+  - symptom: "Arm trembles, buzzes, or jitters rapidly when resting in one spot"
+    cause: "Electrical noise on the analog potentiometer wires or lack of low-pass filtering."
+    remedy: "Reduce the ALPHA constant in code from 0.15 to 0.08 to increase smoothing, or place a 100nF ceramic capacitor between each analog pin (A0, A1) and GND."
+  - symptom: "Shoulder servo drops abruptly under its own weight and makes a clicking gear sound"
+    cause: "Mechanical arm beam is too long or heavy for 9g plastic gears; torque limit exceeded."
+    remedy: "Shorten the arm beam or upgrade the elevation servo to an MG90S metal-gear servo."
+  - symptom: "Servos twitch erratically whenever both move at the same time"
+    cause: "Power supply is dipping below 4.5V under simultaneous load."
+    remedy: "Ensure external supply can supply at least 1.5A to 2.0A at 5V. Add a 470uF electrolytic capacitor across the external power rail."
+extensions:
+  - "Record & Playback Mode: Press a button to save 5 waypoints in EEPROM, then loop the sequence autonomously."
+  - "Inverse Kinematics: Map Cartesian coordinates (X, Y in centimeters) to Joint angles using trigonometry: theta1 = atan2(y, x), theta2 = acos((r^2 - L1^2 - L2^2)/(2*L1*L2))."

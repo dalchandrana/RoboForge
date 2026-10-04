@@ -7,11 +7,15 @@ import {
   validateModule,
   validateQuiz,
   validateComponent,
+  validateProject,
+  validateKit,
   type LessonFrontmatter,
   type Path as PathType,
   type Module as ModuleType,
   type Quiz as QuizType,
   type Component as ComponentType,
+  type Project as ProjectType,
+  type Kit as KitType,
 } from '@roboforge/content-schema';
 
 export interface BundledLesson {
@@ -26,6 +30,8 @@ export interface ContentBundle {
   modules: Record<string, ModuleType>;
   lessons: Record<string, BundledLesson>;
   components: Record<string, ComponentType>;
+  projects: Record<string, ProjectType>;
+  kits: Record<string, KitType>;
 }
 
 export function buildContentBundle(contentDir: string): ContentBundle {
@@ -35,6 +41,8 @@ export function buildContentBundle(contentDir: string): ContentBundle {
     modules: {},
     lessons: {},
     components: {},
+    projects: {},
+    kits: {},
   };
 
   if (!fs.existsSync(contentDir)) {
@@ -113,6 +121,32 @@ export function buildContentBundle(contentDir: string): ContentBundle {
           yaml.load(fs.readFileSync(path.join(componentsDir, compFile), 'utf-8')),
         );
         bundle.components[compData.id] = compData;
+      }
+    }
+  }
+
+  // Read projects
+  const projectsDir = path.join(contentDir, 'projects');
+  if (fs.existsSync(projectsDir)) {
+    for (const projFile of fs.readdirSync(projectsDir)) {
+      if (projFile.endsWith('.yaml')) {
+        const projData = validateProject(
+          yaml.load(fs.readFileSync(path.join(projectsDir, projFile), 'utf-8')),
+        );
+        bundle.projects[projData.id] = projData;
+      }
+    }
+  }
+
+  // Read kits
+  const kitsDir = path.join(contentDir, 'kits');
+  if (fs.existsSync(kitsDir)) {
+    for (const kitFile of fs.readdirSync(kitsDir)) {
+      if (kitFile.endsWith('.yaml')) {
+        const kitData = validateKit(
+          yaml.load(fs.readFileSync(path.join(kitsDir, kitFile), 'utf-8')),
+        );
+        bundle.kits[kitData.id] = kitData;
       }
     }
   }

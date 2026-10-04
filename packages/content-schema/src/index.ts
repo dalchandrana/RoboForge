@@ -130,7 +130,7 @@ export const PathSchema = z.object({
 });
 export type Path = z.infer<typeof PathSchema>;
 
-// Project & BOM
+// Project & BOM Schemas
 export const BomItemSchema = z.object({
   name: z.string().min(1),
   qty: z.number().int().positive(),
@@ -141,6 +141,36 @@ export const BomItemSchema = z.object({
   affiliate: z.boolean().default(false),
 });
 export type BomItem = z.infer<typeof BomItemSchema>;
+
+export const ProjectWiringItemSchema = z.object({
+  from: z.string().min(1),
+  to: z.string().min(1),
+  color: z.string().optional(),
+  note: z.string().optional(),
+});
+export type ProjectWiringItem = z.infer<typeof ProjectWiringItemSchema>;
+
+export const ProjectStepSchema = z.object({
+  step: z.number().int().positive(),
+  title: z.string().min(1),
+  description: z.string().min(1),
+  check: z.string().optional(),
+});
+export type ProjectStep = z.infer<typeof ProjectStepSchema>;
+
+export const ProjectTroubleshootingItemSchema = z.object({
+  symptom: z.string().min(1),
+  cause: z.string().min(1),
+  remedy: z.string().min(1),
+});
+export type ProjectTroubleshootingItem = z.infer<typeof ProjectTroubleshootingItemSchema>;
+
+export const ProjectCodeSchema = z.object({
+  language: z.string().default('cpp'),
+  source: z.string().min(1),
+  explanation: z.string().optional(),
+});
+export type ProjectCode = z.infer<typeof ProjectCodeSchema>;
 
 export const ProjectFrontmatterSchema = z.object({
   id: z.string().regex(/^[a-z0-9-]+$/),
@@ -155,6 +185,41 @@ export const ProjectFrontmatterSchema = z.object({
   verifyChecklist: z.array(z.string()).min(1),
 });
 export type ProjectFrontmatter = z.infer<typeof ProjectFrontmatterSchema>;
+
+export const ProjectSchema = z.object({
+  id: z.string().regex(/^[a-z0-9-]+$/),
+  title: z.string().min(1),
+  description: z.string().min(1),
+  difficulty: z.number().min(1).max(5),
+  minutes: z.number().int().positive(),
+  costUSD: z.object({ min: z.number(), max: z.number() }),
+  skills: z.array(z.string()).min(1),
+  kit: z.enum(['starter', 'builder', 'advanced']),
+  simulatedTwin: z.string().min(1),
+  needsHumanVerification: z.boolean().default(true),
+  verifyChecklist: z.array(z.string()).min(1),
+  safetyRules: z.array(z.string()).min(1),
+  bom: z.array(BomItemSchema).min(1),
+  wiring: z.array(ProjectWiringItemSchema).min(1),
+  steps: z.array(ProjectStepSchema).min(1),
+  code: ProjectCodeSchema.optional(),
+  testChecklist: z.array(z.string()).min(1),
+  troubleshooting: z.array(ProjectTroubleshootingItemSchema).min(1),
+  extensions: z.array(z.string()).optional(),
+});
+export type Project = z.infer<typeof ProjectSchema>;
+
+export const KitSchema = z.object({
+  id: z.string().regex(/^[a-z0-9-]+$/),
+  title: z.string().min(1),
+  tier: z.enum(['starter', 'builder', 'advanced']),
+  description: z.string().min(1),
+  targetAudience: z.string().min(1),
+  estimatedCostUSD: z.object({ min: z.number(), max: z.number() }),
+  safetyRating: z.string().min(1),
+  items: z.array(BomItemSchema).min(1),
+});
+export type Kit = z.infer<typeof KitSchema>;
 
 // Component Library Schema
 export const PinFunctionSchema = z.enum([
@@ -254,6 +319,14 @@ export function validatePath(data: unknown): Path {
 
 export function validateProjectFrontmatter(data: unknown): ProjectFrontmatter {
   return ProjectFrontmatterSchema.parse(data);
+}
+
+export function validateProject(data: unknown): Project {
+  return ProjectSchema.parse(data);
+}
+
+export function validateKit(data: unknown): Kit {
+  return KitSchema.parse(data);
 }
 
 export function validateComponent(data: unknown): Component {

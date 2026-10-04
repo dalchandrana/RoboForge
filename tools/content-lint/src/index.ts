@@ -7,6 +7,8 @@ import {
   validatePath,
   validateModule,
   validateComponent,
+  validateProject,
+  validateKit,
 } from '@roboforge/content-schema';
 
 const CONTENT_ROOT = path.resolve(process.cwd(), 'content');
@@ -54,6 +56,10 @@ export function lintContentDirectory(rootDir: string): LintIssue[] {
           lintQuizYaml(fullPath);
         } else if (entry.name.endsWith('.yaml') && dir.includes('components')) {
           lintComponentYaml(fullPath);
+        } else if (entry.name.endsWith('.yaml') && dir.includes('projects')) {
+          lintProjectYaml(fullPath);
+        } else if (entry.name.endsWith('.yaml') && dir.includes('kits')) {
+          lintKitYaml(fullPath);
         }
       }
     }
@@ -177,6 +183,32 @@ export function lintContentDirectory(rootDir: string): LintIssue[] {
         file: filePath,
         type: 'error',
         message: `Invalid component YAML: ${(err as Error).message}`,
+      });
+    }
+  }
+
+  function lintProjectYaml(filePath: string) {
+    try {
+      const data = yaml.load(fs.readFileSync(filePath, 'utf-8'));
+      validateProject(data);
+    } catch (err: unknown) {
+      issues.push({
+        file: filePath,
+        type: 'error',
+        message: `Invalid project YAML: ${(err as Error).message}`,
+      });
+    }
+  }
+
+  function lintKitYaml(filePath: string) {
+    try {
+      const data = yaml.load(fs.readFileSync(filePath, 'utf-8'));
+      validateKit(data);
+    } catch (err: unknown) {
+      issues.push({
+        file: filePath,
+        type: 'error',
+        message: `Invalid kit YAML: ${(err as Error).message}`,
       });
     }
   }

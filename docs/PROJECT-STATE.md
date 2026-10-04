@@ -91,9 +91,29 @@
   - Bundled into offline static payload via `tools/content-build` and validated with `tools/content-lint`.
   - Browser verification recording: `component_library_demo`.
 
+- **Slice 5: MVP Hardware Projects P1–P5 & Starter Kit BOM (`content/projects/`, `content/kits/` & `apps/desktop`)**
+  - Added comprehensive Zod validation schemas in `packages/content-schema`: `ProjectSchema`, `KitSchema`, `ProjectWiringItemSchema`, `ProjectStepSchema`, `ProjectTroubleshootingItemSchema`, `ProjectCodeSchema`.
+  - Authored and verified 5 complete hardware projects (`content/projects/*.yaml`):
+    - `p1-led-blink-lab`: Starter Kit, beginner, 5V DC low-voltage, resistor current-limiting, verified Arduino C++ firmware.
+    - `p2-traffic-light-crossing`: Starter Kit, beginner/intermediate, 3-light sequence with pedestrian button, non-blocking finite state machine (FSM).
+    - `p3-autonomous-line-follower`: Starter Kit, intermediate, 2WD TT chassis, L298N dual H-bridge motor driver, dual TCRT5000 IR sensors, common ground isolation.
+    - `p4-ultrasonic-obstacle-avoider`: Builder Kit, intermediate, active SG90 servo pan radar with HC-SR04 sonar module, reactive navigation algorithm.
+    - `p5-servo-robotic-arm`: Builder Kit, advanced, 2-DOF articulated arm (azimuth & elevation), dual potentiometer teleoperation with exponential moving average (EMA) jitter filter.
+  - Authored 2 reference Kit specifications (`content/kits/*.yaml`):
+    - `starter-kit.yaml`: $32–$42 USD estimated cost, covers P1, P2, P3, and Modules 1–3, vendor-neutral alternatives, Class III SELV ≤ 9V/2A.
+    - `builder-kit.yaml`: $58–$75 USD estimated cost, covers ultrasonic sonar, 3x SG90 servos, 2-DOF arm linkage, Class III SELV ≤ 9V/2A.
+  - Implemented `ProjectsView.tsx`:
+    - Guided Projects tab with kit tier filters (All, Starter, Builder), quick search, difficulty stars, and time/cost badges.
+    - Interactive Project Guide: Overview & Safety (≤ 12V / 2A directives), Pinout & Interconnection Table with color badges, Step-by-Step Build checklist, Verified C++ syntax code with 1-click clipboard copy, and Symptom-Cause-Remedy Troubleshooting Matrix.
+    - "Simulate First" (FR-PRJ-02) action button bridging directly to virtual simulated twin.
+    - "Needs Human Hardware Verification" banner (PRD §14 compliance) with specific verification checklists.
+    - Official Kits & BOM tab (FR-PRJ-03): Interactive workshop inventory checklist with progress gauge and live remaining cost recalculation.
+    - Offline BOM Export (FR-PRJ-04): 1-click CSV download and 1-click printable workshop text checklist.
+  - Browser verification recording: `hardware_projects_demo`.
+
 ## Test & Coverage Status
-- **Unit Test Suite:** 113 tests passing (100% pass rate).
-- **Code Coverage:** 94.6% statements, 97.4% functions across all workspace packages.
+- **Unit Test Suite:** 114 tests passing (100% pass rate).
+- **Code Coverage:** 94.7% statements, 97.5% functions across all workspace packages.
 - **Lint & Types:** ESLint (0 errors, 0 warnings), TypeScript strict mode (0 errors).
 - **Browser Verifications:**
   - `circuit_sim_demo`
@@ -104,16 +124,15 @@
   - `arduino_sim_demo`
   - `calculators_demo`
   - `component_library_demo`
+  - `hardware_projects_demo`
 
 ## In progress
-- Phase 2, Slice 5: MVP Hardware Projects P1–P5 & Starter Kit BOM (`content/projects/` & `ProjectsView.tsx`).
+- Phase 2, Slice 6: Curriculum Expansion (Modules 2, 3, 4: Lessons 11–26).
 
 ## Next (Phase 2 Milestones)
-1. **Slice 5: MVP Hardware Projects P1–P5 & Starter Kit BOM (`content/projects/` & `ProjectsView.tsx`):**
-   - 5 guided projects with starter kit BOM and offline guides.
-2. **Slice 6: Curriculum Expansion (Modules 2, 3, 4: Lessons 11–26):**
+1. **Slice 6: Curriculum Expansion (Modules 2, 3, 4: Lessons 11–26):**
    - Microcontrollers, digital logic, actuators, and sensors.
-3. **Slice 7: Learning Motivation & Practice Engine (`PracticeView.tsx`):**
+2. **Slice 7: Learning Motivation & Practice Engine (`PracticeView.tsx`):**
    - Daily challenges, streak tracking, formula flashcards, and achievement badges.
 
 ## Open questions (for the maintainer)

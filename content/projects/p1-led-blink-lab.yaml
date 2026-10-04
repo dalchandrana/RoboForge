@@ -1,0 +1,160 @@
+id: p1-led-blink-lab
+title: "LED Blink & Timing Lab"
+description: "Build your first physical circuit on a breadboard and control an LED with precise millisecond timing code on the Arduino Uno."
+difficulty: 1
+minutes: 30
+costUSD:
+  min: 5
+  max: 10
+skills:
+  - breadboard-prototyping
+  - digital-output
+  - current-limiting
+  - arduino-ide
+kit: starter
+simulatedTwin: "blink"
+needsHumanVerification: true
+verifyChecklist:
+  - "Verify 220 ohm resistor maintains LED current below 20mA"
+  - "Verify standard 5mm red LED forward voltage is approximately 1.8V to 2.0V"
+  - "Confirm Arduino Uno pin 13 delivers 5V digital HIGH"
+safetyRules:
+  - "Always disconnect the USB cable before placing or moving wires on the breadboard."
+  - "Never connect an LED directly across 5V and GND without a series resistor; doing so causes excess current and permanently burns out the LED."
+  - "Operate exclusively from 5V USB bus power. Do not connect mains power or external battery packs for this basic circuit."
+bom:
+  - name: "Arduino Uno R3 (or compatible)"
+    qty: 1
+    spec: "ATmega328P DIP or SMD development board with USB-B cable"
+    costUSD:
+      min: 4
+      max: 8
+    alternatives:
+      - "Elegoo Uno R3"
+      - "SparkFun RedBoard"
+      - "Arduino Nano with mini-breadboard"
+    notes: "Any 5V ATmega328P board will work identically."
+    affiliate: false
+  - name: "5mm Diffused LED (Red)"
+    qty: 1
+    spec: "Forward voltage 2.0V, max continuous current 20mA"
+    costUSD:
+      min: 0.1
+      max: 0.5
+    alternatives:
+      - "5mm Green LED (Vf approx 2.2V)"
+      - "5mm Yellow LED (Vf approx 2.1V)"
+    notes: "Longer lead is the positive anode (+); shorter lead and flat flat edge is the cathode (-)."
+    affiliate: false
+  - name: "220Ω 1/4W Resistor"
+    qty: 1
+    spec: "Color code: Red-Red-Brown-Gold (220 ohm +/- 5%)"
+    costUSD:
+      min: 0.05
+      max: 0.2
+    alternatives:
+      - "330 ohm resistor (Orange-Orange-Brown)"
+      - "470 ohm resistor (Yellow-Violet-Brown)"
+      - "1k ohm resistor (dimmer output)"
+    notes: "Resistors have no polarity; either orientation is fine."
+    affiliate: false
+  - name: "Half-Size Solderless Breadboard"
+    qty: 1
+    spec: "400 tie-points with standard 0.1 inch (2.54mm) pitch"
+    costUSD:
+      min: 2
+      max: 4
+    alternatives:
+      - "Mini 170-point breadboard"
+      - "Full-size 830-point breadboard"
+    notes: "Columns 1 to 30 share internal 5-hole vertical clips."
+    affiliate: false
+  - name: "Male-to-Male Jumper Wires"
+    qty: 2
+    spec: "22-26 AWG solid core or flexible DuPont jumpers"
+    costUSD:
+      min: 0.2
+      max: 0.5
+    alternatives:
+      - "Solid 22 AWG hookup wire stripped at ends"
+    notes: "Use Yellow or Red for signal and Black or Blue for GND."
+    affiliate: false
+wiring:
+  - from: "Arduino Pin 13"
+    to: "Breadboard Row 10 (Left)"
+    color: "Yellow"
+    note: "Digital output control signal"
+  - from: "Breadboard Row 10 (Right)"
+    to: "Breadboard Row 14 (Right)"
+    color: "Resistor"
+    note: "220 ohm current-limiting resistor bridging row 10 to row 14"
+  - from: "Breadboard Row 14 (Right)"
+    to: "Breadboard Row 15 (Right)"
+    color: "LED"
+    note: "LED Anode (long leg) in Row 14, LED Cathode (short leg) in Row 15"
+  - from: "Breadboard Row 15 (Right)"
+    to: "Arduino GND Header"
+    color: "Black"
+    note: "Common ground return path"
+steps:
+  - step: 1
+    title: "Prepare Your Prototyping Station"
+    description: "Place your Arduino Uno and half-size breadboard on a non-conductive desk mat or wooden surface. Ensure the USB cable is unplugged from your computer."
+    check: "Arduino power LED is completely dark."
+  - step: 2
+    title: "Insert the 220Ω Resistor"
+    description: "Bend the leads of your 220 ohm resistor (Red-Red-Brown-Gold) into a U-shape. Insert one lead into hole 10-A and the second lead into hole 14-A."
+    check: "Resistor leads are firmly seated in the spring clips."
+  - step: 3
+    title: "Orient and Insert the LED"
+    description: "Identify the long positive lead (Anode) of your 5mm red LED. Insert the Anode into hole 14-B (sharing electrical contact with the resistor). Insert the short negative lead (Cathode) into hole 15-B."
+    check: "Long leg is connected to row 14; short leg is in row 15."
+  - step: 4
+    title: "Connect Wires to the Arduino"
+    description: "Plug a yellow jumper wire from Arduino digital pin 13 to breadboard hole 10-B. Plug a black jumper wire from breadboard hole 15-A to any GND pin on the Arduino header."
+    check: "Complete loop: Pin 13 -> Resistor -> LED -> GND."
+  - step: 5
+    title: "Upload Code and Observe"
+    description: "Connect the USB cable to your computer. Upload the verified blink sketch using the Arduino IDE or test it in the RoboForge Arduino simulator."
+    check: "The external LED and the onboard 'L' LED both blink in unison once per second."
+code:
+  language: "cpp"
+  source: |
+    // RoboForge Project 1: LED Blink & Timing Lab
+    // Demonstrates digital output and non-blocking timing principles
+
+    const int LED_PIN = 13;
+
+    void setup() {
+      // Configure digital pin 13 as a low-impedance voltage output
+      pinMode(LED_PIN, OUTPUT);
+    }
+
+    void loop() {
+      // Apply 5V to the pin: current flows through resistor and LED to GND
+      digitalWrite(LED_PIN, HIGH);
+      delay(1000); // Wait 1000 milliseconds (1 second)
+
+      // Apply 0V to the pin: current stops flowing
+      digitalWrite(LED_PIN, LOW);
+      delay(1000); // Wait 1000 milliseconds (1 second)
+    }
+  explanation: "pinMode(13, OUTPUT) configures the ATmega328P Port B bit 5 output driver. digitalWrite(13, HIGH) puts 5V on the pin, driving approximately (5V - 2V) / 220Ω = 13.6mA of safe current."
+testChecklist:
+  - "The external red LED turns ON for 1000ms and OFF for 1000ms repeatedly."
+  - "The onboard 'L' indicator on the Arduino Uno flashes at the exact same frequency."
+  - "Touching the 220 ohm resistor after 5 minutes of operation confirms it remains cool (power dissipation is only ~40mW)."
+troubleshooting:
+  - symptom: "LED never lights up at all"
+    cause: "LED inserted backwards (reverse polarity), loose wire, or incorrect pin."
+    remedy: "Unplug USB. Carefully pull out the LED, rotate it 180 degrees so the longer anode lead connects to the resistor, and reinsert. Confirm the yellow wire is in Pin 13."
+  - symptom: "LED stays ON continuously without blinking"
+    cause: "Jumper wire accidentally connected to the 5V power rail instead of Pin 13, or code upload failed."
+    remedy: "Check Arduino pin header: ensure the wire is plugged into digital header 13, not the 5V power header."
+  - symptom: "LED flashes once very brightly with a snap, then stays dead permanently"
+    cause: "Resistor was bypassed or missing, sending raw 5V through the LED diode junction."
+    remedy: "The LED is burned out. Discard it, inspect your breadboard wiring to ensure the resistor is in series, and insert a new LED."
+extensions:
+  - "Change delay(1000) to delay(200) to create a fast warning strobe."
+  - "Implement the Morse code sequence for SOS: 3 short blinks (200ms), 3 long blinks (600ms), 3 short blinks."
+  - "Rewrite the loop using millis() to avoid blocking delays!"

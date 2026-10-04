@@ -1,0 +1,268 @@
+id: p3-autonomous-line-follower
+title: "Autonomous Dual-Sensor Line-Following Robot"
+description: "Assemble a 2-wheel differential-drive mobile robot chassis, wire an L298N motor driver module with dual IR reflectance sensors, and program an autonomous trajectory tracking algorithm."
+difficulty: 3
+minutes: 90
+costUSD:
+  min: 25
+  max: 35
+skills:
+  - differential-drive
+  - motor-driver-h-bridge
+  - ir-reflectance-sensing
+  - closed-loop-feedback
+kit: starter
+simulatedTwin: "robot-2d"
+needsHumanVerification: true
+verifyChecklist:
+  - "Verify dual IR sensors correctly differentiate between black electrical tape and white poster board"
+  - "Verify L298N motor driver 12V terminal receives external 6V battery pack (never Arduino 5V)"
+  - "Verify Arduino GND and Battery GND are firmly tied together in a common ground reference"
+  - "Check that TT motors spin in opposite directions when turning left or right"
+safetyRules:
+  - "NEVER connect motor power directly to the Arduino Uno 5V or 3.3V header pins. DC motors can draw stall surges up to 800mA, destroying the onboard 5V linear regulator."
+  - "Use a 4xAA battery holder (6.0V DC) or a 5V USB power bank. Never exceed 9V DC into yellow TT gearmotors."
+  - "Always install an on/off toggle switch in series with the battery pack so you can instantly kill power if the robot runs off the table."
+  - "Tie the battery negative (-) lead directly to Arduino GND. Without a shared common ground, control signals will float unpredictably."
+bom:
+  - name: "Arduino Uno R3 (or compatible)"
+    qty: 1
+    spec: "ATmega328P development board"
+    costUSD:
+      min: 4
+      max: 8
+    alternatives:
+      - "Arduino Nano with expansion shield"
+    notes: "Controls direction and PWM speed signals."
+    affiliate: false
+  - name: "L298N Dual H-Bridge Motor Driver Module"
+    qty: 1
+    spec: "Dual channel, 2A peak per bridge with aluminum heat sink"
+    costUSD:
+      min: 2
+      max: 4
+    alternatives:
+      - "L293D motor shield"
+      - "TB6612FNG dual motor driver module"
+    notes: "Requires 5V logic supply and 6V-12V motor supply."
+    affiliate: false
+  - name: "Yellow TT DC Gearmotors with Rubber Wheels"
+    qty: 2
+    spec: "1:48 reduction gear ratio, 3V-6V operating range"
+    costUSD:
+      min: 3
+      max: 6
+    alternatives:
+      - "N20 metal micro gearmotors"
+    notes: "Solder 100nF ceramic noise capacitor across terminals if available."
+    affiliate: false
+  - name: "Dual IR Line Tracker Sensor Modules (TCRT5000)"
+    qty: 2
+    spec: "Infrared emitter + phototransistor with LM393 comparator trimpot"
+    costUSD:
+      min: 1.5
+      max: 3
+    alternatives:
+      - "2-channel or 4-channel tracking bar module"
+      - "LDR photoresistor divider pair for light-seeking variant"
+    notes: "Digital DO pin outputs HIGH on black line, LOW on white surface."
+    affiliate: false
+  - name: "2WD Robot Chassis Acrylic Kit"
+    qty: 1
+    spec: "Laser-cut base plate, motor mounting brackets, and front caster ball"
+    costUSD:
+      min: 5
+      max: 9
+    alternatives:
+      - "Cardboard or 3D-printed chassis plate"
+    notes: "Provides rigid mounting for motors, battery, and controller."
+    affiliate: false
+  - name: "4xAA Battery Holder with On/Off Switch"
+    qty: 1
+    spec: "Series 4-cell AA holder producing 6V nominal"
+    costUSD:
+      min: 1.5
+      max: 3
+    alternatives:
+      - "5V 2A USB power bank with USB-to-screw terminal breakout"
+    notes: "Do not use standard 9V smoke alarm batteries (high internal impedance)."
+    affiliate: false
+  - name: "DuPont Jumper Wires (M-M and M-F)"
+    qty: 16
+    spec: "Female-to-Male and Male-to-Male 20cm jumper cables"
+    costUSD:
+      min: 1
+      max: 2
+    alternatives:
+      - "Solid copper hookup wire"
+    notes: "M-F wires connect Arduino headers to L298N and sensor pins."
+    affiliate: false
+wiring:
+  - from: "4xAA Battery Positive (+6V)"
+    to: "L298N Screw Terminal (+12V Power In)"
+    color: "Red"
+    note: "Dedicated motor power supply"
+  - from: "4xAA Battery Negative (GND)"
+    to: "L298N Screw Terminal (GND)"
+    color: "Black"
+    note: "Main power ground"
+  - from: "L298N Screw Terminal (GND)"
+    to: "Arduino Uno GND Header"
+    color: "Black"
+    note: "CRITICAL: Common Ground bonding link"
+  - from: "Arduino 5V Header"
+    to: "L298N 5V Logic In (if onboard 5V regulator jumper removed)"
+    color: "Red"
+    note: "Provides stable logic rail"
+  - from: "Arduino Pin 5 (PWM)"
+    to: "L298N IN1 (Left Motor Forward)"
+    color: "Blue"
+    note: "Direction logic 1"
+  - from: "Arduino Pin 6 (PWM)"
+    to: "L298N IN2 (Left Motor Reverse)"
+    color: "Blue"
+    note: "Direction logic 2"
+  - from: "Arduino Pin 9 (PWM)"
+    to: "L298N IN3 (Right Motor Forward)"
+    color: "Yellow"
+    note: "Direction logic 3"
+  - from: "Arduino Pin 10 (PWM)"
+    to: "L298N IN4 (Right Motor Reverse)"
+    color: "Yellow"
+    note: "Direction logic 4"
+  - from: "Left IR Sensor DO"
+    to: "Arduino Digital Pin 2"
+    color: "Green"
+    note: "Detects left line edge"
+  - from: "Right IR Sensor DO"
+    to: "Arduino Digital Pin 3"
+    color: "Orange"
+    note: "Detects right line edge"
+  - from: "Arduino 5V & GND"
+    to: "IR Sensors VCC & GND"
+    color: "Red & Black"
+    note: "5V logic power for sensor comparators"
+steps:
+  - step: 1
+    title: "Assemble the Mechanical Chassis"
+    description: "Bolt the two yellow TT gearmotors into the chassis brackets using the long M3 screws. Attach the rubber wheels to the dual output axles. Fasten the front omnidirectional caster wheel."
+    check: "Chassis rests stably on 2 drive wheels and 1 front caster."
+  - step: 2
+    title: "Mount Sensors on the Underside"
+    description: "Secure the two TCRT5000 IR sensor modules pointing downward toward the ground, approximately 5mm to 10mm above the floor surface, spaced roughly 2cm apart (straddling a standard 3/4 inch black electrical tape line)."
+    check: "Both sensor IR LEDs face down with clear line of sight to the floor."
+  - step: 3
+    title: "Wire the Motors to L298N Out Terminals"
+    description: "Connect Left motor pair wires to OUT1 & OUT2 screw terminals. Connect Right motor pair wires to OUT3 & OUT4 screw terminals."
+    check: "Screws tightened firmly with no stray copper whiskers."
+  - step: 4
+    title: "Complete Power & Common Ground Wiring"
+    description: "Connect the battery positive wire to L298N 12V terminal. Connect battery negative to L298N GND terminal. Run a jumper wire from L298N GND directly to an Arduino GND pin."
+    check: "CRITICAL CHECK: L298N GND and Arduino GND are electrically connected!"
+  - step: 5
+    title: "Connect Logic Signals to Arduino"
+    description: "Route jumpers from Arduino pins 5, 6, 9, 10 to L298N IN1, IN2, IN3, IN4. Connect Left IR sensor DO to Pin 2, Right IR sensor DO to Pin 3."
+    check: "All 6 control signal jumpers verified against wiring table."
+  - step: 6
+    title: "Calibrate Sensitivity and Track"
+    description: "Place robot over white paper with black tape line. Turn onboard potentiometer on each TCRT5000 until the onboard sensor indicator LED turns ON only over the black tape and OFF over white paper."
+    check: "Sensor LEDs respond crisply when sliding robot across the tape."
+code:
+  language: "cpp"
+  source: |
+    // RoboForge Project 3: Autonomous Dual-Sensor Line-Following Robot
+    // Two-sensor Bang-Bang / Differential Steer Algorithm
+
+    // Left Motor Pins (L298N IN1, IN2)
+    const int L_FWD = 5;
+    const int L_REV = 6;
+
+    // Right Motor Pins (L298N IN3, IN4)
+    const int R_FWD = 9;
+    const int R_REV = 10;
+
+    // Line Sensor Pins
+    const int SENSOR_LEFT = 2;
+    const int SENSOR_RIGHT = 3;
+
+    // Base speed (0-255 PWM duty cycle)
+    const int SPEED_FWD = 160;
+    const int SPEED_TURN = 140;
+
+    void setLeftMotor(int speed) {
+      if (speed >= 0) {
+        analogWrite(L_FWD, speed);
+        analogWrite(L_REV, 0);
+      } else {
+        analogWrite(L_FWD, 0);
+        analogWrite(L_REV, -speed);
+      }
+    }
+
+    void setRightMotor(int speed) {
+      if (speed >= 0) {
+        analogWrite(R_FWD, speed);
+        analogWrite(R_REV, 0);
+      } else {
+        analogWrite(R_FWD, 0);
+        analogWrite(R_REV, -speed);
+      }
+    }
+
+    void setup() {
+      pinMode(L_FWD, OUTPUT);
+      pinMode(L_REV, OUTPUT);
+      pinMode(R_FWD, OUTPUT);
+      pinMode(R_REV, OUTPUT);
+
+      pinMode(SENSOR_LEFT, INPUT);
+      pinMode(SENSOR_RIGHT, INPUT);
+    }
+
+    void loop() {
+      // TCRT5000: HIGH = Black line detected, LOW = White floor
+      int leftDetect = digitalRead(SENSOR_LEFT);
+      int rightDetect = digitalRead(SENSOR_RIGHT);
+
+      if (leftDetect == LOW && rightDetect == LOW) {
+        // Line is centered between the two sensors: DRIVE FORWARD
+        setLeftMotor(SPEED_FWD);
+        setRightMotor(SPEED_FWD);
+      } 
+      else if (leftDetect == HIGH && rightDetect == LOW) {
+        // Robot is veering right: TURN SHARP LEFT
+        setLeftMotor(0);
+        setRightMotor(SPEED_TURN);
+      } 
+      else if (leftDetect == LOW && rightDetect == HIGH) {
+        // Robot is veering left: TURN SHARP RIGHT
+        setLeftMotor(SPEED_TURN);
+        setRightMotor(0);
+      } 
+      else {
+        // Both detected black (intersection or T-junction): STOP or crawl
+        setLeftMotor(SPEED_FWD / 2);
+        setRightMotor(SPEED_FWD / 2);
+      }
+    }
+  explanation: "Differential steering controls the trajectory: turning left requires stopping or slowing the left motor while driving the right motor, creating a pivot turn around the left wheel."
+testChecklist:
+  - "With wheels elevated in the air, testing sensors by hand spins the correct opposing wheel."
+  - "On a test oval track made with 3/4 inch black electrical tape on white poster board, robot completes full laps autonomously."
+  - "Robot successfully negotiates 90-degree curved turns without losing the track line."
+troubleshooting:
+  - symptom: "Motors hum or buzz loudly but wheels do not rotate"
+    cause: "PWM speed value is too low to overcome gearbox static friction, or battery voltage has dropped below 4.5V."
+    remedy: "Increase SPEED_FWD from 160 to 200 in the code, or insert fresh AA batteries."
+  - symptom: "Robot drives backward instead of forward"
+    cause: "Motor polarity reversed on the L298N OUT screw terminals."
+    remedy: "Swap the two wires connected to OUT1 & OUT2 (or OUT3 & OUT4) on the screw terminal block."
+  - symptom: "Robot shakes erratically back and forth on the line and never moves forward"
+    cause: "Sensors are mounted too close together or steering reaction is inverted (turning into the line rather than away)."
+    remedy: "Widen sensor spacing slightly and verify left sensor steers left, not right."
+  - symptom: "Arduino Uno resets whenever motors start spinning"
+    cause: "Voltage sag or electrical noise caused by lack of common ground or powering Arduino from weak motor batteries."
+    remedy: "Power Arduino Uno via USB power bank or fresh 9V battery while using 4xAA exclusively for motors. Ensure GNDs are tied."
+extensions:
+  - "Implement 3-state PID (Proportional-Integral-Derivative) steering using analogRead() reflectance values."
+  - "Add a start/stop countdown button and lap timer displayed over Serial Monitor."

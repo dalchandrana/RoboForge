@@ -1,0 +1,299 @@
+id: p4-ultrasonic-obstacle-avoider
+title: "Obstacle-Avoiding Ultrasonic Smart Car"
+description: "Equip your mobile robot with an active pan-scanning ultrasonic radar using an HC-SR04 sonar module and an SG90 micro-servo to map open pathways and navigate rooms autonomously."
+difficulty: 3
+minutes: 90
+costUSD:
+  min: 30
+  max: 45
+skills:
+  - ultrasonic-echolocation
+  - servo-actuation
+  - reactive-navigation
+  - pwm-speed-control
+kit: builder
+simulatedTwin: "robot-2d"
+needsHumanVerification: true
+verifyChecklist:
+  - "Verify HC-SR04 Trigger pulse width meets minimum 10 microsecond requirement"
+  - "Verify speed of sound conversion formula: distance_cm = duration_us / 58.2"
+  - "Verify SG90 servo rotates smoothly across 0, 90, and 180 degrees without mechanical binding"
+  - "Verify external battery pack supplies both L298N and SG90 servo with shared common ground"
+safetyRules:
+  - "Never power the SG90 servo and L298N motors from the Arduino 5V header. The servo and motors can jointly draw over 1.2A during stalls and turns, causing severe voltage drops and resetting the Arduino."
+  - "Operate with a 4xAA battery pack (6V DC nominal). Do not use LiPo batteries without dedicated low-voltage cutoff protection."
+  - "Verify clear space around the front servo horn so the sensor does not collide with the chassis during full 180-degree pans."
+bom:
+  - name: "Arduino Uno R3 (or compatible)"
+    qty: 1
+    spec: "ATmega328P development board"
+    costUSD:
+      min: 4
+      max: 8
+    alternatives:
+      - "Arduino Nano"
+    notes: "Main decision and timing controller."
+    affiliate: false
+  - name: "HC-SR04 Ultrasonic Distance Sensor"
+    qty: 1
+    spec: "40 kHz sonar transducer pair, 2cm to 400cm range, 5V operating voltage"
+    costUSD:
+      min: 1.5
+      max: 3.5
+    alternatives:
+      - "US-015 high-precision sonar module"
+      - "RCWL-1601 3V/5V compatible sonar"
+    notes: "4 pins: VCC, Trig, Echo, GND."
+    affiliate: false
+  - name: "SG90 9g Micro Servo Motor"
+    qty: 1
+    spec: "Miniature nylon gear servo, 1.8 kg-cm torque at 4.8V, 50 Hz PWM"
+    costUSD:
+      min: 2
+      max: 4
+    alternatives:
+      - "MG90S metal gear micro servo"
+    notes: "Rotates ultrasonic head to look Left (160 deg), Center (90 deg), and Right (20 deg)."
+    affiliate: false
+  - name: "Ultrasonic Pan Bracket Mount"
+    qty: 1
+    spec: "Acrylic or 3D-printed bracket joining HC-SR04 to SG90 servo horn"
+    costUSD:
+      min: 1
+      max: 2.5
+    alternatives:
+      - "Cardboard cutout or zip-tie fixture"
+    notes: "Keeps sensor perpendicular to scanning plane."
+    affiliate: false
+  - name: "L298N Dual H-Bridge Motor Driver"
+    qty: 1
+    spec: "Dual channel, 2A peak per bridge"
+    costUSD:
+      min: 2
+      max: 4
+    alternatives:
+      - "TB6612FNG driver"
+    notes: "Drives left and right TT gearmotors."
+    affiliate: false
+  - name: "2WD Robot Chassis with 2x TT Motors"
+    qty: 1
+    spec: "Differential drive base plate with rubber tires and caster"
+    costUSD:
+      min: 8
+      max: 14
+    alternatives:
+      - "Recycled plastic or acrylic chassis base"
+    notes: "Base platform for the mobile vehicle."
+    affiliate: false
+  - name: "4xAA Battery Holder with Switch"
+    qty: 1
+    spec: "6V DC battery pack"
+    costUSD:
+      min: 1.5
+      max: 3
+    alternatives:
+      - "5V 2.4A USB battery bank with dual output"
+    notes: "Powers high-current motors and servo."
+    affiliate: false
+  - name: "DuPont Jumper Wires (M-M and M-F)"
+    qty: 20
+    spec: "Assorted ribbon jumper wires"
+    costUSD:
+      min: 1.5
+      max: 3
+    alternatives:
+      - "Flexible stranded hookup wire"
+    notes: "Color code Red=Power, Black=GND, Colors=Signals."
+    affiliate: false
+wiring:
+  - from: "HC-SR04 VCC & GND"
+    to: "Arduino 5V & GND Headers"
+    color: "Red & Black"
+    note: "Clean 5V logic power for sensor electronics"
+  - from: "HC-SR04 Trig Pin"
+    to: "Arduino Digital Pin 7"
+    color: "Yellow"
+    note: "Transmits 10us ultrasonic trigger pulse"
+  - from: "HC-SR04 Echo Pin"
+    to: "Arduino Digital Pin 8"
+    color: "Green"
+    note: "Receives round-trip echo pulse duration"
+  - from: "SG90 Servo Signal (Orange)"
+    to: "Arduino Digital Pin 11 (PWM)"
+    color: "Orange"
+    note: "50 Hz servo position control signal"
+  - from: "SG90 Servo Power (Red & Brown)"
+    to: "Battery +6V Rail & Common GND"
+    color: "Red & Brown"
+    note: "Connect directly to battery rail with common ground to prevent reset"
+  - from: "L298N Control Inputs (IN1, IN2, IN3, IN4)"
+    to: "Arduino Digital Pins 5, 6, 9, 10"
+    color: "Assorted"
+    note: "Dual motor speed and direction commands"
+  - from: "L298N GND & Battery Negative"
+    to: "Arduino GND Header"
+    color: "Black"
+    note: "CRITICAL: Common ground return"
+steps:
+  - step: 1
+    title: "Mount SG90 Servo to Front of Chassis"
+    description: "Affix the micro-servo to the front nose of the robot chassis using the included mounting screws or heavy-duty foam tape, oriented with the output spline pointing straight up."
+    check: "Servo body is rigidly anchored with vertical output shaft."
+  - step: 2
+    title: "Center the Servo at 90 Degrees"
+    description: "Before attaching the sensor bracket, power the servo and set its position to 90 degrees using a quick test sketch. This ensures your mechanical zero is centered."
+    check: "Servo arm is locked at exactly 90 degrees."
+  - step: 3
+    title: "Attach Ultrasonic Bracket and HC-SR04"
+    description: "Snap the HC-SR04 sensor into the acrylic mounting plate and press the bracket horn onto the centered servo spline pointing directly forward."
+    check: "HC-SR04 'eyes' gaze directly forward when servo is at 90 degrees."
+  - step: 4
+    title: "Wire Ultrasonic Pins to Arduino"
+    description: "Connect HC-SR04 VCC to Arduino 5V, GND to GND, Trig to digital pin 7, and Echo to digital pin 8."
+    check: "4-wire ribbon cable connected without twist."
+  - step: 5
+    title: "Connect Servo and Motors Power"
+    description: "Connect the servo Red (+) wire to the battery 6V rail, Brown (-) to GND, and Orange signal to Pin 11. Connect the L298N to battery power and ensure Arduino GND is bridged to the battery negative lead."
+    check: "Common ground confirmed with multimeter continuity beep."
+  - step: 6
+    title: "Upload Autonomous Navigation Algorithm"
+    description: "Upload the sketch. Disconnect USB, turn on battery switch, and set car on the floor. Car drives forward until an obstacle is detected within 25cm, pauses, scans left and right, and turns toward the clearer path."
+    check: "Robot drives, halts in front of a wall, turns away, and resumes driving."
+code:
+  language: "cpp"
+  source: |
+    // RoboForge Project 4: Obstacle-Avoiding Ultrasonic Smart Car
+    // Look-Ahead Sonar Scanning with Decision Tree Navigation
+
+    #include <Servo.h>
+
+    // Sonar Pins
+    const int PIN_TRIG = 7;
+    const int PIN_ECHO = 8;
+
+    // Servo Pin
+    const int PIN_SERVO = 11;
+    Servo headServo;
+
+    // Motor Driver Pins (L298N)
+    const int L_FWD = 5;
+    const int L_REV = 6;
+    const int R_FWD = 9;
+    const int R_REV = 10;
+
+    const int SAFE_DISTANCE_CM = 25; // Obstacle trigger threshold
+
+    long measureDistanceCM() {
+      digitalWrite(PIN_TRIG, LOW);
+      delayMicroseconds(2);
+      digitalWrite(PIN_TRIG, HIGH);
+      delayMicroseconds(10);
+      digitalWrite(PIN_TRIG, LOW);
+
+      // Read echo pulse duration in microseconds (timeout 25ms = ~4 meters)
+      long duration = pulseIn(PIN_ECHO, HIGH, 25000);
+      if (duration == 0) return 300; // No echo received, clear open space
+
+      return duration / 58.2; // Speed of sound conversion: 343 m/s
+    }
+
+    void setMotors(int leftSpeed, int rightSpeed) {
+      if (leftSpeed >= 0) {
+        analogWrite(L_FWD, leftSpeed);
+        analogWrite(L_REV, 0);
+      } else {
+        analogWrite(L_FWD, 0);
+        analogWrite(L_REV, -leftSpeed);
+      }
+
+      if (rightSpeed >= 0) {
+        analogWrite(R_FWD, rightSpeed);
+        analogWrite(R_REV, 0);
+      } else {
+        analogWrite(R_FWD, 0);
+        analogWrite(R_REV, -rightSpeed);
+      }
+    }
+
+    void setup() {
+      pinMode(PIN_TRIG, OUTPUT);
+      pinMode(PIN_ECHO, INPUT);
+
+      pinMode(L_FWD, OUTPUT);
+      pinMode(L_REV, OUTPUT);
+      pinMode(R_FWD, OUTPUT);
+      pinMode(R_REV, OUTPUT);
+
+      headServo.attach(PIN_SERVO);
+      headServo.write(90); // Center forward
+      delay(500);
+    }
+
+    void loop() {
+      headServo.write(90); // Look straight ahead
+      long frontDist = measureDistanceCM();
+
+      if (frontDist > SAFE_DISTANCE_CM) {
+        // Path is clear: DRIVE FORWARD
+        setMotors(170, 170);
+        delay(60);
+      } else {
+        // Obstacle detected! STOP immediately
+        setMotors(0, 0);
+        delay(200);
+
+        // Reverse slightly to create turning clearance
+        setMotors(-150, -150);
+        delay(250);
+        setMotors(0, 0);
+
+        // Scan Left
+        headServo.write(160);
+        delay(350);
+        long leftDist = measureDistanceCM();
+
+        // Scan Right
+        headServo.write(20);
+        delay(400);
+        long rightDist = measureDistanceCM();
+
+        // Return head to center
+        headServo.write(90);
+        delay(200);
+
+        // Decide direction: choose side with greater clearance
+        if (leftDist > rightDist && leftDist > SAFE_DISTANCE_CM) {
+          // Turn Left
+          setMotors(-160, 160);
+          delay(350);
+        } else if (rightDist >= leftDist && rightDist > SAFE_DISTANCE_CM) {
+          // Turn Right
+          setMotors(160, -160);
+          delay(350);
+        } else {
+          // Dead end on both sides: 180-degree spin around
+          setMotors(170, -170);
+          delay(650);
+        }
+        setMotors(0, 0);
+      }
+    }
+  explanation: "The algorithm measures distance via time-of-flight echo reflection. When the path drops below 25cm, it enters an active scan state, using the servo to compare left vs right openness before executing a pivot turn."
+testChecklist:
+  - "Robot detects a cardboard box placed 25cm ahead and comes to a full stop."
+  - "Micro-servo smoothly turns left and right to inspect surroundings."
+  - "Robot turns toward the side with the higher distance reading and continues forward."
+  - "In a dead end corner, robot reverses and completes a spin turn to escape."
+troubleshooting:
+  - symptom: "Ultrasonic sensor always reports 0 cm or 300 cm regardless of obstacles"
+    cause: "Trig and Echo pins swapped, or Echo wire loose."
+    remedy: "Verify Arduino Pin 7 is wired to Trig and Pin 8 is wired to Echo."
+  - symptom: "Arduino reboots (LED flashes) whenever the servo moves"
+    cause: "Servo power is connected to Arduino 5V pin instead of external battery rail."
+    remedy: "Move servo red power wire directly to the battery rail with common ground to isolate inductive surge current."
+  - symptom: "Sensor does not detect soft objects like curtains or plush toys"
+    cause: "Ultrasonic sound waves are absorbed by soft porous fabrics rather than reflecting back."
+    remedy: "This is a physical limitation of acoustics. Test against hard acoustic reflective surfaces like wood, plastic, or drywall."
+extensions:
+  - "Add an OLED display to show live distance radar sweeps."
+  - "Add a piezo buzzer sound effect whenever an obstacle triggers an evasive maneuver."

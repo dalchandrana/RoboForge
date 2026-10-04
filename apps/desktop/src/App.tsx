@@ -9,6 +9,7 @@ import { ToolsView } from './views/ToolsView';
 import { SimulatorView } from './views/SimulatorView';
 import { CoachView } from './views/CoachView';
 import { LibraryView } from './views/LibraryView';
+import { ProjectsView } from './views/ProjectsView';
 import { PlaceholderView } from './views/PlaceholderView';
 import { OnboardingWizard } from './components/onboarding/OnboardingWizard';
 
@@ -206,22 +207,7 @@ export const App: React.FC = () => {
 
         {activeTab === 'simulate' && <SimulatorView />}
 
-        {activeTab === 'projects' && (
-          <PlaceholderView
-            title="Hardware Projects & BOM Hub"
-            icon="🤖"
-            phase="Phase 2"
-            description="5 MVP guided robotics projects with starter-kit BOMs and simulated twins."
-            features={[
-              'P1: LED Blink & Timing',
-              'P2: Traffic Light Controller',
-              'P3: Autonomous Line Follower',
-              'P4: Obstacle-Avoiding Car',
-              'P5: Articulated Servo Arm',
-            ]}
-            onNavigateHome={() => setActiveTab('home')}
-          />
-        )}
+        {activeTab === 'projects' && <ProjectsView onNavigate={setActiveTab} />}
 
         {activeTab === 'library' && <LibraryView />}
 

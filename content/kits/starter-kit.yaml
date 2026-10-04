@@ -1,0 +1,145 @@
+id: starter-kit
+title: "RoboForge Official Starter Kit"
+tier: starter
+description: "The complete, vendor-neutral hardware bill of materials for Modules 1 through 3 and Projects P1 (LED Blink), P2 (Traffic Light), and P3 (Line Follower Robot)."
+targetAudience: "Beginner students (ages 12+) and first-time robotics learners"
+estimatedCostUSD:
+  min: 32
+  max: 42
+safetyRating: "Low-voltage DC strictly under 9V and 2A (Class III SELV compliant)"
+items:
+  - name: "Arduino Uno R3 (or 100% Compatible Clone)"
+    qty: 1
+    spec: "ATmega328P 16MHz DIP or SMD board with USB-B or USB-C interface and CH340 / 16U2 serial"
+    costUSD:
+      min: 4.50
+      max: 9.00
+    alternatives:
+      - "Elegoo Uno R3"
+      - "SparkFun RedBoard"
+      - "Arduino Uno R3 Genuine"
+    notes: "Must have standard Arduino pinout and 5V logic."
+    affiliate: false
+  - name: "Half-Size Solderless Breadboard"
+    qty: 1
+    spec: "400 tie-points (30 rows, 2 power rails, standard 2.54mm pitch)"
+    costUSD:
+      min: 2.00
+      max: 3.50
+    alternatives:
+      - "BusBoard BB400"
+      - "Adafruit Half-size Breadboard"
+    notes: "Nickel-plated phosphor bronze spring clips recommended."
+    affiliate: false
+  - name: "65-Piece Flexible Jumper Wire Bundle"
+    qty: 1
+    spec: "Male-to-Male multicolored DuPont jumper wires (assorted lengths)"
+    costUSD:
+      min: 2.00
+      max: 3.50
+    alternatives:
+      - "Pre-formed solid copper wire kit"
+    notes: "Includes Red, Black, Yellow, Green, Blue, White colors."
+    affiliate: false
+  - name: "Female-to-Male DuPont Ribbon Jumpers"
+    qty: 20
+    spec: "20cm length 28 AWG ribbon cables"
+    costUSD:
+      min: 1.50
+      max: 2.50
+    alternatives:
+      - "Adafruit Premium M-F jumpers"
+    notes: "Essential for linking Arduino pin headers to motor drivers and sensor breakout pins."
+    affiliate: false
+  - name: "Resistor Assortment Pack (1/4W Metal Film)"
+    qty: 30
+    spec: "10x 220Ω, 10x 1kΩ, 10x 10kΩ (+/- 1% or 5%)"
+    costUSD:
+      min: 1.00
+      max: 2.00
+    alternatives:
+      - "Generic 1/4W carbon film resistors"
+    notes: "Covers LED current limiting, pull-up/pull-down, and divider networks."
+    affiliate: false
+  - name: "5mm Diffused LEDs (Pack of 15)"
+    qty: 15
+    spec: "5x Red (Vf 2.0V), 5x Green (Vf 2.2V), 5x Yellow (Vf 2.1V)"
+    costUSD:
+      min: 1.00
+      max: 2.00
+    alternatives:
+      - "Kingbright 5mm LED pack"
+    notes: "Diffused lens provides wide viewing angle and gentle glow."
+    affiliate: false
+  - name: "6mm Tactile Momentary Pushbuttons"
+    qty: 5
+    spec: "4-pin through-hole SPST normally-open switches"
+    costUSD:
+      min: 0.50
+      max: 1.20
+    alternatives:
+      - "Omron B3F series"
+    notes: "Fits securely across breadboard center trough."
+    affiliate: false
+  - name: "10kΩ Rotary Potentiometer"
+    qty: 1
+    spec: "B10K linear taper, breadboard-friendly 3-pin pitch"
+    costUSD:
+      min: 0.60
+      max: 1.50
+    alternatives:
+      - "Bourns 3386 or standard trimpot"
+    notes: "Used as analog voltage divider input."
+    affiliate: false
+  - name: "Dual IR Line Tracker Sensor Modules (TCRT5000)"
+    qty: 2
+    spec: "940nm IR phototransistor pair with onboard LM393 comparator and trimmer"
+    costUSD:
+      min: 1.50
+      max: 3.00
+    alternatives:
+      - "Pololu QTR-1A reflectance sensors"
+      - "Keyestudio Line Tracker"
+    notes: "Digital output DO and Analog output AO."
+    affiliate: false
+  - name: "L298N Dual H-Bridge Motor Driver Module"
+    qty: 1
+    spec: "Dual full-bridge driver with aluminum heatsink and 5V screw terminals"
+    costUSD:
+      min: 2.20
+      max: 4.00
+    alternatives:
+      - "TB6612FNG Dual Motor Driver"
+      - "L293D Shield"
+    notes: "Controls two independent DC motors bidirectional."
+    affiliate: false
+  - name: "2WD Smart Robot Car Chassis Kit"
+    qty: 1
+    spec: "Laser-cut base plate, 2x TT DC gearmotors (1:48), 2x rubber tires, 1x front caster"
+    costUSD:
+      min: 7.00
+      max: 12.00
+    alternatives:
+      - "Generic yellow 2WD car kit"
+    notes: "Includes motor mounting brackets, encoder discs, and screws."
+    affiliate: false
+  - name: "4xAA Battery Holder with DC Barrel or Lead Wires"
+    qty: 1
+    spec: "6V nominal battery box with integrated ON/OFF slide switch"
+    costUSD:
+      min: 1.50
+      max: 3.00
+    alternatives:
+      - "5V 2A USB power bank"
+    notes: "Supplies high surge current for motors safely."
+    affiliate: false
+  - name: "9V Battery Snap with 2.1mm DC Barrel Plug"
+    qty: 1
+    spec: "Center-positive 2.1x5.5mm DC plug"
+    costUSD:
+      min: 0.50
+      max: 1.00
+    alternatives:
+      - "USB to DC barrel cable"
+    notes: "For optional untethered Arduino logic power."
+    affiliate: false

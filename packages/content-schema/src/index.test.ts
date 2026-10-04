@@ -6,6 +6,8 @@ import {
   validateModule,
   validatePath,
   validateComponent,
+  validateProject,
+  validateKit,
 } from './index';
 
 describe('packages/content-schema', () => {
@@ -144,5 +146,72 @@ describe('packages/content-schema', () => {
     const parsed = validateComponent(comp);
     expect(parsed.id).toBe('resistor-axial');
     expect(parsed.pinout).toHaveLength(2);
+  });
+
+  it('validates a project and a kit', () => {
+    const project = {
+      id: 'p1-led-blink',
+      title: 'LED Blink Lab',
+      description: 'First real-world hardware project',
+      difficulty: 1,
+      minutes: 30,
+      costUSD: { min: 5, max: 10 },
+      skills: ['breadboarding', 'arduino-basics'],
+      kit: 'starter',
+      simulatedTwin: 'blink',
+      needsHumanVerification: true,
+      verifyChecklist: ['Verify 220 ohm resistor prevents LED burnout'],
+      safetyRules: ['Disconnect USB before changing wiring'],
+      bom: [
+        {
+          name: 'LED 5mm Red',
+          qty: 1,
+          spec: 'Forward voltage 2.0V, 20mA max',
+          alternatives: ['Green 5mm LED', 'Yellow 5mm LED'],
+          affiliate: false,
+        },
+      ],
+      wiring: [{ from: 'Arduino D13', to: 'Breadboard Row 10 (LED Anode)', color: 'Yellow' }],
+      steps: [
+        {
+          step: 1,
+          title: 'Place Resistor',
+          description: 'Insert 220 ohm resistor from row 10 to row 15',
+        },
+      ],
+      testChecklist: ['LED blinks at 1 Hz (1 sec on, 1 sec off)'],
+      troubleshooting: [
+        {
+          symptom: 'LED does not light up',
+          cause: 'Reverse polarity',
+          remedy: 'Flip LED orientation so long leg connects to resistor',
+        },
+      ],
+    };
+    const parsedProject = validateProject(project);
+    expect(parsedProject.id).toBe('p1-led-blink');
+    expect(parsedProject.bom).toHaveLength(1);
+
+    const kit = {
+      id: 'starter-kit',
+      title: 'RoboForge Starter Kit',
+      tier: 'starter',
+      description: 'Beginner electronics & robotics starter kit',
+      targetAudience: 'Ages 12+',
+      estimatedCostUSD: { min: 30, max: 40 },
+      safetyRating: 'Low Voltage DC <= 9V',
+      items: [
+        {
+          name: 'Arduino Uno R3 Compatible',
+          qty: 1,
+          spec: 'ATmega328P DIP or SMD with CH340 or 16U2',
+          alternatives: ['Elegoo Uno R3', 'Arduino Uno R3 Genuine'],
+          affiliate: false,
+        },
+      ],
+    };
+    const parsedKit = validateKit(kit);
+    expect(parsedKit.tier).toBe('starter');
+    expect(parsedKit.items).toHaveLength(1);
   });
 });
