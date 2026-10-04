@@ -13,7 +13,7 @@
 |---|---|---|
 | Tauri | MIT/Apache-2.0 | OK |
 | React, Vite, Zustand | MIT | OK |
-| avr8js | MIT | Verify peripheral coverage |
+| avr8js (v0.21.1) | MIT | Verified: ATmega328P CPU, GPIO, Timers, ADC, USART |
 | ngspice | BSD-style (verify) | If bundled natively/WASM, include notices |
 | arduino-cli / avr-gcc | GPL-family | Ship as **separate sidecar binary**, not linked; provide source offer/notice |
 | KiCad | GPL | Link/export only; don't embed |

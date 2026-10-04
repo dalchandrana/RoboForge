@@ -151,7 +151,11 @@ importers:
 
   packages/i18n: {}
 
-  packages/sim-avr: {}
+  packages/sim-avr:
+    dependencies:
+      avr8js:
+        specifier: 0.21.1
+        version: 0.21.1
 
   packages/sim-circuit:
     dependencies:
@@ -1309,6 +1313,10 @@ packages:
   available-typed-arrays@1.0.7:
     resolution: {integrity: sha512-wvUjBtSGN7+7SjNpq/9M2Tg350UZD3q62IFZLbRAR1bSMlCo1ZaeW+BJ+D090e4hIIZLBcTDWe4Mh4jvUDajzQ==}
     engines: {node: '>= 0.4'}
+
+  avr8js@0.21.1:
+    resolution: {integrity: sha512-lS1vPaB0gB2GXoPrHFQOUG/5CRORjvnmjbs8SiPZdJpt4HkV0+v6HnNeXxo/X9lPqumqphls2Qyql8zsw9rBaw==}
+    engines: {node: '>= 20.19.0', npm: '>= 10.0.0'}
 
   axe-core@4.13.0:
     resolution: {integrity: sha512-UzGt8zg7Ny8djbYMhxl2zuEevVa7r2gJjYY5Lwr1xM7+XU2nd6CkIWFTVcCIbAP63vSz71NaVyyuSk9lHKcy0A==}
@@ -3593,6 +3601,8 @@ snapshots:
   available-typed-arrays@1.0.7:
     dependencies:
       possible-typed-array-names: 1.1.0
+
+  avr8js@0.21.1: {}
 
   axe-core@4.13.0: {}
 

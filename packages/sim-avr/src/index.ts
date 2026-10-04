@@ -1,2 +1,9 @@
-// Phase 2 implementation placeholder
-export const SIM_AVR_STATUS = 'planned_phase_2';
+/**
+ * @roboforge/sim-avr
+ * AVR / Arduino Uno microcontroller simulation package using avr8js.
+ */
+
+export * from './types';
+export * from './hex-loader';
+export * from './runner';
+export * from './sample-sketches';
