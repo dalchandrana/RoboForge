@@ -1,5 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { StorageService, type SettingsRecord, DEFAULT_SETTINGS } from '@roboforge/storage';
+import React, { useState, useEffect, useCallback } from 'react';
+import {
+  StorageService,
+  type SettingsRecord,
+  DEFAULT_SETTINGS,
+  toDayString,
+} from '@roboforge/storage';
 import { t } from '@roboforge/i18n';
 import { Toast } from '@roboforge/ui';
 import { HomeView } from './views/HomeView';
@@ -9,8 +14,8 @@ import { ToolsView } from './views/ToolsView';
 import { SimulatorView } from './views/SimulatorView';
 import { CoachView } from './views/CoachView';
 import { LibraryView } from './views/LibraryView';
+import { PracticeView } from './views/PracticeView';
 import { ProjectsView } from './views/ProjectsView';
-import { PlaceholderView } from './views/PlaceholderView';
 import { OnboardingWizard } from './components/onboarding/OnboardingWizard';
 
 const storage = new StorageService();
@@ -38,6 +43,24 @@ export const App: React.FC = () => {
   const [settings, setSettings] = useState<SettingsRecord>(DEFAULT_SETTINGS);
   const [completedLessons, setCompletedLessons] = useState<Set<string>>(new Set());
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [motivationKey, setMotivationKey] = useState(0);
+
+  const markMilestone = useCallback(async (name: string) => {
+    await storage.setMilestone(name);
+    await storage.recordActivity(toDayString(new Date()));
+    setMotivationKey(k => k + 1);
+  }, []);
+
+  const handleArduinoRan = useCallback(() => {
+    void markMilestone('ran-arduino-sim');
+  }, [markMilestone]);
+
+  const handleProjectComplete = useCallback(
+    (projectId: string) => {
+      void markMilestone(`project:${projectId}`);
+    },
+    [markMilestone],
+  );
 
   // Load storage state on mount
   useEffect(() => {
@@ -76,6 +99,7 @@ export const App: React.FC = () => {
 
   const handleToggleComplete = async (lessonId: string, completed: boolean) => {
     await storage.setProgress(lessonId, completed ? 'completed' : 'viewed');
+    await storage.recordActivity(toDayString(new Date()));
     setCompletedLessons(prev => {
       const next = new Set(prev);
       if (completed) next.add(lessonId);
@@ -190,24 +214,18 @@ export const App: React.FC = () => {
         {activeTab === 'tools' && <ToolsView />}
 
         {activeTab === 'practice' && (
-          <PlaceholderView
-            title="Practice & Assessment Engine"
-            icon="🎯"
-            phase="Phase 1"
-            description="Auto-graded interactive problem sets with staged hint ladders, mini-games, and skill radars."
-            features={[
-              'Numeric problems with tolerance validation',
-              'Circuit-state assertions',
-              'Break-time mini-games (Resistor color codes, pin matching)',
-              'Daily streak tracker (non-punitive)',
-            ]}
-            onNavigateHome={() => setActiveTab('home')}
+          <PracticeView
+            storage={storage}
+            completedLessons={completedLessons}
+            refreshKey={motivationKey}
           />
         )}
 
-        {activeTab === 'simulate' && <SimulatorView />}
+        {activeTab === 'simulate' && <SimulatorView onArduinoRan={handleArduinoRan} />}
 
-        {activeTab === 'projects' && <ProjectsView onNavigate={setActiveTab} />}
+        {activeTab === 'projects' && (
+          <ProjectsView onNavigate={setActiveTab} onProjectComplete={handleProjectComplete} />
+        )}
 
         {activeTab === 'library' && <LibraryView />}
 

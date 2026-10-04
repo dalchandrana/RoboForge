@@ -2,7 +2,11 @@ import React, { useState } from 'react';
 import { CircuitSimulator } from '../components/circuit/CircuitSimulator';
 import { ArduinoSimulator } from '../components/arduino/ArduinoSimulator';
 
-export const SimulatorView: React.FC = () => {
+interface SimulatorViewProps {
+  onArduinoRan?: () => void;
+}
+
+export const SimulatorView: React.FC<SimulatorViewProps> = ({ onArduinoRan }) => {
   const [activeSim, setActiveSim] = useState<'circuit' | 'arduino'>('circuit');
 
   return (
@@ -55,7 +59,11 @@ export const SimulatorView: React.FC = () => {
       </div>
 
       {/* Simulator Content */}
-      {activeSim === 'circuit' ? <CircuitSimulator /> : <ArduinoSimulator />}
+      {activeSim === 'circuit' ? (
+        <CircuitSimulator />
+      ) : (
+        <ArduinoSimulator onSimulationRan={onArduinoRan} />
+      )}
     </div>
   );
 };

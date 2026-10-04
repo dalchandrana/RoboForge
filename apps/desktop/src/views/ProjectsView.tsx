@@ -14,12 +14,14 @@ const ALL_KITS: Kit[] = Object.values(typedBundle.kits || {});
 
 interface ProjectsViewProps {
   onNavigate?: (tab: string) => void;
+  /** Called when every build step of a project has been checked off. */
+  onProjectComplete?: (projectId: string) => void;
 }
 
 type MainTab = 'projects' | 'kits';
 type ProjectSubTab = 'overview' | 'wiring' | 'steps' | 'code' | 'troubleshooting' | 'bom';
 
-export const ProjectsView: React.FC<ProjectsViewProps> = ({ onNavigate }) => {
+export const ProjectsView: React.FC<ProjectsViewProps> = ({ onNavigate, onProjectComplete }) => {
   const [mainTab, setMainTab] = useState<MainTab>('projects');
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
   const [projectSubTab, setProjectSubTab] = useState<ProjectSubTab>('overview');
@@ -95,7 +97,12 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ onNavigate }) => {
   };
 
   const toggleStepCompleted = (stepKey: string) => {
-    setCompletedSteps(prev => ({ ...prev, [stepKey]: !prev[stepKey] }));
+    const next = { ...completedSteps, [stepKey]: !completedSteps[stepKey] };
+    setCompletedSteps(next);
+    if (activeProject && next[stepKey]) {
+      const allDone = activeProject.steps.every(s => next[`${activeProject.id}-step-${s.step}`]);
+      if (allDone) onProjectComplete?.(activeProject.id);
+    }
   };
 
   // Export BOM to CSV

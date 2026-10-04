@@ -11,7 +11,12 @@ import { ArduinoBoardView } from './ArduinoBoardView';
 import { ArduinoCodeEditor } from './ArduinoCodeEditor';
 import { SerialMonitor } from './SerialMonitor';
 
-export const ArduinoSimulator: React.FC = () => {
+interface ArduinoSimulatorProps {
+  /** Called once the simulation starts executing instructions. */
+  onSimulationRan?: () => void;
+}
+
+export const ArduinoSimulator: React.FC<ArduinoSimulatorProps> = ({ onSimulationRan }) => {
   const [currentSketch, setCurrentSketch] = useState<SketchPreset>(SKETCH_BLINK);
   const [isRunning, setIsRunning] = useState<boolean>(true);
   const [speed, setSpeed] = useState<number>(1);
@@ -111,6 +116,7 @@ export const ArduinoSimulator: React.FC = () => {
   // Main simulation animation loop
   useEffect(() => {
     if (!isRunning) return;
+    onSimulationRan?.();
 
     let animId: number;
     // ~50,000 cycles per frame gives ~3,000,000 cycles/sec at 60fps (smooth interactive simulation)
@@ -125,7 +131,7 @@ export const ArduinoSimulator: React.FC = () => {
 
     animId = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(animId);
-  }, [isRunning, speed, runner]);
+  }, [isRunning, speed, runner, onSimulationRan]);
 
   return (
     <div className="space-y-6">

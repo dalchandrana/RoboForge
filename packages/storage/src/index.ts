@@ -3,6 +3,8 @@
  * All UI reads and writes go through this package, never raw SQL in React components.
  */
 
+export * from './motivation';
+
 export interface LessonProgressRecord {
   lessonId: string;
   status: 'none' | 'viewed' | 'completed';
@@ -60,6 +62,38 @@ export interface RoboforgeExportBundle {
 export class StorageService {
   private progress = new Map<string, LessonProgressRecord>();
   private settings: SettingsRecord = { ...DEFAULT_SETTINGS };
+  private activeDays = new Set<string>();
+  private badges = new Map<string, string>();
+  private milestones = new Set<string>();
+
+  /** Record learner activity for a YYYY-MM-DD day (used for streaks). */
+  public async recordActivity(day: string): Promise<void> {
+    this.activeDays.add(day);
+  }
+
+  public async getActiveDays(): Promise<string[]> {
+    return Array.from(this.activeDays).sort();
+  }
+
+  /** Award a badge once; returns true only the first time. */
+  public async awardBadge(badgeId: string): Promise<boolean> {
+    if (this.badges.has(badgeId)) return false;
+    this.badges.set(badgeId, new Date().toISOString());
+    return true;
+  }
+
+  public async getBadges(): Promise<{ id: string; earnedAt: string }[]> {
+    return Array.from(this.badges, ([id, earnedAt]) => ({ id, earnedAt }));
+  }
+
+  /** Simple named milestones, e.g. 'ran-arduino-sim' or 'project:p3-...'. */
+  public async setMilestone(name: string): Promise<void> {
+    this.milestones.add(name);
+  }
+
+  public async getMilestones(): Promise<string[]> {
+    return Array.from(this.milestones);
+  }
 
   public async getProgress(lessonId: string): Promise<LessonProgressRecord | null> {
     return this.progress.get(lessonId) ?? null;
@@ -96,6 +130,9 @@ export class StorageService {
   public async resetAll(): Promise<void> {
     this.progress.clear();
     this.settings = { ...DEFAULT_SETTINGS };
+    this.activeDays.clear();
+    this.badges.clear();
+    this.milestones.clear();
   }
 
   public async exportBundle(): Promise<RoboforgeExportBundle> {
@@ -106,6 +143,9 @@ export class StorageService {
       data: {
         settings: await this.getSettings(),
         lessonProgress: await this.getAllProgress(),
+        streaks: (await this.getActiveDays()).map(day => ({ day })),
+        badges: await this.getBadges(),
+        profile: { milestones: await this.getMilestones() },
       },
     };
   }
@@ -123,6 +163,17 @@ export class StorageService {
         this.progress.set(item.lessonId, item);
       }
     }
+    this.activeDays.clear();
+    for (const s of bundle.data.streaks ?? []) {
+      if (typeof s['day'] === 'string') this.activeDays.add(s['day']);
+    }
+    this.badges.clear();
+    for (const b of bundle.data.badges ?? []) {
+      if (typeof b['id'] === 'string') this.badges.set(b['id'], String(b['earnedAt'] ?? ''));
+    }
+    this.milestones.clear();
+    const ms = bundle.data.profile?.['milestones'];
+    if (Array.isArray(ms)) for (const m of ms) this.milestones.add(String(m));
     return true;
   }
 }

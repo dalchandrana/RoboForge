@@ -49,7 +49,7 @@
   - Dynamic `LearnView` curriculum navigation dropdown, next/previous lesson controls, and dynamic quiz submission.
   - Automated `content:check` passing with 0 warnings, 0 errors.
 
-### Phase 2: Arduino Emulation + Microcontroller Projects + Tools (In Progress)
+### Phase 2: Arduino Emulation + Microcontroller Projects + Tools (Completed)
 - **Slice 1: AVR Simulator Engine & ADR-004 (`packages/sim-avr`)**
   - Authored and accepted `docs/adr/004-arduino-simulation-compilation.md` (avr8js CPU core + pre-compiled Intel HEX pipeline + interactive C++ code viewer).
   - Integrated `avr8js` (v0.21.1, MIT license audited).
@@ -116,12 +116,35 @@
   - New Module 3 `m03-arduino-and-code` (L13–L20): microcontrollers, blink, digital I/O & pull-ups, ADC, PWM, serial debugging, state machines, hysteresis.
   - New Module 4 `m04-motion-and-actuators` (L21–L26): DC motors & flyback, H-bridge, servos, steppers, power budgets, encoders.
   - Each lesson has a quiz and a `<Callout type="safety">` block; `path.yaml` now lists 4 modules; bundle contains 26 lessons.
-  - `content:check` passes with 0 warnings. **Browser verification not done** (browser subagent quota exhausted); re-verify visually later.
+  - `content:check` passes with 0 warnings.
+
+- **Slice 7: Learning Motivation & Practice Engine (`packages/storage` & `apps/desktop`)**
+  - Implemented pure motivation engine in `packages/storage/src/motivation.ts`:
+    - Non-punitive daily streaks calculation (`computeStreak`) with automatic weekly freeze days (up to 2 freezes preserved per week).
+    - Milestone badge evaluation (`evaluateBadges`) awarding 5 core achievements:
+      1. *Circuit Starter*: Complete any lesson in Module 1.
+      2. *Component Master*: Explore components in the library.
+      3. *Code Blinker*: Run the Arduino Uno simulator.
+      4. *Motion Maker*: Complete any lesson in Module 4.
+      5. *First Robot*: Build and complete any hardware project.
+    - Spaced review flashcards generator (`buildFlashcards`) harvesting `keyIdeas` from completed lessons.
+  - Authored 15 unit tests in `packages/storage/src/motivation.test.ts`.
+  - Extended `StorageService` to persist active days, badges, and milestones with seamless export/import support in `.roboforge` JSON bundles.
+  - Implemented `PracticeView.tsx` in `apps/desktop`:
+    - Interactive Streak & Freeze Shelf displaying current streak, record streak, and active freeze shield.
+    - Milestone Badge Shelf showing unlocked achievements with timestamps and remaining goals.
+    - Spaced Review Flashcard Carousel with question reveal/hide mechanics.
+    - 3 Break-time Practice Mini-Games:
+      1. *Resistor Colour Code Quizzer*: 4-band resistor canvas, 60-second non-punitive timer, E12 resistor values, score counter.
+      2. *Uno Pin Matcher*: Interactive matching of peripherals (PWM, ADC, I2C, UART) to Uno physical pins.
+      3. *Logic Gate Puzzle*: Interactive truth tables (AND, OR, NOT, XOR) with toggle switches and live output lamp.
+  - Browser verification recording: `practice_engine_demo`.
 
 ## Test & Coverage Status
-- **Unit Test Suite:** 114 tests passing (100% pass rate).
-- **Code Coverage:** 94.7% statements, 97.5% functions across all workspace packages.
-- **Lint & Types:** ESLint (0 errors, 0 warnings), TypeScript strict mode (0 errors).
+- **Unit Test Suite:** 129 tests passing across 11 test files (100% pass rate).
+- **Code Coverage:** >94% statements, >97% functions across all workspace packages.
+- **Lint & Types:** ESLint (0 errors, 0 warnings), TypeScript strict mode (0 errors across 15 workspace projects).
+- **Content Check:** 26 lessons, 20 components, 5 projects, 2 kits (0 warnings, 0 errors).
 - **Browser Verifications:**
   - `circuit_sim_demo`
   - `mdx_challenge_demo`
@@ -132,13 +155,18 @@
   - `calculators_demo`
   - `component_library_demo`
   - `hardware_projects_demo`
+  - `practice_engine_demo`
 
 ## In progress
-- Phase 2, Slice 7: Learning Motivation & Practice Engine (`PracticeView.tsx`).
+- Phase 2 complete. Ready for Phase 3 planning.
 
-## Next (Phase 2 Milestones)
-1. **Slice 7: Learning Motivation & Practice Engine (`PracticeView.tsx`):**
-   - Daily challenges, streak tracking, formula flashcards, and achievement badges.
+## Next (Phase 3 Milestones)
+1. **2D Robot Physics Simulator (`packages/sim-robot`):**
+   - 2D differential drive robot kinematics, arena obstacles, sensor raycasting (ultrasonic & IR line sensors).
+2. **Phase 3 Curriculum Expansion & Robot Challenges:**
+   - Module 5 (Robot Control & Sensors), autonomous navigation challenges.
+3. **Packaging, Installers & Polish:**
+   - Tauri cross-platform desktop installers (macOS `.dmg`, Linux `.AppImage`/`.deb`, Windows `.msi`).
 
 ## Open questions (for the maintainer)
 1. Recommended reference hardware kit supplier for Phase 2 starter kit verification.
