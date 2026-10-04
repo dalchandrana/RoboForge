@@ -169,7 +169,11 @@ importers:
         specifier: ^3.24.2
         version: 3.25.76
 
-  packages/sim-robot: {}
+  packages/sim-robot:
+    dependencies:
+      '@roboforge/config':
+        specifier: workspace:*
+        version: link:../config
 
   packages/storage:
     dependencies:

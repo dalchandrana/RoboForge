@@ -140,8 +140,23 @@
       3. *Logic Gate Puzzle*: Interactive truth tables (AND, OR, NOT, XOR) with toggle switches and live output lamp.
   - Browser verification recording: `practice_engine_demo`.
 
+### Phase 3: Hardening, Robot Simulation & Launch Readiness (In Progress)
+- **Slice 1: 2D Robot Simulation Engine & ADR-005 (`packages/sim-robot`)**
+  - Authored and accepted `docs/adr/005-robot-simulation-engine.md` (pure TypeScript continuous-time differential drive kinematics & geometric sensor raycasting).
+  - Implemented exact differential-drive kinematics in `packages/sim-robot/src/kinematics.ts`: unicycle body velocities ($v, \omega$), inverse kinematics, exact arc integration (Instantaneous Center of Curvature ICC), optical encoder tick accumulation, and global polygon vertex transformations.
+  - Implemented sensor models in `packages/sim-robot/src/sensors.ts`:
+    - HC-SR04 ultrasonic sonar raycaster: $15^\circ$ conical aperture with multi-ray testing against polygon obstacles and arena walls, returning distance in cm.
+    - TCRT5000 dual/triple IR line reflectance sensors: continuous analog reflectance and digital threshold over SVG/polyline track paths.
+    - Robot collision detector: Separating Axis Theorem (SAT) and point-in-box containment against obstacle blocks and arena boundaries.
+  - Implemented autonomous controllers in `packages/sim-robot/src/controllers.ts`:
+    - 2-sensor discrete bang-bang line follower and continuous proportional (P) line follower.
+    - Reactive ultrasonic obstacle avoidance finite state machine (`FORWARD` -> `BACKUP` -> `TURN`).
+    - Manual keyboard/joystick teleoperation controller.
+  - Implemented standard educational track and arena presets in `packages/sim-robot/src/arena.ts` (Oval Track, Figure-8 Lemniscate, Obstacle Course).
+  - Authored 18 unit tests in `packages/sim-robot/src/index.test.ts` (100% pass rate).
+
 ## Test & Coverage Status
-- **Unit Test Suite:** 129 tests passing across 11 test files (100% pass rate).
+- **Unit Test Suite:** 147 tests passing across 12 test files (100% pass rate).
 - **Code Coverage:** >94% statements, >97% functions across all workspace packages.
 - **Lint & Types:** ESLint (0 errors, 0 warnings), TypeScript strict mode (0 errors across 15 workspace projects).
 - **Content Check:** 26 lessons, 20 components, 5 projects, 2 kits (0 warnings, 0 errors).
@@ -158,15 +173,21 @@
   - `practice_engine_demo`
 
 ## In progress
-- Phase 2 complete. Ready for Phase 3 planning.
+- Phase 3, Slice 2: 2D Robot Arena UI & Interactive Simulator (`apps/desktop/src/components/robot/`).
 
 ## Next (Phase 3 Milestones)
-1. **2D Robot Physics Simulator (`packages/sim-robot`):**
-   - 2D differential drive robot kinematics, arena obstacles, sensor raycasting (ultrasonic & IR line sensors).
-2. **Phase 3 Curriculum Expansion & Robot Challenges:**
-   - Module 5 (Robot Control & Sensors), autonomous navigation challenges.
-3. **Packaging, Installers & Polish:**
-   - Tauri cross-platform desktop installers (macOS `.dmg`, Linux `.AppImage`/`.deb`, Windows `.msi`).
+1. **Slice 2: 2D Robot Arena UI & Interactive Simulator (`apps/desktop`):**
+   - 2D Canvas arena renderer, live telemetry HUD, manual driving & autonomous modes.
+2. **Slice 3: Curriculum Completion (Module 5: Lessons 27–30 & Capstone):**
+   - L27 differential drive, L28 line follower, L29 obstacle car, L30 capstone robot.
+3. **Slice 4: Project Build Logs & Community Sharing (FR-PRJ-05, FR-PRJ-06):**
+   - SQLite `project_logs`, export PR template, completion certificate.
+4. **Slice 5: Accessibility, Low-Spec Mode & Performance Hardening:**
+   - Low-spec toggle, full keyboard navigation, WCAG 2.2 AA.
+5. **Slice 6: Multi-Platform Desktop Packaging & Release Workflows:**
+   - Tauri bundle config, GitHub Actions matrix build.
+6. **Slice 7: Docs, Templates & Final Launch Audit:**
+   - `CONTRIBUTING.md`, issue templates, educator pack.
 
 ## Open questions (for the maintainer)
 1. Recommended reference hardware kit supplier for Phase 2 starter kit verification.
