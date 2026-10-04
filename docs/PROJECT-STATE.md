@@ -122,8 +122,10 @@
   - High-contrast `:focus-visible` styling and skip-to-content accessibility link.
 - **Slice 6: Multi-Platform Desktop Packaging & Release Workflows**
   - Updated `apps/desktop/src-tauri/tauri.conf.json` and `Cargo.toml` to version `1.0.0` with full packaging metadata (macOS, Windows NSIS, Linux Deb).
+  - Designed master `app-icon.svg` and generated multi-resolution icon bundle (`.icns`, `.ico`, `.png`).
+  - Successfully verified native macOS bundle build: `RoboForge.app` (8.63 MiB) and `RoboForge_1.0.0_aarch64.dmg` (3.39 MiB).
   - Authored `.github/workflows/release.yml` with multi-platform matrix build (macOS arm64/x86_64, Ubuntu 22.04, Windows Latest) and automatic SHA-256 checksum generation.
-  - Authored `docs/UNSIGNED-INSTALLS.md` and `docs/RELEASE-GUIDE.md`.
+  - Authored user-facing `docs/INSTALLATION.md`, `docs/UNSIGNED-INSTALLS.md`, and `docs/RELEASE-GUIDE.md`.
 - **Slice 7: Docs, Templates & Final Launch Audit**
   - Authored comprehensive `CONTRIBUTING.md`, issue templates in `.github/ISSUE_TEMPLATE/` (bug report, content suggestion, hardware verification).
   - Authored `docs/EDUCATOR-PACK.md` for school computer lab deployment, COPPA/FERPA zero-PII privacy compliance, and classroom kit procurement under $300.

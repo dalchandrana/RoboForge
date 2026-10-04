@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0F172A" />
+      <stop offset="50%" stop-color="#090D16" />
+      <stop offset="100%" stop-color="#030712" />
+    </linearGradient>
+
+    <!-- Outer Ring Gradient -->
+    <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38BDF8" />
+      <stop offset="40%" stop-color="#6366F1" />
+      <stop offset="100%" stop-color="#F59E0B" />
+    </linearGradient>
+
+    <!-- Forge Core Gradient -->
+    <linearGradient id="coreGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FCD34D" />
+      <stop offset="50%" stop-color="#F59E0B" />
+      <stop offset="100%" stop-color="#EA580C" />
+    </linearGradient>
+
+    <!-- Cyan Trace Gradient -->
+    <linearGradient id="cyanTrace" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38BDF8" />
+      <stop offset="100%" stop-color="#0284C7" />
+    </linearGradient>
+
+    <!-- Glow Filter -->
+    <filter id="neonGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="16" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+
+    <filter id="coreGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="24" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- App Icon Base: Rounded Squircle -->
+  <rect x="32" y="32" width="960" height="960" rx="220" fill="url(#bgGrad)" stroke="#1E293B" stroke-width="8" />
+
+  <!-- Background Subtle Grid Pattern -->
+  <g opacity="0.12" stroke="#38BDF8" stroke-width="2">
+    <line x1="160" y1="160" x2="864" y2="160" />
+    <line x1="160" y1="320" x2="864" y2="320" />
+    <line x1="160" y1="480" x2="864" y2="480" />
+    <line x1="160" y1="640" x2="864" y2="640" />
+    <line x1="160" y1="800" x2="864" y2="800" />
+    <line x1="160" y1="160" x2="160" y2="864" />
+    <line x1="320" y1="160" x2="320" y2="864" />
+    <line x1="480" y1="160" x2="480" y2="864" />
+    <line x1="640" y1="160" x2="640" y2="864" />
+    <line x1="800" y1="160" x2="800" y2="864" />
+  </g>
+
+  <!-- Circuit Traces Outer Shell -->
+  <g stroke="url(#cyanTrace)" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <!-- Top Left Trace -->
+    <path d="M 280 260 L 400 260 L 460 320" />
+    <circle cx="280" cy="260" r="14" fill="#38BDF8" />
+
+    <!-- Top Right Trace -->
+    <path d="M 744 260 L 624 260 L 564 320" />
+    <circle cx="744" cy="260" r="14" fill="#38BDF8" />
+
+    <!-- Bottom Left Trace -->
+    <path d="M 280 764 L 400 764 L 450 714" />
+    <circle cx="280" cy="764" r="14" fill="#38BDF8" />
+
+    <!-- Bottom Right Trace -->
+    <path d="M 744 764 L 624 764 L 574 714" />
+    <circle cx="744" cy="764" r="14" fill="#38BDF8" />
+  </g>
+
+  <!-- Hexagonal RoboForge Shield / Anvil Frame -->
+  <polygon points="512,180 780,330 780,670 512,820 244,670 244,330"
+           fill="#111827" stroke="url(#ringGrad)" stroke-width="16" stroke-linejoin="round" />
+
+  <!-- Robot Head / Forge Geometry -->
+  <g fill="#1E293B" stroke="#334155" stroke-width="6" stroke-linejoin="round">
+    <!-- Brow & Crown Plate -->
+    <polygon points="340,360 684,360 640,460 384,460" />
+
+    <!-- Left & Right Cheek Armor -->
+    <polygon points="340,390 380,480 340,630 290,520" />
+    <polygon points="684,390 734,520 684,630 644,480" />
+
+    <!-- Chin / Anvil Base -->
+    <polygon points="400,670 624,670 570,740 454,740" />
+  </g>
+
+  <!-- Glowing Robot Visor (Dual Apertures) -->
+  <g filter="url(#neonGlow)">
+    <!-- Cyan Visor Bar -->
+    <rect x="360" y="475" width="304" height="42" rx="16" fill="#0284C7" />
+    <rect x="370" y="482" width="284" height="28" rx="12" fill="#38BDF8" />
+    <rect x="385" y="488" width="110" height="16" rx="8" fill="#E0F2FE" />
+    <rect x="529" y="488" width="110" height="16" rx="8" fill="#E0F2FE" />
+  </g>
+
+  <!-- Glowing Forge Core Anvil Center (Amber Fusion) -->
+  <g filter="url(#coreGlow)">
+    <polygon points="512,545 590,595 565,655 459,655 434,595" fill="url(#coreGrad)" />
+    <!-- Pulse Center -->
+    <circle cx="512" cy="610" r="22" fill="#FEF08A" />
+  </g>
+
+  <!-- Electronic Node Accents on Shield Vertices -->
+  <circle cx="512" cy="180" r="16" fill="#38BDF8" stroke="#0F172A" stroke-width="6" />
+  <circle cx="780" cy="330" r="16" fill="#6366F1" stroke="#0F172A" stroke-width="6" />
+  <circle cx="780" cy="670" r="16" fill="#F59E0B" stroke="#0F172A" stroke-width="6" />
+  <circle cx="512" cy="820" r="16" fill="#EA580C" stroke="#0F172A" stroke-width="6" />
+  <circle cx="244" cy="670" r="16" fill="#F59E0B" stroke="#0F172A" stroke-width="6" />
+  <circle cx="244" cy="330" r="16" fill="#6366F1" stroke="#0F172A" stroke-width="6" />
+</svg>
