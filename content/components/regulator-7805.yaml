@@ -1,0 +1,44 @@
+id: regulator-7805
+name: L7805 5V 1A Linear Voltage Regulator
+aliases:
+  - '7805'
+  - 5V Linear Regulator
+category: power
+package: "TO-220 (Center pin and metal tab are Ground)"
+description: Fixed 5V positive linear voltage regulator providing up to 1.0A output with internal current limiting and thermal shutdown protection. Essential for stepping down 7-12V battery packs to a clean 5V logic rail.
+symbol: U
+pinout:
+  - pin: 1
+    name: INPUT (VI)
+    function: power
+    description: Raw unregulated DC input voltage (+7V to +25V DC)
+  - pin: 2
+    name: GROUND (GND)
+    function: ground
+    description: Common circuit ground (electrically connected to the metal heatsink tab)
+  - pin: 3
+    name: OUTPUT (VO)
+    function: output
+    description: Regulated +5.0V DC output rail
+absoluteMaxRatings:
+  voltage_V: 35
+  current_mA: 1000
+  power_mW: 15000
+  tempMax_C: 150
+  notes: Maximum input voltage 35V. Minimum dropout voltage is 2.0V (requires Vin ≥ 7.0V for stable 5V output).
+typicalOperatingConditions:
+  voltage_V: 7.5V - 12V (Input)
+  current_mA: 10mA - 800mA
+protocols:
+  - none
+commonMistakes:
+  - "Forgetting that linear regulators dissipate all excess voltage as heat: Ploss = (Vin - 5V) * I. Feeding 12V at 500mA causes 3.5W of heat dissipation, burning fingers without a heatsink!"
+  - "Omitting the input (0.33µF) and output (0.1µF) ceramic capacitors, causing high-frequency oscillations on the output rail."
+  - "Feeding input voltage lower than 7.0V (dropout threshold), causing the regulated 5V output to sag."
+cheatSheetMarkdown: |
+  ### 7805 Regulator Quick Reference
+  - **Pinout (TO-220 front view with metal tab in back):** Pin 1 = Input (Vin), Pin 2 = Ground (GND), Pin 3 = Output (+5V).
+  - **Capacitor Sizing:** Place a $0.33\,\mu\text{F}$ capacitor on Pin 1 (Input to GND) and a $0.1\,\mu\text{F}$ capacitor on Pin 3 (Output to GND).
+  - **Thermal Rule of Thumb:** If power dissipation $P = (V_{in} - 5\,\text{V}) \times I > 1\,\text{W}$, attach a heatsink or switch to an efficient buck converter.
+safetyNotes: The metal tab is Ground (0V), making it safe to attach to grounded metal heatsinks. The heatsink may become very hot under heavy loads (> 60°C).
+needsHumanVerification: false

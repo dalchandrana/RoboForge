@@ -1,0 +1,52 @@
+id: switch-tactile-6mm
+name: 6mm Tactile Pushbutton Switch
+aliases:
+  - Momentary Push Button
+  - Tact Switch
+  - SPST Button
+category: passive
+package: 6x6mm 4-Pin Through-Hole (Breadboard Friendly)
+description: Single-pole single-throw (SPST) normally-open momentary tactile switch with internal metal snap dome, providing tactile click feedback upon actuation.
+symbol: SW
+pinout:
+  - pin: 1
+    name: Terminal 1A
+    function: passive
+    description: Internally shorted to Pin 1B across the switch body
+  - pin: 2
+    name: Terminal 1B
+    function: passive
+    description: Internally shorted to Pin 1A across the switch body
+  - pin: 3
+    name: Terminal 2A
+    function: passive
+    description: Switch contact A (connected to 1A/1B only when button is pressed)
+  - pin: 4
+    name: Terminal 2B
+    function: passive
+    description: Switch contact B (connected to 1A/1B only when button is pressed)
+absoluteMaxRatings:
+  voltage_V: 12
+  current_mA: 50
+  power_mW: 600
+  tempMax_C: 70
+  notes: Rated for low-current signal switching (50 mA at 12V DC). Not rated for AC mains or motor power loads.
+typicalOperatingConditions:
+  voltage_V: 3.3V - 5V
+  current_mA: 0.1mA - 10mA
+protocols:
+  - digital_gpio
+commonMistakes:
+  - Misunderstanding the 4-pin internal pairs; pairs across the curved side are always connected together. Orient pins spanning the breadboard center trough.
+  - Forgetting a pull-up or pull-down resistor; leaving the microcontroller input pin floating results in erratic false trigger reads from ambient electrical noise.
+  - Ignoring mechanical contact bounce (5-20ms of rapid ON-OFF chatter); debounce in software with a 20-50ms timer check.
+cheatSheetMarkdown: |
+  ### Tactile Switch Wiring Best Practice
+  - **Internal Connection Rule:** Pins on the same long side are permanently bridged inside the plastic housing. The switch only closes the circuit between opposite sides when pressed down.
+  - **Recommended Arduino Wiring (Active LOW):**
+    - Connect one side of the button to an Arduino digital pin (e.g. Pin 2).
+    - Connect the opposite side directly to **GND**.
+    - In Arduino C++, enable the internal pull-up resistor: `pinMode(2, INPUT_PULLUP);`.
+    - Reading logic: `digitalRead(2) == LOW` means the button is **pressed**. No external resistor required!
+safetyNotes: Safe for low-voltage circuits. Do not switch high currents (> 50mA) directly through tactile switches.
+needsHumanVerification: false

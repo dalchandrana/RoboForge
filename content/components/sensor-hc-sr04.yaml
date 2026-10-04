@@ -1,0 +1,57 @@
+id: sensor-hc-sr04
+name: HC-SR04 Ultrasonic Distance Sensor
+aliases:
+  - Ultrasonic Ranging Module
+  - Sonar Sensor
+category: sensor
+package: 4-Pin PCB Module with Dual Piezo Transducers
+description: Non-contact ultrasonic distance measuring module providing 2cm to 400cm range with 3mm precision. Emits 8 cycles of 40kHz ultrasound bursts and measures the round-trip echo pulse duration.
+symbol: U
+pinout:
+  - pin: 1
+    name: VCC
+    function: power
+    description: +5.0V DC regulated power supply
+  - pin: 2
+    name: TRIG
+    function: input
+    description: Trigger input; initiate measurement with a 10µs HIGH pulse
+  - pin: 3
+    name: ECHO
+    function: output
+    description: Echo output; goes HIGH for duration equal to ultrasonic travel time (5V logic)
+  - pin: 4
+    name: GND
+    function: ground
+    description: Power ground (0V)
+absoluteMaxRatings:
+  voltage_V: 5.5
+  current_mA: 20
+  notes: Requires 5.0V supply for proper 40kHz transducer drive. Echo pin produces 5.0V logic (requires voltage divider when used with 3.3V microcontrollers like ESP32/Raspberry Pi).
+typicalOperatingConditions:
+  voltage_V: 5.0V
+  current_mA: 15mA (Active Ranging), 2mA (Quiescent)
+protocols:
+  - digital_gpio
+commonMistakes:
+  - Connecting the 5V Echo output directly to a 3.3V microcontroller (e.g. ESP32, Raspberry Pi Pico) without a voltage divider (e.g. 1kΩ / 2kΩ), exceeding the 3.3V pin rating.
+  - Calling measurements too fast (< 60ms cycle); ultrasonic echoes from previous pings bounce around the room and create ghost readings.
+  - Expecting accurate readings from sound-absorbing materials (fabrics, sponges) or shallow incident angles (> 45°).
+cheatSheetMarkdown: |
+  ### HC-SR04 Distance Calculation
+  - **Operating Principle:** Speed of sound in dry air at 20°C is $\approx 343\,\text{m/s} = 0.0343\,\text{cm/\mu s}$.
+  - **Formula:** $\text{Distance (cm)} = \frac{\text{Echo Pulse Duration (\mu s)} \times 0.0343}{2}$
+    - Or simplified: $\text{Distance (cm)} = \frac{\text{Echo Pulse Duration (\mu s)}}{58.2}$
+    - For inches: $\text{Distance (in)} = \frac{\text{Echo Pulse Duration (\mu s)}}{148}$
+  - **Arduino Code Snippet:**
+    ```cpp
+    digitalWrite(trigPin, LOW);
+    delayMicroseconds(2);
+    digitalWrite(trigPin, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(trigPin, LOW);
+    long duration = pulseIn(echoPin, HIGH);
+    long distanceCm = duration * 0.0343 / 2;
+    ```
+safetyNotes: Sound pulses are emitted at 40 kHz, beyond human and dog hearing sensitivity. Safe for classroom experiments.
+needsHumanVerification: false

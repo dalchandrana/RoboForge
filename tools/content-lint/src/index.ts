@@ -6,6 +6,7 @@ import {
   validateQuiz,
   validatePath,
   validateModule,
+  validateComponent,
 } from '@roboforge/content-schema';
 
 const CONTENT_ROOT = path.resolve(process.cwd(), 'content');
@@ -51,6 +52,8 @@ export function lintContentDirectory(rootDir: string): LintIssue[] {
           lintModuleYaml(fullPath);
         } else if (entry.name.endsWith('.yaml') && dir.includes('quizzes')) {
           lintQuizYaml(fullPath);
+        } else if (entry.name.endsWith('.yaml') && dir.includes('components')) {
+          lintComponentYaml(fullPath);
         }
       }
     }
@@ -161,6 +164,19 @@ export function lintContentDirectory(rootDir: string): LintIssue[] {
         file: filePath,
         type: 'error',
         message: `Invalid quiz YAML: ${(err as Error).message}`,
+      });
+    }
+  }
+
+  function lintComponentYaml(filePath: string) {
+    try {
+      const data = yaml.load(fs.readFileSync(filePath, 'utf-8'));
+      validateComponent(data);
+    } catch (err: unknown) {
+      issues.push({
+        file: filePath,
+        type: 'error',
+        message: `Invalid component YAML: ${(err as Error).message}`,
       });
     }
   }

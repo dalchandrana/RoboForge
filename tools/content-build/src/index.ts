@@ -6,10 +6,12 @@ import {
   validatePath,
   validateModule,
   validateQuiz,
+  validateComponent,
   type LessonFrontmatter,
   type Path as PathType,
   type Module as ModuleType,
   type Quiz as QuizType,
+  type Component as ComponentType,
 } from '@roboforge/content-schema';
 
 export interface BundledLesson {
@@ -23,6 +25,7 @@ export interface ContentBundle {
   paths: Record<string, PathType>;
   modules: Record<string, ModuleType>;
   lessons: Record<string, BundledLesson>;
+  components: Record<string, ComponentType>;
 }
 
 export function buildContentBundle(contentDir: string): ContentBundle {
@@ -31,6 +34,7 @@ export function buildContentBundle(contentDir: string): ContentBundle {
     paths: {},
     modules: {},
     lessons: {},
+    components: {},
   };
 
   if (!fs.existsSync(contentDir)) {
@@ -96,6 +100,19 @@ export function buildContentBundle(contentDir: string): ContentBundle {
             }
           }
         }
+      }
+    }
+  }
+
+  // Read components
+  const componentsDir = path.join(contentDir, 'components');
+  if (fs.existsSync(componentsDir)) {
+    for (const compFile of fs.readdirSync(componentsDir)) {
+      if (compFile.endsWith('.yaml')) {
+        const compData = validateComponent(
+          yaml.load(fs.readFileSync(path.join(componentsDir, compFile), 'utf-8')),
+        );
+        bundle.components[compData.id] = compData;
       }
     }
   }

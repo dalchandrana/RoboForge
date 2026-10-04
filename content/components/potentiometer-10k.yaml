@@ -1,0 +1,46 @@
+id: potentiometer-10k
+name: 10kΩ Breadboard Rotary Potentiometer
+aliases:
+  - 10k Pot
+  - Trimpot
+  - Variable Resistor
+category: passive
+package: 3-Pin Breadboard Rotary / Trimmer
+description: Three-terminal variable resistor functioning as a manual adjustable voltage divider. The center wiper slides along a conductive carbon track between two outer fixed terminals.
+symbol: RV
+pinout:
+  - pin: 1
+    name: Terminal 1
+    function: passive
+    description: Outer track terminal (typically connected to 5V or GND)
+  - pin: 2
+    name: Wiper
+    function: output
+    description: Center adjustable contact, outputs variable voltage between Terminal 1 and 3
+  - pin: 3
+    name: Terminal 3
+    function: passive
+    description: Opposite outer track terminal (connected to opposite rail)
+absoluteMaxRatings:
+  voltage_V: 50
+  power_mW: 125
+  tempMax_C: 70
+  notes: Rated at 0.1W (100 mW). Connecting wiper directly between power rails without a series load will burn out the wiper contact.
+typicalOperatingConditions:
+  voltage_V: 0V - 5V
+  current_mA: 0.1mA - 2mA
+protocols:
+  - analog
+commonMistakes:
+  - "Shorting the wiper: Connecting Terminal 1 to 5V and Wiper to GND turns the wiper into a dead short when rotated to the 5V limit, melting the internal carbon track!"
+  - "Connecting wiper as an unbuffered power source for an actuator or motor; a potentiometer is a low-power signal divider, not a power regulator."
+cheatSheetMarkdown: |
+  ### Potentiometer Quick Reference
+  - **Voltage Divider Connection:**
+    - Pin 1 (Outer): Connect to **+5V**
+    - Pin 2 (Center Wiper): Connect to **Arduino Analog Pin (A0)**
+    - Pin 3 (Outer): Connect to **GND**
+  - **Output Equation:** $V_{\text{wiper}} = 5\,\text{V} \times \frac{R_{\text{wiper-to-GND}}}{10\,\text{k}\Omega}$
+  - **Arduino Analog Read:** `int val = analogRead(A0);` returns an integer from **0 to 1023** ($0\,\text{V}$ to $5.0\,\text{V}$ with 10-bit ADC resolution $\approx 4.88\,\text{mV/step}$).
+safetyNotes: Always connect the wiper to a high-impedance input (such as an analog ADC pin or op-amp input). Never draw large currents through the wiper.
+needsHumanVerification: false

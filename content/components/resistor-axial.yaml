@@ -1,0 +1,42 @@
+id: resistor-axial
+name: Resistor (1/4W Through-Hole)
+aliases:
+  - Axial Resistor
+  - Carbon Film Resistor
+  - Metal Film Resistor
+category: passive
+package: Axial Through-Hole (DO-41 style)
+description: Two-terminal linear passive component that implements electrical resistance, dropping voltage and limiting current according to Ohm's Law.
+symbol: R
+pinout:
+  - pin: 1
+    name: Terminal 1
+    function: passive
+    description: Non-polarized lead 1
+  - pin: 2
+    name: Terminal 2
+    function: passive
+    description: Non-polarized lead 2
+absoluteMaxRatings:
+  voltage_V: 250
+  power_mW: 250
+  tempMax_C: 155
+  notes: Rated at 0.25W (250 mW) continuous at 70°C ambient. Derate power linearly above 70°C.
+typicalOperatingConditions:
+  voltage_V: 0 - 24V
+  current_mA: 0.1 - 20mA
+protocols:
+  - none
+commonMistakes:
+  - Using a 1/4W resistor for high-current loads (e.g. directly in series with high power motors), causing thermal discoloration and burnout.
+  - Misreading multiplier color bands (e.g. mistaking 10kΩ for 1kΩ or 100Ω).
+  - Ignoring tolerance (5% gold band vs 1% brown band) in precision analog sensing dividers.
+cheatSheetMarkdown: |
+  ### Resistor Quick Reference
+  - **Ohm's Law:** $V = I \times R$, $I = V / R$, $R = V / I$
+  - **Power Dissipation:** $P = V \times I = I^2 \times R = V^2 / R$
+  - **Series Resistance:** $R_{eq} = R_1 + R_2 + \dots$
+  - **Parallel Resistance:** $1/R_{eq} = 1/R_1 + 1/R_2 + \dots$
+  - **Color Code (4-band):** Band 1 = 1st digit, Band 2 = 2nd digit, Band 3 = multiplier ($10^x$), Band 4 = tolerance (Gold = ±5%, Brown = ±1%).
+safetyNotes: Always calculate expected power dissipation ($P = I^2 R$). Ensure operating power is $\le 50\%$ of rated wattage (125 mW for 1/4W resistors) for safety headroom.
+needsHumanVerification: false

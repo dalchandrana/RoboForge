@@ -1,0 +1,43 @@
+id: mosfet-irfz44n
+name: IRFZ44N N-Channel Power MOSFET
+aliases:
+  - Power MOSFET
+  - N-Channel FET
+category: semiconductor
+package: TO-220AB (Metal tab is connected to Drain)
+description: High-current N-channel enhancement mode power MOSFET capable of switching up to 49A with ultra-low 17.5mΩ on-resistance (R_DS(on)). Ideal for driving high-power DC motors, heating elements, and solenoid actuators.
+symbol: M
+pinout:
+  - pin: 1
+    name: Gate (G)
+    function: control
+    description: Voltage-controlled input (insulated by SiO2 gate oxide)
+  - pin: 2
+    name: Drain (D)
+    function: output
+    description: Switched load negative return (internally bonded to metal heatsink tab)
+  - pin: 3
+    name: Source (S)
+    function: ground
+    description: Connected directly to circuit ground
+absoluteMaxRatings:
+  voltage_V: 55
+  current_mA: 49000
+  power_mW: 94000
+  tempMax_C: 175
+  notes: Drain-Source breakdown V_DSS = 55V. Gate-Source breakdown V_GS = ±20V. Continuous drain current 49A at 25°C with adequate heatsink.
+typicalOperatingConditions:
+  voltage_V: 10V (Optimal Gate Drive for Minimum R_DS(on))
+  current_mA: 100mA - 15000mA
+protocols:
+  - none
+commonMistakes:
+  - Driving the gate with 3.3V or 5V logic directly; standard IRFZ44N requires $V_{GS} \ge 10\,\text{V}$ for full conduction! At 5V, it operates in the linear region, causing extreme thermal dissipation and overheating. Use a logic-level MOSFET (e.g. IRLZ44N) or a gate driver for 3.3V/5V MCUs.
+  - Leaving the gate floating without a 10kΩ pull-down resistor; stray static charge will leave the MOSFET partially turned ON.
+cheatSheetMarkdown: |
+  ### IRFZ44N Power MOSFET Quick Reference
+  - **Pinout (TO-220 front view, metal tab in back):** Pin 1 = Gate, Pin 2 = Drain, Pin 3 = Source. Metal tab = Drain.
+  - **Gate Pull-Down:** Always connect a $10\,\text{k}\Omega$ resistor from Gate to Source (GND) to guarantee complete shutoff during MCU boot/reset.
+  - **Gate Resistor:** Place a small $100\,\Omega$ resistor in series with the gate to suppress high-frequency ringing caused by gate capacitance ($C_{iss} \approx 1470\,\text{pF}$).
+safetyNotes: The metal tab is electrically connected to the Drain pin. If mounting to a shared metal heatsink or robot chassis, use a mica/silicone insulating pad and nylon bushing to prevent shorting.
+needsHumanVerification: false

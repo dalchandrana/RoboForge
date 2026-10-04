@@ -1,0 +1,44 @@
+id: transistor-2n3906
+name: 2N3906 PNP Bipolar Junction Transistor
+aliases:
+  - 3906 Transistor
+  - PNP High-Side Switch
+category: semiconductor
+package: "TO-92 Plastic (Flat side facing front: E-B-C)"
+description: Standard PNP bipolar junction transistor for high-side switching and complementary push-pull driver stages. Turns ON when base is pulled lower than emitter by 0.7V.
+symbol: Q
+pinout:
+  - pin: 1
+    name: Emitter (E)
+    function: power
+    description: Connected to positive supply rail in high-side switch
+  - pin: 2
+    name: Base (B)
+    function: control
+    description: Control terminal, pulled LOW to ground to activate
+  - pin: 3
+    name: Collector (C)
+    function: output
+    description: Connected to load positive terminal
+absoluteMaxRatings:
+  voltage_V: 40
+  current_mA: 200
+  power_mW: 625
+  tempMax_C: 150
+  notes: Collector-Emitter breakdown V_CEO = -40V. Maximum continuous collector current I_C = 200 mA.
+typicalOperatingConditions:
+  voltage_V: 3.3V - 12V
+  current_mA: 1mA - 100mA
+protocols:
+  - none
+commonMistakes:
+  - Attempting to switch a 12V supply with a 5V microcontroller directly; when GPIO is HIGH (5V), $V_{EB} = 12 - 5 = 7\,\text{V}$, leaving the transistor permanently turned ON and potentially back-powering the 5V MCU!
+  - Omitting base pull-up resistor to positive rail to keep switch reliably OFF during boot.
+cheatSheetMarkdown: |
+  ### 2N3906 PNP High-Side Quick Reference
+  - **Pinout (TO-92 flat face facing you):** Pin 1 = Emitter (to VCC), Pin 2 = Base (control via resistor), Pin 3 = Collector (out to load).
+  - **Switching Logic:**
+    - Base pulled to $V_{\text{emitter}}$ ($V_{BE} = 0\,\text{V}$) $\to$ **OFF** (open circuit).
+    - Base pulled LOW ($V_B \le V_{\text{emitter}} - 0.7\,\text{V}$) $\to$ **ON** (current conducts from Emitter to Collector).
+safetyNotes: If supply rail voltage is higher than MCU GPIO voltage, use an intermediate NPN transistor to pull the PNP base down safely.
+needsHumanVerification: false

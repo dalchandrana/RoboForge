@@ -1,0 +1,45 @@
+id: transistor-2n2222
+name: 2N2222 / PN2222 NPN Bipolar Junction Transistor
+aliases:
+  - 2N2222A
+  - PN2222A
+  - NPN Switching Transistor
+category: semiconductor
+package: "TO-92 Plastic (Flat side facing front: E-B-C)"
+description: Ubiquitous NPN bipolar junction transistor for low-side switching and linear amplification. Controlled by small base current to switch larger collector-emitter currents.
+symbol: Q
+pinout:
+  - pin: 1
+    name: Emitter (E)
+    function: ground
+    description: Connected to circuit ground in low-side switch
+  - pin: 2
+    name: Base (B)
+    function: control
+    description: Control terminal, requires a current-limiting series resistor
+  - pin: 3
+    name: Collector (C)
+    function: output
+    description: Connected to load ground return
+absoluteMaxRatings:
+  voltage_V: 40
+  current_mA: 800
+  power_mW: 625
+  tempMax_C: 150
+  notes: Collector-Emitter breakdown V_CEO = 40V. Maximum continuous collector current I_C = 800 mA.
+typicalOperatingConditions:
+  voltage_V: 0.2V (V_CE Saturation), 0.7V (V_BE Forward)
+  current_mA: 50mA - 500mA
+protocols:
+  - none
+commonMistakes:
+  - Connecting microcontroller GPIO directly to Base pin without a series base resistor; forward biased B-E diode ($V_{BE} \approx 0.7V$) creates a short on the GPIO pin!
+  - Swapping Emitter and Collector pins due to differing TO-18 (metal can) vs TO-92 (plastic) pinouts.
+cheatSheetMarkdown: |
+  ### 2N2222 NPN Switch Quick Reference
+  - **Pinout (TO-92 flat face facing you):** Pin 1 = Emitter, Pin 2 = Base, Pin 3 = Collector.
+  - **Saturation Rule (Full ON):** To ensure hard saturation ($V_{CE} \approx 0.1 - 0.2\,\text{V}$), provide base overdrive ratio $I_B \approx I_C / 10$ to $I_C / 20$.
+  - **Base Resistor Sizing:** $R_B = \frac{V_{\text{GPIO}} - 0.7\,\text{V}}{I_B}$.
+    - Example for 5V Arduino switching 100mA relay ($I_B = 5\,\text{mA}$): $R_B = \frac{5 - 0.7}{0.005} = 860\,\Omega \to$ Use **$1\,\text{k}\Omega$**.
+safetyNotes: Always include a base resistor ($1\,\text{k}\Omega$ typical) to protect microcontroller output pins from overcurrent. When switching inductive loads (motors/relays), always install a flyback diode.
+needsHumanVerification: false

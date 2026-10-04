@@ -1,0 +1,39 @@
+id: diode-1n4148
+name: 1N4148 Fast Switching Signal Diode
+aliases:
+  - High-Speed Signal Diode
+  - Switching Diode
+category: semiconductor
+package: DO-35 Glass Axial
+description: Ultra-fast silicon epitaxial planar diode with 4ns reverse recovery time, designed for high-frequency signal rectification, wave shaping, and logic gate level protection.
+symbol: D
+pinout:
+  - pin: 1
+    name: Anode
+    function: passive
+    description: Positive terminal for forward conduction
+  - pin: 2
+    name: Cathode
+    function: passive
+    description: Marked by a black stripe on the glass body
+absoluteMaxRatings:
+  voltage_V: 100
+  current_mA: 300
+  power_mW: 500
+  tempMax_C: 175
+  notes: Continuous forward current limit is 200-300 mA. Surge current limit 1.0 A for 1 second.
+typicalOperatingConditions:
+  voltage_V: 0.6V - 0.72V (Forward Drop)
+  current_mA: 1mA - 100mA
+protocols:
+  - none
+commonMistakes:
+  - Using 1N4148 as a flyback diode for large DC motors (current draw > 300mA); it will overheat and burn out. Use 1N4007 or Schottky for motors.
+  - Reversing cathode and anode due to small glass body markings.
+cheatSheetMarkdown: |
+  ### 1N4148 Quick Reference
+  - **Forward Voltage Drop ($V_f$):** Typically $0.65\,\text{V}$ at $10\,\text{mA}$, rises to $\approx 1.0\,\text{V}$ at $100\,\text{mA}$.
+  - **Reverse Recovery Time ($t_{rr}$):** $\le 4\,\text{ns}$ (ideal for fast digital logic and microcontroller inputs).
+  - **Cathode Marking:** The black printed band indicates the cathode (point of the schematic triangle where bar sits).
+safetyNotes: Rated for small signal processing ($\le 200\,\text{mA}$). Do not use for high-current power supply rectification.
+needsHumanVerification: false

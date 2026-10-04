@@ -1,5 +1,5 @@
 {
-  "builtAt": "2026-10-04T00:12:58.518Z",
+  "builtAt": "2026-10-04T08:06:43.837Z",
   "paths": {
     "electronics-embedded-foundations": {
       "id": "electronics-embedded-foundations",
@@ -1040,6 +1040,1371 @@
           }
         ]
       }
+    }
+  },
+  "components": {
+    "capacitor-ceramic": {
+      "id": "capacitor-ceramic",
+      "name": "Ceramic Disc Capacitor (100nF / 0.1µF)",
+      "aliases": [
+        "104 Capacitor",
+        "Monolithic Ceramic Capacitor",
+        "Bypass Capacitor"
+      ],
+      "category": "passive",
+      "package": "Radial Through-Hole Disc / MLCC",
+      "description": "Non-polarized capacitor widely utilized for high-frequency noise filtering, power rail decoupling, and signal coupling across digital ICs.",
+      "symbol": "C",
+      "pinout": [
+        {
+          "pin": 1,
+          "name": "Terminal 1",
+          "function": "passive",
+          "description": "Non-polarized lead",
+          "isShared": false
+        },
+        {
+          "pin": 2,
+          "name": "Terminal 2",
+          "function": "passive",
+          "description": "Non-polarized lead",
+          "isShared": false
+        }
+      ],
+      "absoluteMaxRatings": {
+        "voltage_V": 50,
+        "tempMax_C": 85,
+        "notes": "Standard 50V DC breakdown rating. Exceeding breakdown causes dielectric punch-through short circuit."
+      },
+      "typicalOperatingConditions": {
+        "voltage_V": "3.3V - 12V",
+        "frequency": "10 kHz - 100 MHz"
+      },
+      "protocols": [
+        "none"
+      ],
+      "commonMistakes": [
+        "Placing decoupling capacitor far away from IC power pins; traces introduce parasitic inductance that renders decoupling ineffective.",
+        "Expecting large energy storage; 100nF is strictly for high-frequency spikes, not bulk energy storage."
+      ],
+      "cheatSheetMarkdown": "### Ceramic Capacitor Quick Reference\n- **Decoupling Rule:** Place one 100nF (0.1µF) ceramic capacitor as close as physically possible to the VCC and GND pins of every digital IC.\n- **Marking Code '104':** 1st digit = 1, 2nd digit = 0, 3rd digit = 4 zeros in picofarads $\\to 100,000\\,\\text{pF} = 100\\,\\text{nF} = 0.1\\,\\mu\\text{F}$.\n- **Non-Polarized:** Can be inserted into breadboard in either direction.\n",
+      "safetyNotes": "Safe for low-voltage school robotics circuits. Do not connect to mains AC voltages or high-voltage circuits.",
+      "needsHumanVerification": false
+    },
+    "capacitor-electrolytic": {
+      "id": "capacitor-electrolytic",
+      "name": "Aluminum Electrolytic Capacitor (100µF 25V)",
+      "aliases": [
+        "Polarized Electrolytic Capacitor",
+        "Bulk Smoothing Capacitor"
+      ],
+      "category": "passive",
+      "package": "Radial Can (Through-Hole)",
+      "description": "Polarized capacitor providing high capacitance density, essential for low-frequency power supply filtering, smoothing rectified DC, and decoupling motor current surges.",
+      "symbol": "C",
+      "pinout": [
+        {
+          "pin": 1,
+          "name": "Anode (+)",
+          "function": "passive",
+          "description": "Positive terminal (longer lead)",
+          "isShared": false
+        },
+        {
+          "pin": 2,
+          "name": "Cathode (-)",
+          "function": "passive",
+          "description": "Negative terminal (shorter lead with white stripe on can)",
+          "isShared": false
+        }
+      ],
+      "absoluteMaxRatings": {
+        "voltage_V": 25,
+        "tempMax_C": 105,
+        "notes": "Strictly polarized. Reverse voltage exceeding 1.5V will cause internal gas buildup and rupture."
+      },
+      "typicalOperatingConditions": {
+        "voltage_V": "5V - 12V",
+        "frequency": "10 Hz - 100 kHz"
+      },
+      "protocols": [
+        "none"
+      ],
+      "commonMistakes": [
+        "Reverse polarization (connecting negative stripe to positive rail) causes rapid heating, electrolyte venting, or pop.",
+        "Exceeding rated breakdown voltage (e.g. connecting a 16V capacitor to a 24V supply)."
+      ],
+      "cheatSheetMarkdown": "### Electrolytic Capacitor Quick Reference\n- **Polarity Identification:** The negative (-) lead is marked by a prominent stripe down the side of the cylindrical can and has a shorter physical wire lead.\n- **Voltage De-rating:** Always choose a capacitor rated for at least $1.5\\times$ to $2\\times$ the maximum expected operating DC voltage.\n- **RC Time Constant:** $\\tau = R \\times C$ (seconds). Full charge requires $\\approx 5\\tau$.\n",
+      "safetyNotes": "Never reverse polarity on electrolytic capacitors. In reverse bias, electrolysis generates hydrogen gas causing catastrophic casing rupture.",
+      "needsHumanVerification": false
+    },
+    "diode-1n4007": {
+      "id": "diode-1n4007",
+      "name": "1N4007 1A Power Rectifier Diode",
+      "aliases": [
+        "1A Rectifier",
+        "Flyback Diode",
+        "Free-Wheeling Diode"
+      ],
+      "category": "semiconductor",
+      "package": "DO-41 Plastic Axial",
+      "description": "Standard silicon rectifier diode capable of handling 1.0A continuous forward current and up to 1000V reverse voltage, essential for inductive flyback suppression across motors, relays, and solenoids.",
+      "symbol": "D",
+      "pinout": [
+        {
+          "pin": 1,
+          "name": "Anode",
+          "function": "passive",
+          "description": "Positive terminal",
+          "isShared": false
+        },
+        {
+          "pin": 2,
+          "name": "Cathode",
+          "function": "passive",
+          "description": "Negative terminal marked by silver band",
+          "isShared": false
+        }
+      ],
+      "absoluteMaxRatings": {
+        "voltage_V": 1000,
+        "current_mA": 1000,
+        "power_mW": 1000,
+        "tempMax_C": 150,
+        "notes": "Continuous forward current limit is 1.0 A. Peak non-repetitive surge current limit is 30 A (8.3 ms half-sine)."
+      },
+      "typicalOperatingConditions": {
+        "voltage_V": "0.7V - 1.1V (Forward Drop)",
+        "current_mA": "10mA - 1000mA"
+      },
+      "protocols": [
+        "none"
+      ],
+      "commonMistakes": [
+        "Connecting flyback diode in forward bias across motor supply, creating a dead short across the power rails!",
+        "Using for high-frequency switching power supplies (> 20 kHz); standard recovery time (30 µs) creates excessive switching losses."
+      ],
+      "cheatSheetMarkdown": "### 1N4007 Flyback Quick Reference\n- **Flyback Configuration:** Connect cathode (silver band) to positive motor rail ($V_{\\text{motor}}$) and anode to the switched ground (transistor/MOSFET drain/collector).\n- **Why Flyback Protection?** When a motor or relay coil is switched OFF abruptly, the collapsing magnetic field produces an inductive voltage spike: $V = -L \\frac{di}{dt}$. Without a diode, this spike (often $> 100\\,\\text{V}$) destroys the switching transistor instantly.\n",
+      "safetyNotes": "Always install a flyback diode antiparallel across DC inductive loads (motors, solenoids, relays) to protect microcontrollers and driving transistors from inductive flyback spikes.",
+      "needsHumanVerification": false
+    },
+    "diode-1n4148": {
+      "id": "diode-1n4148",
+      "name": "1N4148 Fast Switching Signal Diode",
+      "aliases": [
+        "High-Speed Signal Diode",
+        "Switching Diode"
+      ],
+      "category": "semiconductor",
+      "package": "DO-35 Glass Axial",
+      "description": "Ultra-fast silicon epitaxial planar diode with 4ns reverse recovery time, designed for high-frequency signal rectification, wave shaping, and logic gate level protection.",
+      "symbol": "D",
+      "pinout": [
+        {
+          "pin": 1,
+          "name": "Anode",
+          "function": "passive",
+          "description": "Positive terminal for forward conduction",
+          "isShared": false
+        },
+        {
+          "pin": 2,
+          "name": "Cathode",
+          "function": "passive",
+          "description": "Marked by a black stripe on the glass body",
+          "isShared": false
+        }
+      ],
+      "absoluteMaxRatings": {
+        "voltage_V": 100,
+        "current_mA": 300,
+        "power_mW": 500,
+        "tempMax_C": 175,
+        "notes": "Continuous forward current limit is 200-300 mA. Surge current limit 1.0 A for 1 second."
+      },
+      "typicalOperatingConditions": {
+        "voltage_V": "0.6V - 0.72V (Forward Drop)",
+        "current_mA": "1mA - 100mA"
+      },
+      "protocols": [
+        "none"
+      ],
+      "commonMistakes": [
+        "Using 1N4148 as a flyback diode for large DC motors (current draw > 300mA); it will overheat and burn out. Use 1N4007 or Schottky for motors.",
+        "Reversing cathode and anode due to small glass body markings."
+      ],
+      "cheatSheetMarkdown": "### 1N4148 Quick Reference\n- **Forward Voltage Drop ($V_f$):** Typically $0.65\\,\\text{V}$ at $10\\,\\text{mA}$, rises to $\\approx 1.0\\,\\text{V}$ at $100\\,\\text{mA}$.\n- **Reverse Recovery Time ($t_{rr}$):** $\\le 4\\,\\text{ns}$ (ideal for fast digital logic and microcontroller inputs).\n- **Cathode Marking:** The black printed band indicates the cathode (point of the schematic triangle where bar sits).\n",
+      "safetyNotes": "Rated for small signal processing ($\\le 200\\,\\text{mA}$). Do not use for high-current power supply rectification.",
+      "needsHumanVerification": false
+    },
+    "driver-l298n": {
+      "id": "driver-l298n",
+      "name": "L298N Dual Full-Bridge Motor Driver Module",
+      "aliases": [
+        "H-Bridge Module",
+        "L298 Dual Motor Controller",
+        "Dual DC Motor Driver"
+      ],
+      "category": "actuator",
+      "package": "Red PCB Breakout Module with Large Aluminum Heatsink and Screw Terminals",
+      "description": "Dual H-bridge high-power motor driver module based on the L298 bipolar integrated circuit. Capable of driving two DC brush motors with bi-directional rotation and PWM speed control, or one bipolar stepper motor.",
+      "symbol": "U",
+      "pinout": [
+        {
+          "pin": 1,
+          "name": "+12V (VMS)",
+          "function": "power",
+          "description": "Motor supply power (+5V to +35V DC)",
+          "isShared": false
+        },
+        {
+          "pin": 2,
+          "name": "GND",
+          "function": "ground",
+          "description": "Common circuit ground (must connect to Arduino GND!)",
+          "isShared": false
+        },
+        {
+          "pin": 3,
+          "name": "+5V",
+          "function": "power",
+          "description": "5V logic supply (outputs +5V from onboard regulator when 5V-EN jumper is installed)",
+          "isShared": false
+        },
+        {
+          "pin": 4,
+          "name": "ENA",
+          "function": "pwm",
+          "description": "Motor A enable & PWM speed control input (active HIGH)",
+          "isShared": false
+        },
+        {
+          "pin": 5,
+          "name": "IN1",
+          "function": "gpio",
+          "description": "Motor A direction input 1",
+          "isShared": false
+        },
+        {
+          "pin": 6,
+          "name": "IN2",
+          "function": "gpio",
+          "description": "Motor A direction input 2",
+          "isShared": false
+        },
+        {
+          "pin": 7,
+          "name": "IN3",
+          "function": "gpio",
+          "description": "Motor B direction input 1",
+          "isShared": false
+        },
+        {
+          "pin": 8,
+          "name": "IN4",
+          "function": "gpio",
+          "description": "Motor B direction input 2",
+          "isShared": false
+        },
+        {
+          "pin": 9,
+          "name": "ENB",
+          "function": "pwm",
+          "description": "Motor B enable & PWM speed control input (active HIGH)",
+          "isShared": false
+        }
+      ],
+      "absoluteMaxRatings": {
+        "voltage_V": 35,
+        "current_mA": 2000,
+        "power_mW": 25000,
+        "tempMax_C": 130,
+        "notes": "Maximum peak output current 2A per bridge. Bipolar transistors drop ~1.8V to 2.5V total voltage across the bridge."
+      },
+      "typicalOperatingConditions": {
+        "voltage_V": "6V - 12V (Motors), 5V (Logic)",
+        "current_mA": "200mA - 1200mA (Continuous per channel)"
+      },
+      "protocols": [
+        "pwm",
+        "digital_gpio"
+      ],
+      "commonMistakes": [
+        "Forgetting the common ground between the external motor battery and the Arduino; without common ground, logic signals have no reference voltage, causing erratic motor twitching.",
+        "Leaving the 5V-EN onboard regulator jumper installed when feeding > 12V to the motor supply; causes the small onboard 78M05 linear regulator to overheat and burn out.",
+        "Expecting full battery voltage at motor terminals; older bipolar L298 drop up to 2.0V internally as heat."
+      ],
+      "cheatSheetMarkdown": "### L298N Direction & Speed Truth Table\n| ENA (PWM) | IN1 | IN2 | Motor A Behavior |\n|---|---|---|---|\n| HIGH / 255 | HIGH | LOW | Forward full speed |\n| HIGH / 255 | LOW | HIGH | Reverse full speed |\n| PWM (0-255)| HIGH | LOW | Forward at variable speed |\n| ANY | LOW | LOW | Fast motor brake / stop |\n| LOW / 0 | ANY | ANY | Free-wheeling coast stop |\n\n- **Onboard 5V Jumper Rule:**\n  - If motor voltage is $\\le 12\\,\\text{V}$: Keep jumper **ON**. The module supplies 5V on the +5V terminal to power the Arduino.\n  - If motor voltage is $> 12\\,\\text{V}$: Remove jumper **OFF**, and provide external 5V to the +5V terminal.\n",
+      "safetyNotes": "Always connect the motor battery GND to Arduino GND. Never reverse motor power polarity on the terminal blocks.",
+      "needsHumanVerification": false
+    },
+    "ic-lm358": {
+      "id": "ic-lm358",
+      "name": "LM358 Dual Operational Amplifier",
+      "aliases": [
+        "Dual Op-Amp",
+        "Comparator IC"
+      ],
+      "category": "ic",
+      "package": "DIP-8 Dual In-Line",
+      "description": "Industry-standard dual operational amplifier designed for single-supply operation (3V to 32V) with ground-sensing input stages. Used for analog sensor pre-amplification, active filtering, and voltage comparison.",
+      "symbol": "U",
+      "pinout": [
+        {
+          "pin": 1,
+          "name": "1OUT",
+          "function": "output",
+          "description": "Output of Op-Amp 1",
+          "isShared": false
+        },
+        {
+          "pin": 2,
+          "name": "1IN-",
+          "function": "input",
+          "description": "Inverting input of Op-Amp 1",
+          "isShared": false
+        },
+        {
+          "pin": 3,
+          "name": "1IN+",
+          "function": "input",
+          "description": "Non-inverting input of Op-Amp 1",
+          "isShared": false
+        },
+        {
+          "pin": 4,
+          "name": "GND",
+          "function": "ground",
+          "description": "Negative supply / Circuit Ground (0V)",
+          "isShared": false
+        },
+        {
+          "pin": 5,
+          "name": "2IN+",
+          "function": "input",
+          "description": "Non-inverting input of Op-Amp 2",
+          "isShared": false
+        },
+        {
+          "pin": 6,
+          "name": "2IN-",
+          "function": "input",
+          "description": "Inverting input of Op-Amp 2",
+          "isShared": false
+        },
+        {
+          "pin": 7,
+          "name": "2OUT",
+          "function": "output",
+          "description": "Output of Op-Amp 2",
+          "isShared": false
+        },
+        {
+          "pin": 8,
+          "name": "VCC",
+          "function": "power",
+          "description": "Positive supply voltage (+3V to +32V)",
+          "isShared": false
+        }
+      ],
+      "absoluteMaxRatings": {
+        "voltage_V": 32,
+        "current_mA": 40,
+        "power_mW": 530,
+        "tempMax_C": 70,
+        "notes": "Differential input voltage limit is 32V. Output short-circuit to ground is continuous."
+      },
+      "typicalOperatingConditions": {
+        "voltage_V": "5V - 15V",
+        "current_mA": "0.7mA (Quiescent per amplifier)"
+      },
+      "protocols": [
+        "analog"
+      ],
+      "commonMistakes": [
+        "Expecting rail-to-rail output swing on VCC side; standard LM358 output can only swing up to $\\approx VCC - 1.5\\,\\text{V}$. On a 5V supply, max output is $\\approx 3.5\\,\\text{V}$.",
+        "Leaving the unused op-amp inputs floating; causes oscillations and increased current draw. Wire unused op-amp as a voltage follower connected to ground or mid-rail."
+      ],
+      "cheatSheetMarkdown": "### LM358 Basic Op-Amp Configurations\n- **Non-Inverting Amplifier:** Gain $A_v = 1 + \\frac{R_f}{R_{in}}$, $V_{out} = V_{in} \\times \\left(1 + \\frac{R_f}{R_{in}}\\right)$.\n- **Inverting Amplifier:** Gain $A_v = -\\frac{R_f}{R_{in}}$, $V_{out} = -V_{in} \\times \\frac{R_f}{R_{in}}$.\n- **Voltage Follower (Buffer):** Connect Pin 1 (1OUT) directly to Pin 2 (1IN-). Input on Pin 3 (1IN+). Provides high input impedance ($> 10\\,\\text{M}\\Omega$) and low output impedance.\n- **Comparator:** Connect sensor signal to Pin 3 and reference threshold to Pin 2. Output saturates to HIGH or LOW.\n",
+      "safetyNotes": "LM358 input common-mode range includes Ground (0V), making it well-suited for single-supply 5V Arduino circuits.",
+      "needsHumanVerification": false
+    },
+    "ic-ne555": {
+      "id": "ic-ne555",
+      "name": "NE555 Precision Timer IC",
+      "aliases": [
+        "555 Timer",
+        "Astable Multivibrator",
+        "Monostable Pulse Generator"
+      ],
+      "category": "ic",
+      "package": "DIP-8 Dual In-Line",
+      "description": "Legendary 8-pin mixed-signal timer IC configured in astable mode (free-running square wave oscillator) or monostable mode (one-shot pulse generator). Can source or sink up to 200mA directly.",
+      "symbol": "U",
+      "pinout": [
+        {
+          "pin": 1,
+          "name": "GND",
+          "function": "ground",
+          "description": "Ground reference (0V)",
+          "isShared": false
+        },
+        {
+          "pin": 2,
+          "name": "TRIG",
+          "function": "input",
+          "description": "Trigger input, starts timing cycle when voltage drops below 1/3 VCC",
+          "isShared": false
+        },
+        {
+          "pin": 3,
+          "name": "OUT",
+          "function": "output",
+          "description": "High-current push-pull output stage (sources or sinks up to 200 mA)",
+          "isShared": false
+        },
+        {
+          "pin": 4,
+          "name": "RESET",
+          "function": "control",
+          "description": "Active-LOW reset; connect directly to VCC if unused",
+          "isShared": false
+        },
+        {
+          "pin": 5,
+          "name": "CTRL",
+          "function": "analog_in",
+          "description": "Control voltage (2/3 VCC); bypass with 10nF capacitor to GND for noise immunity",
+          "isShared": false
+        },
+        {
+          "pin": 6,
+          "name": "THRES",
+          "function": "input",
+          "description": "Threshold input, resets flip-flop when voltage rises above 2/3 VCC",
+          "isShared": false
+        },
+        {
+          "pin": 7,
+          "name": "DISCH",
+          "function": "control",
+          "description": "Open-collector discharge pin connected to internal NPN transistor",
+          "isShared": false
+        },
+        {
+          "pin": 8,
+          "name": "VCC",
+          "function": "power",
+          "description": "Positive supply voltage (+4.5V to +16V DC)",
+          "isShared": false
+        }
+      ],
+      "absoluteMaxRatings": {
+        "voltage_V": 18,
+        "current_mA": 225,
+        "power_mW": 600,
+        "tempMax_C": 70,
+        "notes": "Maximum supply voltage VCC is 18V. Output sink/source limit is 200 mA."
+      },
+      "typicalOperatingConditions": {
+        "voltage_V": "4.5V - 15V",
+        "current_mA": "3mA - 15mA (Quiescent)",
+        "frequency": "0.1 Hz - 100 kHz"
+      },
+      "protocols": [
+        "none"
+      ],
+      "commonMistakes": [
+        "Leaving Pin 4 (RESET) floating; random electro-static noise will reset the internal flip-flop erratically. Always tie Pin 4 to Pin 8 (VCC) if not actively driving it.",
+        "Omitting the 100nF decoupling capacitor across Pin 1 and Pin 8; during output switching, the push-pull output creates a transient supply rail glitch."
+      ],
+      "cheatSheetMarkdown": "### NE555 Astable Mode Formulas\n- **Charge Time (HIGH):** $t_{\\text{high}} = 0.693 \\times (R_A + R_B) \\times C$\n- **Discharge Time (LOW):** $t_{\\text{low}} = 0.693 \\times R_B \\times C$\n- **Total Period:** $T = t_{\\text{high}} + t_{\\text{low}} = 0.693 \\times (R_A + 2R_B) \\times C$\n- **Frequency:** $f = \\frac{1.44}{(R_A + 2R_B) \\times C}$\n- **Duty Cycle:** $D = \\frac{R_A + R_B}{R_A + 2R_B} \\times 100\\%$ (Standard circuit is always $> 50\\%$).\n",
+      "safetyNotes": "Standard bipolar NE555 draws a 300mA shoot-through current pulse for ~100ns when switching. Always place a decoupling capacitor right across Pins 1 and 8.",
+      "needsHumanVerification": false
+    },
+    "led-5mm": {
+      "id": "led-5mm",
+      "name": "5mm Standard Diffused LED",
+      "aliases": [
+        "Light Emitting Diode",
+        "Indicator LED"
+      ],
+      "category": "semiconductor",
+      "package": "5mm Round Through-Hole (T-1 3/4)",
+      "description": "Semiconductor light source that emits photons when forward biased above its bandgap threshold. Requires a series resistor to prevent thermal runaway.",
+      "symbol": "LED",
+      "pinout": [
+        {
+          "pin": 1,
+          "name": "Anode (+)",
+          "function": "passive",
+          "description": "Longer lead, connected to positive rail via resistor",
+          "isShared": false
+        },
+        {
+          "pin": 2,
+          "name": "Cathode (-)",
+          "function": "passive",
+          "description": "Shorter lead, aligned with flat notch on epoxy lens edge",
+          "isShared": false
+        }
+      ],
+      "absoluteMaxRatings": {
+        "voltage_V": 5,
+        "current_mA": 30,
+        "power_mW": 100,
+        "tempMax_C": 85,
+        "notes": "Maximum continuous DC forward current is 25-30 mA. Peak reverse breakdown voltage is only 5V."
+      },
+      "typicalOperatingConditions": {
+        "voltage_V": "1.8V - 3.3V (Color Dependent)",
+        "current_mA": "10mA - 20mA"
+      },
+      "protocols": [
+        "none"
+      ],
+      "commonMistakes": [
+        "Connecting directly across a 5V or 9V battery without a series current-limiting resistor, resulting in instantaneous burnout within 50 milliseconds.",
+        "Reversing anode and cathode leads."
+      ],
+      "cheatSheetMarkdown": "### 5mm LED Quick Reference\n- **Color Forward Voltages ($V_f$ at $20\\,\\text{mA}$):**\n  - Red: $\\approx 1.8 - 2.0\\,\\text{V}$\n  - Yellow / Orange: $\\approx 2.0 - 2.2\\,\\text{V}$\n  - Green: $\\approx 2.1 - 2.4\\,\\text{V}$\n  - Blue / Pure White: $\\approx 3.0 - 3.4\\,\\text{V}$\n- **Sizing Formula:** $R = \\frac{V_{\\text{source}} - V_f}{I_f}$\n  - For 5V Arduino driving Red LED ($2.0\\,\\text{V}$, $15\\,\\text{mA}$): $R = \\frac{5 - 2}{0.015} = 200\\,\\Omega \\to$ Use **$220\\,\\Omega$** standard E12 resistor.\n",
+      "safetyNotes": "Never connect an LED to a power source without a current-limiting resistor. The exponential diode I-V curve causes near-infinite current surge at forward threshold.",
+      "needsHumanVerification": false
+    },
+    "mcu-atmega328p": {
+      "id": "mcu-atmega328p",
+      "name": "ATmega328P / Arduino Uno R3 Microcontroller Board",
+      "aliases": [
+        "Arduino Uno",
+        "ATmega328",
+        "8-bit AVR Microcontroller"
+      ],
+      "category": "microcontroller",
+      "package": "DIP-28 Through-Hole IC / Arduino Uno R3 Dev Board",
+      "description": "High-performance 8-bit AVR RISC microcontroller operating at 16MHz with 32KB Flash memory, 2KB SRAM, 1KB EEPROM, 14 digital I/O pins (6 PWM channels), and 6 analog ADC inputs.",
+      "symbol": "U",
+      "pinout": [
+        {
+          "pin": 1,
+          "name": "D0 / RX",
+          "function": "uart_rx",
+          "description": "Digital Pin 0 & Hardware Serial USART Receive",
+          "isShared": false
+        },
+        {
+          "pin": 2,
+          "name": "D1 / TX",
+          "function": "uart_tx",
+          "description": "Digital Pin 1 & Hardware Serial USART Transmit",
+          "isShared": false
+        },
+        {
+          "pin": 3,
+          "name": "D2 / INT0",
+          "function": "gpio",
+          "description": "Digital Pin 2 & External Interrupt 0",
+          "isShared": false
+        },
+        {
+          "pin": 4,
+          "name": "D3 / PWM",
+          "function": "pwm",
+          "description": "Digital Pin 3 & Timer2 8-bit PWM (490 Hz)",
+          "isShared": false
+        },
+        {
+          "pin": 5,
+          "name": "D4",
+          "function": "gpio",
+          "description": "Digital Pin 4",
+          "isShared": false
+        },
+        {
+          "pin": 6,
+          "name": "D5 / PWM",
+          "function": "pwm",
+          "description": "Digital Pin 5 & Timer0 8-bit PWM (980 Hz)",
+          "isShared": false
+        },
+        {
+          "pin": 7,
+          "name": "D6 / PWM",
+          "function": "pwm",
+          "description": "Digital Pin 6 & Timer0 8-bit PWM (980 Hz)",
+          "isShared": false
+        },
+        {
+          "pin": 8,
+          "name": "D7",
+          "function": "gpio",
+          "description": "Digital Pin 7",
+          "isShared": false
+        },
+        {
+          "pin": 9,
+          "name": "D8",
+          "function": "gpio",
+          "description": "Digital Pin 8",
+          "isShared": false
+        },
+        {
+          "pin": 10,
+          "name": "D9 / PWM",
+          "function": "pwm",
+          "description": "Digital Pin 9 & Timer1 16-bit PWM (490 Hz)",
+          "isShared": false
+        },
+        {
+          "pin": 11,
+          "name": "D10 / PWM / SS",
+          "function": "spi_cs",
+          "description": "Digital Pin 10, Timer1 PWM & SPI Chip Select",
+          "isShared": false
+        },
+        {
+          "pin": 12,
+          "name": "D11 / PWM / MOSI",
+          "function": "spi_mosi",
+          "description": "Digital Pin 11, Timer2 PWM & SPI Master-Out Slave-In",
+          "isShared": false
+        },
+        {
+          "pin": 13,
+          "name": "D12 / MISO",
+          "function": "spi_miso",
+          "description": "Digital Pin 12 & SPI Master-In Slave-Out",
+          "isShared": false
+        },
+        {
+          "pin": 14,
+          "name": "D13 / SCK",
+          "function": "spi_sck",
+          "description": "Digital Pin 13, Onboard LED & SPI Clock",
+          "isShared": false
+        },
+        {
+          "pin": 15,
+          "name": "A0",
+          "function": "analog_in",
+          "description": "Analog Input Channel 0 (10-bit ADC, 0-5V)",
+          "isShared": false
+        },
+        {
+          "pin": 16,
+          "name": "A1",
+          "function": "analog_in",
+          "description": "Analog Input Channel 1",
+          "isShared": false
+        },
+        {
+          "pin": 17,
+          "name": "A2",
+          "function": "analog_in",
+          "description": "Analog Input Channel 2",
+          "isShared": false
+        },
+        {
+          "pin": 18,
+          "name": "A3",
+          "function": "analog_in",
+          "description": "Analog Input Channel 3",
+          "isShared": false
+        },
+        {
+          "pin": 19,
+          "name": "A4 / SDA",
+          "function": "i2c_sda",
+          "description": "Analog Input Channel 4 & Hardware I2C Serial Data",
+          "isShared": false
+        },
+        {
+          "pin": 20,
+          "name": "A5 / SCL",
+          "function": "i2c_scl",
+          "description": "Analog Input Channel 5 & Hardware I2C Serial Clock",
+          "isShared": false
+        },
+        {
+          "pin": 21,
+          "name": "5V",
+          "function": "power",
+          "description": "Regulated +5.0V output rail from onboard 5V regulator or USB",
+          "isShared": false
+        },
+        {
+          "pin": 22,
+          "name": "3.3V",
+          "function": "power",
+          "description": "Regulated +3.3V output rail (max 50-150 mA)",
+          "isShared": false
+        },
+        {
+          "pin": 23,
+          "name": "GND",
+          "function": "ground",
+          "description": "Common circuit ground (3 header pins available)",
+          "isShared": false
+        },
+        {
+          "pin": 24,
+          "name": "VIN",
+          "function": "power",
+          "description": "Raw DC input voltage to onboard linear regulator (7V to 12V DC)",
+          "isShared": false
+        }
+      ],
+      "absoluteMaxRatings": {
+        "voltage_V": 6,
+        "current_mA": 200,
+        "power_mW": 1000,
+        "tempMax_C": 85,
+        "notes": "Absolute maximum DC current per I/O pin is 40 mA (recommended ≤ 20 mA continuous). Total chip current through VCC/GND must not exceed 200 mA!"
+      },
+      "typicalOperatingConditions": {
+        "voltage_V": "5.0V (or 7-12V on VIN/Barrel Jack)",
+        "current_mA": "45mA (Quiescent Board Draw)",
+        "frequency": "16 MHz"
+      },
+      "protocols": [
+        "uart",
+        "i2c",
+        "spi",
+        "pwm",
+        "analog"
+      ],
+      "commonMistakes": [
+        "Exceeding the 200mA total microcontroller current limit by attempting to power multiple LEDs, relays, and servos directly from the I/O pins.",
+        "Feeding > 5.5V into any digital or analog pin; ATmega328P pins do NOT have 12V tolerance and will suffer internal silicon punch-through.",
+        "Connecting high-voltage or AC mains circuits without galvanic opto-isolation."
+      ],
+      "cheatSheetMarkdown": "### Arduino Uno Hardware Cheat Sheet\n- **Pin Current Limits:** Max $20\\,\\text{mA}$ recommended per pin. Absolute max $40\\,\\text{mA}$. Total whole-chip limit = $200\\,\\text{mA}$.\n- **Hardware Serial (UART):** Pins 0 (RX) and 1 (TX). Connected to USB-to-Serial converter. Avoid using Pins 0 and 1 for general I/O if using `Serial.print()`.\n- **Hardware I2C (Two-Wire Interface):** Pin A4 (SDA), Pin A5 (SCL). Standard 100kHz / 400kHz speed. Requires $4.7\\,\\text{k}\\Omega$ pull-ups to 5V.\n- **Hardware SPI:** Pin 11 (MOSI), Pin 12 (MISO), Pin 13 (SCK), Pin 10 (SS/CS). High speed synchronous bus (up to 8 MHz).\n- **PWM Timer Frequencies:**\n  - Pins 5 & 6 (Timer0): $\\approx 980\\,\\text{Hz}$\n  - Pins 9 & 10 (Timer1): $\\approx 490\\,\\text{Hz}$\n  - Pins 3 & 11 (Timer2): $\\approx 490\\,\\text{Hz}$\n",
+      "safetyNotes": "Power through USB (5V) or 7-12V battery on VIN/barrel jack. Never connect more than 5.5V to any GPIO pin or the 5V rail.",
+      "needsHumanVerification": false
+    },
+    "mosfet-irfz44n": {
+      "id": "mosfet-irfz44n",
+      "name": "IRFZ44N N-Channel Power MOSFET",
+      "aliases": [
+        "Power MOSFET",
+        "N-Channel FET"
+      ],
+      "category": "semiconductor",
+      "package": "TO-220AB (Metal tab is connected to Drain)",
+      "description": "High-current N-channel enhancement mode power MOSFET capable of switching up to 49A with ultra-low 17.5mΩ on-resistance (R_DS(on)). Ideal for driving high-power DC motors, heating elements, and solenoid actuators.",
+      "symbol": "M",
+      "pinout": [
+        {
+          "pin": 1,
+          "name": "Gate (G)",
+          "function": "control",
+          "description": "Voltage-controlled input (insulated by SiO2 gate oxide)",
+          "isShared": false
+        },
+        {
+          "pin": 2,
+          "name": "Drain (D)",
+          "function": "output",
+          "description": "Switched load negative return (internally bonded to metal heatsink tab)",
+          "isShared": false
+        },
+        {
+          "pin": 3,
+          "name": "Source (S)",
+          "function": "ground",
+          "description": "Connected directly to circuit ground",
+          "isShared": false
+        }
+      ],
+      "absoluteMaxRatings": {
+        "voltage_V": 55,
+        "current_mA": 49000,
+        "power_mW": 94000,
+        "tempMax_C": 175,
+        "notes": "Drain-Source breakdown V_DSS = 55V. Gate-Source breakdown V_GS = ±20V. Continuous drain current 49A at 25°C with adequate heatsink."
+      },
+      "typicalOperatingConditions": {
+        "voltage_V": "10V (Optimal Gate Drive for Minimum R_DS(on))",
+        "current_mA": "100mA - 15000mA"
+      },
+      "protocols": [
+        "none"
+      ],
+      "commonMistakes": [
+        "Driving the gate with 3.3V or 5V logic directly; standard IRFZ44N requires $V_{GS} \\ge 10\\,\\text{V}$ for full conduction! At 5V, it operates in the linear region, causing extreme thermal dissipation and overheating. Use a logic-level MOSFET (e.g. IRLZ44N) or a gate driver for 3.3V/5V MCUs.",
+        "Leaving the gate floating without a 10kΩ pull-down resistor; stray static charge will leave the MOSFET partially turned ON."
+      ],
+      "cheatSheetMarkdown": "### IRFZ44N Power MOSFET Quick Reference\n- **Pinout (TO-220 front view, metal tab in back):** Pin 1 = Gate, Pin 2 = Drain, Pin 3 = Source. Metal tab = Drain.\n- **Gate Pull-Down:** Always connect a $10\\,\\text{k}\\Omega$ resistor from Gate to Source (GND) to guarantee complete shutoff during MCU boot/reset.\n- **Gate Resistor:** Place a small $100\\,\\Omega$ resistor in series with the gate to suppress high-frequency ringing caused by gate capacitance ($C_{iss} \\approx 1470\\,\\text{pF}$).\n",
+      "safetyNotes": "The metal tab is electrically connected to the Drain pin. If mounting to a shared metal heatsink or robot chassis, use a mica/silicone insulating pad and nylon bushing to prevent shorting.",
+      "needsHumanVerification": false
+    },
+    "motor-tt-gearmotor": {
+      "id": "motor-tt-gearmotor",
+      "name": "Yellow TT DC Gearmotor (3-6V Dual Shaft)",
+      "aliases": [
+        "TT Motor",
+        "Smart Car Gearmotor",
+        "1:48 Hobby DC Gearmotor"
+      ],
+      "category": "actuator",
+      "package": "Yellow Plastic Spur Gearbox with Dual Output Shafts",
+      "description": "Standard hobby robotic propulsion motor pairing a small coreless DC brush motor with an internal 1:48 plastic spur reduction gearbox. Designed for 2WD/4WD wheeled educational mobile robots.",
+      "symbol": "M",
+      "pinout": [
+        {
+          "pin": 1,
+          "name": "Motor Terminal A",
+          "function": "passive",
+          "description": "Reversible motor power terminal",
+          "isShared": false
+        },
+        {
+          "pin": 2,
+          "name": "Motor Terminal B",
+          "function": "passive",
+          "description": "Reversible motor power terminal",
+          "isShared": false
+        }
+      ],
+      "absoluteMaxRatings": {
+        "voltage_V": 9,
+        "current_mA": 1200,
+        "notes": "Rated operating range 3V to 6V DC. Operating at 9V significantly shortens gear tooth and commutator brush lifespan."
+      },
+      "typicalOperatingConditions": {
+        "voltage_V": "4.5V - 6.0V",
+        "current_mA": "70mA (No Load), 250mA (Typical Driving), 800mA - 1000mA (Stall)"
+      },
+      "protocols": [
+        "pwm"
+      ],
+      "commonMistakes": [
+        "Driving the motor directly from an Arduino digital GPIO pin; pins can only supply 20-40mA, while this motor requires 250mA (and stalls at ~1A), destroying the microcontroller pin instantly! Always use a transistor, MOSFET, or H-bridge driver.",
+        "Soldering wires directly to the fragile copper solder tabs without strain relief, breaking the delicate commutator lead terminals.",
+        "Omitting noise suppression capacitors (e.g. 100nF ceramic across motor terminals); electrical brush arcing injects massive EMI spikes into nearby sensors and microcontrollers."
+      ],
+      "cheatSheetMarkdown": "### TT Gearmotor Specifications (at 6V DC)\n- **Gear Reduction Ratio:** 1:48\n- **No-Load Speed:** $\\approx 200 - 240\\,\\text{RPM}$ (approx $130\\,\\text{RPM}$ at $3\\,\\text{V}$)\n- **No-Load Current:** $\\approx 70\\,\\text{mA}$\n- **Stall Torque:** $\\approx 0.8\\,\\text{kg}\\cdot\\text{cm}$ ($0.078\\,\\text{N}\\cdot\\text{m}$)\n- **Stall Current:** $\\approx 800 - 1000\\,\\text{mA}$\n- **EMI Suppression:** Solder one 100nF (0.1µF) ceramic capacitor directly across the two motor terminals to suppress brush arcing noise.\n",
+      "safetyNotes": "Safe low-voltage motor (≤ 6V DC). Keep fingers, hair, and clothing clear of rotating wheel shafts and gears.",
+      "needsHumanVerification": false
+    },
+    "potentiometer-10k": {
+      "id": "potentiometer-10k",
+      "name": "10kΩ Breadboard Rotary Potentiometer",
+      "aliases": [
+        "10k Pot",
+        "Trimpot",
+        "Variable Resistor"
+      ],
+      "category": "passive",
+      "package": "3-Pin Breadboard Rotary / Trimmer",
+      "description": "Three-terminal variable resistor functioning as a manual adjustable voltage divider. The center wiper slides along a conductive carbon track between two outer fixed terminals.",
+      "symbol": "RV",
+      "pinout": [
+        {
+          "pin": 1,
+          "name": "Terminal 1",
+          "function": "passive",
+          "description": "Outer track terminal (typically connected to 5V or GND)",
+          "isShared": false
+        },
+        {
+          "pin": 2,
+          "name": "Wiper",
+          "function": "output",
+          "description": "Center adjustable contact, outputs variable voltage between Terminal 1 and 3",
+          "isShared": false
+        },
+        {
+          "pin": 3,
+          "name": "Terminal 3",
+          "function": "passive",
+          "description": "Opposite outer track terminal (connected to opposite rail)",
+          "isShared": false
+        }
+      ],
+      "absoluteMaxRatings": {
+        "voltage_V": 50,
+        "power_mW": 125,
+        "tempMax_C": 70,
+        "notes": "Rated at 0.1W (100 mW). Connecting wiper directly between power rails without a series load will burn out the wiper contact."
+      },
+      "typicalOperatingConditions": {
+        "voltage_V": "0V - 5V",
+        "current_mA": "0.1mA - 2mA"
+      },
+      "protocols": [
+        "analog"
+      ],
+      "commonMistakes": [
+        "Shorting the wiper: Connecting Terminal 1 to 5V and Wiper to GND turns the wiper into a dead short when rotated to the 5V limit, melting the internal carbon track!",
+        "Connecting wiper as an unbuffered power source for an actuator or motor; a potentiometer is a low-power signal divider, not a power regulator."
+      ],
+      "cheatSheetMarkdown": "### Potentiometer Quick Reference\n- **Voltage Divider Connection:**\n  - Pin 1 (Outer): Connect to **+5V**\n  - Pin 2 (Center Wiper): Connect to **Arduino Analog Pin (A0)**\n  - Pin 3 (Outer): Connect to **GND**\n- **Output Equation:** $V_{\\text{wiper}} = 5\\,\\text{V} \\times \\frac{R_{\\text{wiper-to-GND}}}{10\\,\\text{k}\\Omega}$\n- **Arduino Analog Read:** `int val = analogRead(A0);` returns an integer from **0 to 1023** ($0\\,\\text{V}$ to $5.0\\,\\text{V}$ with 10-bit ADC resolution $\\approx 4.88\\,\\text{mV/step}$).\n",
+      "safetyNotes": "Always connect the wiper to a high-impedance input (such as an analog ADC pin or op-amp input). Never draw large currents through the wiper.",
+      "needsHumanVerification": false
+    },
+    "regulator-7805": {
+      "id": "regulator-7805",
+      "name": "L7805 5V 1A Linear Voltage Regulator",
+      "aliases": [
+        "7805",
+        "5V Linear Regulator"
+      ],
+      "category": "power",
+      "package": "TO-220 (Center pin and metal tab are Ground)",
+      "description": "Fixed 5V positive linear voltage regulator providing up to 1.0A output with internal current limiting and thermal shutdown protection. Essential for stepping down 7-12V battery packs to a clean 5V logic rail.",
+      "symbol": "U",
+      "pinout": [
+        {
+          "pin": 1,
+          "name": "INPUT (VI)",
+          "function": "power",
+          "description": "Raw unregulated DC input voltage (+7V to +25V DC)",
+          "isShared": false
+        },
+        {
+          "pin": 2,
+          "name": "GROUND (GND)",
+          "function": "ground",
+          "description": "Common circuit ground (electrically connected to the metal heatsink tab)",
+          "isShared": false
+        },
+        {
+          "pin": 3,
+          "name": "OUTPUT (VO)",
+          "function": "output",
+          "description": "Regulated +5.0V DC output rail",
+          "isShared": false
+        }
+      ],
+      "absoluteMaxRatings": {
+        "voltage_V": 35,
+        "current_mA": 1000,
+        "power_mW": 15000,
+        "tempMax_C": 150,
+        "notes": "Maximum input voltage 35V. Minimum dropout voltage is 2.0V (requires Vin ≥ 7.0V for stable 5V output)."
+      },
+      "typicalOperatingConditions": {
+        "voltage_V": "7.5V - 12V (Input)",
+        "current_mA": "10mA - 800mA"
+      },
+      "protocols": [
+        "none"
+      ],
+      "commonMistakes": [
+        "Forgetting that linear regulators dissipate all excess voltage as heat: Ploss = (Vin - 5V) * I. Feeding 12V at 500mA causes 3.5W of heat dissipation, burning fingers without a heatsink!",
+        "Omitting the input (0.33µF) and output (0.1µF) ceramic capacitors, causing high-frequency oscillations on the output rail.",
+        "Feeding input voltage lower than 7.0V (dropout threshold), causing the regulated 5V output to sag."
+      ],
+      "cheatSheetMarkdown": "### 7805 Regulator Quick Reference\n- **Pinout (TO-220 front view with metal tab in back):** Pin 1 = Input (Vin), Pin 2 = Ground (GND), Pin 3 = Output (+5V).\n- **Capacitor Sizing:** Place a $0.33\\,\\mu\\text{F}$ capacitor on Pin 1 (Input to GND) and a $0.1\\,\\mu\\text{F}$ capacitor on Pin 3 (Output to GND).\n- **Thermal Rule of Thumb:** If power dissipation $P = (V_{in} - 5\\,\\text{V}) \\times I > 1\\,\\text{W}$, attach a heatsink or switch to an efficient buck converter.\n",
+      "safetyNotes": "The metal tab is Ground (0V), making it safe to attach to grounded metal heatsinks. The heatsink may become very hot under heavy loads (> 60°C).",
+      "needsHumanVerification": false
+    },
+    "resistor-axial": {
+      "id": "resistor-axial",
+      "name": "Resistor (1/4W Through-Hole)",
+      "aliases": [
+        "Axial Resistor",
+        "Carbon Film Resistor",
+        "Metal Film Resistor"
+      ],
+      "category": "passive",
+      "package": "Axial Through-Hole (DO-41 style)",
+      "description": "Two-terminal linear passive component that implements electrical resistance, dropping voltage and limiting current according to Ohm's Law.",
+      "symbol": "R",
+      "pinout": [
+        {
+          "pin": 1,
+          "name": "Terminal 1",
+          "function": "passive",
+          "description": "Non-polarized lead 1",
+          "isShared": false
+        },
+        {
+          "pin": 2,
+          "name": "Terminal 2",
+          "function": "passive",
+          "description": "Non-polarized lead 2",
+          "isShared": false
+        }
+      ],
+      "absoluteMaxRatings": {
+        "voltage_V": 250,
+        "power_mW": 250,
+        "tempMax_C": 155,
+        "notes": "Rated at 0.25W (250 mW) continuous at 70°C ambient. Derate power linearly above 70°C."
+      },
+      "typicalOperatingConditions": {
+        "voltage_V": "0 - 24V",
+        "current_mA": "0.1 - 20mA"
+      },
+      "protocols": [
+        "none"
+      ],
+      "commonMistakes": [
+        "Using a 1/4W resistor for high-current loads (e.g. directly in series with high power motors), causing thermal discoloration and burnout.",
+        "Misreading multiplier color bands (e.g. mistaking 10kΩ for 1kΩ or 100Ω).",
+        "Ignoring tolerance (5% gold band vs 1% brown band) in precision analog sensing dividers."
+      ],
+      "cheatSheetMarkdown": "### Resistor Quick Reference\n- **Ohm's Law:** $V = I \\times R$, $I = V / R$, $R = V / I$\n- **Power Dissipation:** $P = V \\times I = I^2 \\times R = V^2 / R$\n- **Series Resistance:** $R_{eq} = R_1 + R_2 + \\dots$\n- **Parallel Resistance:** $1/R_{eq} = 1/R_1 + 1/R_2 + \\dots$\n- **Color Code (4-band):** Band 1 = 1st digit, Band 2 = 2nd digit, Band 3 = multiplier ($10^x$), Band 4 = tolerance (Gold = ±5%, Brown = ±1%).\n",
+      "safetyNotes": "Always calculate expected power dissipation ($P = I^2 R$). Ensure operating power is $\\le 50\\%$ of rated wattage (125 mW for 1/4W resistors) for safety headroom.",
+      "needsHumanVerification": false
+    },
+    "sensor-dht11": {
+      "id": "sensor-dht11",
+      "name": "DHT11 Digital Temperature & Humidity Sensor",
+      "aliases": [
+        "Temperature Sensor",
+        "Humidity Sensor",
+        "Relative Humidity Sensor"
+      ],
+      "category": "sensor",
+      "package": "4-Pin Single In-Line (or 3-Pin Breadboard Module with Built-in Pull-Up)",
+      "description": "Basic, ultra low-cost digital composite sensor containing a resistive humidity measurement component, an NTC temperature sensor, and an 8-bit microcontroller outputting single-wire serialized digital data.",
+      "symbol": "U",
+      "pinout": [
+        {
+          "pin": 1,
+          "name": "VCC",
+          "function": "power",
+          "description": "Power supply (+3.3V to +5.5V DC)",
+          "isShared": false
+        },
+        {
+          "pin": 2,
+          "name": "DATA",
+          "function": "gpio",
+          "description": "Bi-directional single-bus serialized digital data pin",
+          "isShared": false
+        },
+        {
+          "pin": 3,
+          "name": "NC",
+          "function": "passive",
+          "description": "Not connected (present on 4-pin bare packages, omitted on 3-pin modules)",
+          "isShared": false
+        },
+        {
+          "pin": 4,
+          "name": "GND",
+          "function": "ground",
+          "description": "Circuit ground (0V)",
+          "isShared": false
+        }
+      ],
+      "absoluteMaxRatings": {
+        "voltage_V": 5.5,
+        "current_mA": 2.5,
+        "notes": "Humidity measurement range: 20-90% RH (±5% accuracy). Temperature range: 0-50°C (±2°C accuracy)."
+      },
+      "typicalOperatingConditions": {
+        "voltage_V": "3.3V - 5.0V",
+        "current_mA": "0.5mA - 1.5mA (During Conversion), 100µA (Standby)"
+      },
+      "protocols": [
+        "1-wire"
+      ],
+      "commonMistakes": [
+        "Reading the sensor faster than once every 1 to 2 seconds; sensor takes up to 1 second to update internal humidity registers, returning duplicate or corrupted checksum frames.",
+        "Omitting the 4.7kΩ - 10kΩ pull-up resistor from the DATA line to VCC on 4-pin bare packages."
+      ],
+      "cheatSheetMarkdown": "### DHT11 Single-Bus Protocol Reference\n- **Pull-Up Resistor:** Connect a $4.7\\,\\text{k}\\Omega$ to $10\\,\\text{k}\\Omega$ resistor between Pin 2 (DATA) and Pin 1 (VCC) if using a 4-pin bare package (3-pin PCB modules typically have this pre-soldered).\n- **40-Bit Data Frame Structure:**\n  - Byte 1: Humidity Integer (8 bits)\n  - Byte 2: Humidity Decimal (8 bits, 0 for DHT11)\n  - Byte 3: Temperature Integer (8 bits)\n  - Byte 4: Temperature Decimal (8 bits, 0 for DHT11)\n  - Byte 5: Checksum = Byte 1 + Byte 2 + Byte 3 + Byte 4 (lowest 8 bits)\n- **Sampling Rate:** Minimum interval between reads is **1.0 second**.\n",
+      "safetyNotes": "Operates on safe low voltages (3.3V to 5V). Do not expose sensor to condensed water or direct rain.",
+      "needsHumanVerification": false
+    },
+    "sensor-hc-sr04": {
+      "id": "sensor-hc-sr04",
+      "name": "HC-SR04 Ultrasonic Distance Sensor",
+      "aliases": [
+        "Ultrasonic Ranging Module",
+        "Sonar Sensor"
+      ],
+      "category": "sensor",
+      "package": "4-Pin PCB Module with Dual Piezo Transducers",
+      "description": "Non-contact ultrasonic distance measuring module providing 2cm to 400cm range with 3mm precision. Emits 8 cycles of 40kHz ultrasound bursts and measures the round-trip echo pulse duration.",
+      "symbol": "U",
+      "pinout": [
+        {
+          "pin": 1,
+          "name": "VCC",
+          "function": "power",
+          "description": "+5.0V DC regulated power supply",
+          "isShared": false
+        },
+        {
+          "pin": 2,
+          "name": "TRIG",
+          "function": "input",
+          "description": "Trigger input; initiate measurement with a 10µs HIGH pulse",
+          "isShared": false
+        },
+        {
+          "pin": 3,
+          "name": "ECHO",
+          "function": "output",
+          "description": "Echo output; goes HIGH for duration equal to ultrasonic travel time (5V logic)",
+          "isShared": false
+        },
+        {
+          "pin": 4,
+          "name": "GND",
+          "function": "ground",
+          "description": "Power ground (0V)",
+          "isShared": false
+        }
+      ],
+      "absoluteMaxRatings": {
+        "voltage_V": 5.5,
+        "current_mA": 20,
+        "notes": "Requires 5.0V supply for proper 40kHz transducer drive. Echo pin produces 5.0V logic (requires voltage divider when used with 3.3V microcontrollers like ESP32/Raspberry Pi)."
+      },
+      "typicalOperatingConditions": {
+        "voltage_V": "5.0V",
+        "current_mA": "15mA (Active Ranging), 2mA (Quiescent)"
+      },
+      "protocols": [
+        "digital_gpio"
+      ],
+      "commonMistakes": [
+        "Connecting the 5V Echo output directly to a 3.3V microcontroller (e.g. ESP32, Raspberry Pi Pico) without a voltage divider (e.g. 1kΩ / 2kΩ), exceeding the 3.3V pin rating.",
+        "Calling measurements too fast (< 60ms cycle); ultrasonic echoes from previous pings bounce around the room and create ghost readings.",
+        "Expecting accurate readings from sound-absorbing materials (fabrics, sponges) or shallow incident angles (> 45°)."
+      ],
+      "cheatSheetMarkdown": "### HC-SR04 Distance Calculation\n- **Operating Principle:** Speed of sound in dry air at 20°C is $\\approx 343\\,\\text{m/s} = 0.0343\\,\\text{cm/\\mu s}$.\n- **Formula:** $\\text{Distance (cm)} = \\frac{\\text{Echo Pulse Duration (\\mu s)} \\times 0.0343}{2}$\n  - Or simplified: $\\text{Distance (cm)} = \\frac{\\text{Echo Pulse Duration (\\mu s)}}{58.2}$\n  - For inches: $\\text{Distance (in)} = \\frac{\\text{Echo Pulse Duration (\\mu s)}}{148}$\n- **Arduino Code Snippet:**\n  ```cpp\n  digitalWrite(trigPin, LOW);\n  delayMicroseconds(2);\n  digitalWrite(trigPin, HIGH);\n  delayMicroseconds(10);\n  digitalWrite(trigPin, LOW);\n  long duration = pulseIn(echoPin, HIGH);\n  long distanceCm = duration * 0.0343 / 2;\n  ```\n",
+      "safetyNotes": "Sound pulses are emitted at 40 kHz, beyond human and dog hearing sensitivity. Safe for classroom experiments.",
+      "needsHumanVerification": false
+    },
+    "servo-sg90": {
+      "id": "servo-sg90",
+      "name": "SG90 9g Micro Servo Motor",
+      "aliases": [
+        "TowerPro SG90",
+        "RC Hobby Servo",
+        "180 Degree Servo"
+      ],
+      "category": "actuator",
+      "package": "9g Micro Geared Enclosure with 3-Pin DuPont Female Cable",
+      "description": "Compact 180-degree position-controlled actuator integrating a coreless DC motor, nylon gearbox, feedback potentiometer, and closed-loop error amplifier in a 9g chassis. Controlled by 50Hz PWM pulse width.",
+      "symbol": "M",
+      "pinout": [
+        {
+          "pin": 1,
+          "name": "GND",
+          "function": "ground",
+          "description": "Ground wire (Brown or Black)",
+          "isShared": false
+        },
+        {
+          "pin": 2,
+          "name": "VCC",
+          "function": "power",
+          "description": "Motor positive supply voltage (+4.8V to +6.0V DC, Red wire)",
+          "isShared": false
+        },
+        {
+          "pin": 3,
+          "name": "PWM / Signal",
+          "function": "pwm",
+          "description": "Position pulse control signal (Orange or Yellow wire)",
+          "isShared": false
+        }
+      ],
+      "absoluteMaxRatings": {
+        "voltage_V": 6,
+        "current_mA": 750,
+        "notes": "Operating voltage 4.8V to 6.0V. Stall current can reach 650-750 mA under heavy mechanical load."
+      },
+      "typicalOperatingConditions": {
+        "voltage_V": "5.0V",
+        "current_mA": "100mA - 250mA (Moving), 650mA (Stall)"
+      },
+      "protocols": [
+        "pwm"
+      ],
+      "commonMistakes": [
+        "Powering the servo directly from the Arduino 5V pin; servo motor current surges and stall currents (up to 750mA) will drop the Arduino 5V rail below brownout threshold, resetting the microcontroller continuously. Always power servos from an external 5-6V battery pack or regulator with shared ground!",
+        "Forcing the horn past 0° or 180° by hand; strips the miniature nylon gear teeth."
+      ],
+      "cheatSheetMarkdown": "### SG90 Servo Timing Quick Reference\n- **Frame Rate:** Standard 50 Hz PWM ($20\\,\\text{ms}$ repeat frame).\n- **Pulse Width Mapping:**\n  - $\\approx 544\\,\\mu\\text{s} \\to$ **0°** (Full clockwise)\n  - $\\approx 1500\\,\\mu\\text{s} \\to$ **90°** (Center / Neutral)\n  - $\\approx 2400\\,\\mu\\text{s} \\to$ **180°** (Full counter-clockwise)\n- **Arduino Code Snippet:**\n  ```cpp\n  #include <Servo.h>\n  Servo myServo;\n  void setup() {\n    myServo.attach(9); // Signal on Pin 9\n    myServo.write(90); // Move to 90 degrees\n  }\n  ```\n",
+      "safetyNotes": "Power servos from an external 5V power supply or battery pack. Connect the battery negative terminal to the Arduino GND pin (common ground reference).",
+      "needsHumanVerification": false
+    },
+    "switch-tactile-6mm": {
+      "id": "switch-tactile-6mm",
+      "name": "6mm Tactile Pushbutton Switch",
+      "aliases": [
+        "Momentary Push Button",
+        "Tact Switch",
+        "SPST Button"
+      ],
+      "category": "passive",
+      "package": "6x6mm 4-Pin Through-Hole (Breadboard Friendly)",
+      "description": "Single-pole single-throw (SPST) normally-open momentary tactile switch with internal metal snap dome, providing tactile click feedback upon actuation.",
+      "symbol": "SW",
+      "pinout": [
+        {
+          "pin": 1,
+          "name": "Terminal 1A",
+          "function": "passive",
+          "description": "Internally shorted to Pin 1B across the switch body",
+          "isShared": false
+        },
+        {
+          "pin": 2,
+          "name": "Terminal 1B",
+          "function": "passive",
+          "description": "Internally shorted to Pin 1A across the switch body",
+          "isShared": false
+        },
+        {
+          "pin": 3,
+          "name": "Terminal 2A",
+          "function": "passive",
+          "description": "Switch contact A (connected to 1A/1B only when button is pressed)",
+          "isShared": false
+        },
+        {
+          "pin": 4,
+          "name": "Terminal 2B",
+          "function": "passive",
+          "description": "Switch contact B (connected to 1A/1B only when button is pressed)",
+          "isShared": false
+        }
+      ],
+      "absoluteMaxRatings": {
+        "voltage_V": 12,
+        "current_mA": 50,
+        "power_mW": 600,
+        "tempMax_C": 70,
+        "notes": "Rated for low-current signal switching (50 mA at 12V DC). Not rated for AC mains or motor power loads."
+      },
+      "typicalOperatingConditions": {
+        "voltage_V": "3.3V - 5V",
+        "current_mA": "0.1mA - 10mA"
+      },
+      "protocols": [
+        "digital_gpio"
+      ],
+      "commonMistakes": [
+        "Misunderstanding the 4-pin internal pairs; pairs across the curved side are always connected together. Orient pins spanning the breadboard center trough.",
+        "Forgetting a pull-up or pull-down resistor; leaving the microcontroller input pin floating results in erratic false trigger reads from ambient electrical noise.",
+        "Ignoring mechanical contact bounce (5-20ms of rapid ON-OFF chatter); debounce in software with a 20-50ms timer check."
+      ],
+      "cheatSheetMarkdown": "### Tactile Switch Wiring Best Practice\n- **Internal Connection Rule:** Pins on the same long side are permanently bridged inside the plastic housing. The switch only closes the circuit between opposite sides when pressed down.\n- **Recommended Arduino Wiring (Active LOW):**\n  - Connect one side of the button to an Arduino digital pin (e.g. Pin 2).\n  - Connect the opposite side directly to **GND**.\n  - In Arduino C++, enable the internal pull-up resistor: `pinMode(2, INPUT_PULLUP);`.\n  - Reading logic: `digitalRead(2) == LOW` means the button is **pressed**. No external resistor required!\n",
+      "safetyNotes": "Safe for low-voltage circuits. Do not switch high currents (> 50mA) directly through tactile switches.",
+      "needsHumanVerification": false
+    },
+    "transistor-2n2222": {
+      "id": "transistor-2n2222",
+      "name": "2N2222 / PN2222 NPN Bipolar Junction Transistor",
+      "aliases": [
+        "2N2222A",
+        "PN2222A",
+        "NPN Switching Transistor"
+      ],
+      "category": "semiconductor",
+      "package": "TO-92 Plastic (Flat side facing front: E-B-C)",
+      "description": "Ubiquitous NPN bipolar junction transistor for low-side switching and linear amplification. Controlled by small base current to switch larger collector-emitter currents.",
+      "symbol": "Q",
+      "pinout": [
+        {
+          "pin": 1,
+          "name": "Emitter (E)",
+          "function": "ground",
+          "description": "Connected to circuit ground in low-side switch",
+          "isShared": false
+        },
+        {
+          "pin": 2,
+          "name": "Base (B)",
+          "function": "control",
+          "description": "Control terminal, requires a current-limiting series resistor",
+          "isShared": false
+        },
+        {
+          "pin": 3,
+          "name": "Collector (C)",
+          "function": "output",
+          "description": "Connected to load ground return",
+          "isShared": false
+        }
+      ],
+      "absoluteMaxRatings": {
+        "voltage_V": 40,
+        "current_mA": 800,
+        "power_mW": 625,
+        "tempMax_C": 150,
+        "notes": "Collector-Emitter breakdown V_CEO = 40V. Maximum continuous collector current I_C = 800 mA."
+      },
+      "typicalOperatingConditions": {
+        "voltage_V": "0.2V (V_CE Saturation), 0.7V (V_BE Forward)",
+        "current_mA": "50mA - 500mA"
+      },
+      "protocols": [
+        "none"
+      ],
+      "commonMistakes": [
+        "Connecting microcontroller GPIO directly to Base pin without a series base resistor; forward biased B-E diode ($V_{BE} \\approx 0.7V$) creates a short on the GPIO pin!",
+        "Swapping Emitter and Collector pins due to differing TO-18 (metal can) vs TO-92 (plastic) pinouts."
+      ],
+      "cheatSheetMarkdown": "### 2N2222 NPN Switch Quick Reference\n- **Pinout (TO-92 flat face facing you):** Pin 1 = Emitter, Pin 2 = Base, Pin 3 = Collector.\n- **Saturation Rule (Full ON):** To ensure hard saturation ($V_{CE} \\approx 0.1 - 0.2\\,\\text{V}$), provide base overdrive ratio $I_B \\approx I_C / 10$ to $I_C / 20$.\n- **Base Resistor Sizing:** $R_B = \\frac{V_{\\text{GPIO}} - 0.7\\,\\text{V}}{I_B}$.\n  - Example for 5V Arduino switching 100mA relay ($I_B = 5\\,\\text{mA}$): $R_B = \\frac{5 - 0.7}{0.005} = 860\\,\\Omega \\to$ Use **$1\\,\\text{k}\\Omega$**.\n",
+      "safetyNotes": "Always include a base resistor ($1\\,\\text{k}\\Omega$ typical) to protect microcontroller output pins from overcurrent. When switching inductive loads (motors/relays), always install a flyback diode.",
+      "needsHumanVerification": false
+    },
+    "transistor-2n3906": {
+      "id": "transistor-2n3906",
+      "name": "2N3906 PNP Bipolar Junction Transistor",
+      "aliases": [
+        "3906 Transistor",
+        "PNP High-Side Switch"
+      ],
+      "category": "semiconductor",
+      "package": "TO-92 Plastic (Flat side facing front: E-B-C)",
+      "description": "Standard PNP bipolar junction transistor for high-side switching and complementary push-pull driver stages. Turns ON when base is pulled lower than emitter by 0.7V.",
+      "symbol": "Q",
+      "pinout": [
+        {
+          "pin": 1,
+          "name": "Emitter (E)",
+          "function": "power",
+          "description": "Connected to positive supply rail in high-side switch",
+          "isShared": false
+        },
+        {
+          "pin": 2,
+          "name": "Base (B)",
+          "function": "control",
+          "description": "Control terminal, pulled LOW to ground to activate",
+          "isShared": false
+        },
+        {
+          "pin": 3,
+          "name": "Collector (C)",
+          "function": "output",
+          "description": "Connected to load positive terminal",
+          "isShared": false
+        }
+      ],
+      "absoluteMaxRatings": {
+        "voltage_V": 40,
+        "current_mA": 200,
+        "power_mW": 625,
+        "tempMax_C": 150,
+        "notes": "Collector-Emitter breakdown V_CEO = -40V. Maximum continuous collector current I_C = 200 mA."
+      },
+      "typicalOperatingConditions": {
+        "voltage_V": "3.3V - 12V",
+        "current_mA": "1mA - 100mA"
+      },
+      "protocols": [
+        "none"
+      ],
+      "commonMistakes": [
+        "Attempting to switch a 12V supply with a 5V microcontroller directly; when GPIO is HIGH (5V), $V_{EB} = 12 - 5 = 7\\,\\text{V}$, leaving the transistor permanently turned ON and potentially back-powering the 5V MCU!",
+        "Omitting base pull-up resistor to positive rail to keep switch reliably OFF during boot."
+      ],
+      "cheatSheetMarkdown": "### 2N3906 PNP High-Side Quick Reference\n- **Pinout (TO-92 flat face facing you):** Pin 1 = Emitter (to VCC), Pin 2 = Base (control via resistor), Pin 3 = Collector (out to load).\n- **Switching Logic:**\n  - Base pulled to $V_{\\text{emitter}}$ ($V_{BE} = 0\\,\\text{V}$) $\\to$ **OFF** (open circuit).\n  - Base pulled LOW ($V_B \\le V_{\\text{emitter}} - 0.7\\,\\text{V}$) $\\to$ **ON** (current conducts from Emitter to Collector).\n",
+      "safetyNotes": "If supply rail voltage is higher than MCU GPIO voltage, use an intermediate NPN transistor to pull the PNP base down safely.",
+      "needsHumanVerification": false
     }
   }
 }

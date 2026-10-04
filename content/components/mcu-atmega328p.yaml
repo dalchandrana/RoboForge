@@ -1,0 +1,139 @@
+id: mcu-atmega328p
+name: ATmega328P / Arduino Uno R3 Microcontroller Board
+aliases:
+  - Arduino Uno
+  - ATmega328
+  - 8-bit AVR Microcontroller
+category: microcontroller
+package: DIP-28 Through-Hole IC / Arduino Uno R3 Dev Board
+description: High-performance 8-bit AVR RISC microcontroller operating at 16MHz with 32KB Flash memory, 2KB SRAM, 1KB EEPROM, 14 digital I/O pins (6 PWM channels), and 6 analog ADC inputs.
+symbol: U
+pinout:
+  - pin: 1
+    name: D0 / RX
+    function: uart_rx
+    description: Digital Pin 0 & Hardware Serial USART Receive
+  - pin: 2
+    name: D1 / TX
+    function: uart_tx
+    description: Digital Pin 1 & Hardware Serial USART Transmit
+  - pin: 3
+    name: D2 / INT0
+    function: gpio
+    description: Digital Pin 2 & External Interrupt 0
+  - pin: 4
+    name: D3 / PWM
+    function: pwm
+    description: Digital Pin 3 & Timer2 8-bit PWM (490 Hz)
+  - pin: 5
+    name: D4
+    function: gpio
+    description: Digital Pin 4
+  - pin: 6
+    name: D5 / PWM
+    function: pwm
+    description: Digital Pin 5 & Timer0 8-bit PWM (980 Hz)
+  - pin: 7
+    name: D6 / PWM
+    function: pwm
+    description: Digital Pin 6 & Timer0 8-bit PWM (980 Hz)
+  - pin: 8
+    name: D7
+    function: gpio
+    description: Digital Pin 7
+  - pin: 9
+    name: D8
+    function: gpio
+    description: Digital Pin 8
+  - pin: 10
+    name: D9 / PWM
+    function: pwm
+    description: Digital Pin 9 & Timer1 16-bit PWM (490 Hz)
+  - pin: 11
+    name: D10 / PWM / SS
+    function: spi_cs
+    description: Digital Pin 10, Timer1 PWM & SPI Chip Select
+  - pin: 12
+    name: D11 / PWM / MOSI
+    function: spi_mosi
+    description: Digital Pin 11, Timer2 PWM & SPI Master-Out Slave-In
+  - pin: 13
+    name: D12 / MISO
+    function: spi_miso
+    description: Digital Pin 12 & SPI Master-In Slave-Out
+  - pin: 14
+    name: D13 / SCK
+    function: spi_sck
+    description: Digital Pin 13, Onboard LED & SPI Clock
+  - pin: 15
+    name: A0
+    function: analog_in
+    description: Analog Input Channel 0 (10-bit ADC, 0-5V)
+  - pin: 16
+    name: A1
+    function: analog_in
+    description: Analog Input Channel 1
+  - pin: 17
+    name: A2
+    function: analog_in
+    description: Analog Input Channel 2
+  - pin: 18
+    name: A3
+    function: analog_in
+    description: Analog Input Channel 3
+  - pin: 19
+    name: A4 / SDA
+    function: i2c_sda
+    description: Analog Input Channel 4 & Hardware I2C Serial Data
+  - pin: 20
+    name: A5 / SCL
+    function: i2c_scl
+    description: Analog Input Channel 5 & Hardware I2C Serial Clock
+  - pin: 21
+    name: 5V
+    function: power
+    description: Regulated +5.0V output rail from onboard 5V regulator or USB
+  - pin: 22
+    name: 3.3V
+    function: power
+    description: Regulated +3.3V output rail (max 50-150 mA)
+  - pin: 23
+    name: GND
+    function: ground
+    description: Common circuit ground (3 header pins available)
+  - pin: 24
+    name: VIN
+    function: power
+    description: Raw DC input voltage to onboard linear regulator (7V to 12V DC)
+absoluteMaxRatings:
+  voltage_V: 6
+  current_mA: 200
+  power_mW: 1000
+  tempMax_C: 85
+  notes: Absolute maximum DC current per I/O pin is 40 mA (recommended ≤ 20 mA continuous). Total chip current through VCC/GND must not exceed 200 mA!
+typicalOperatingConditions:
+  voltage_V: 5.0V (or 7-12V on VIN/Barrel Jack)
+  current_mA: 45mA (Quiescent Board Draw)
+  frequency: 16 MHz
+protocols:
+  - uart
+  - i2c
+  - spi
+  - pwm
+  - analog
+commonMistakes:
+  - Exceeding the 200mA total microcontroller current limit by attempting to power multiple LEDs, relays, and servos directly from the I/O pins.
+  - Feeding > 5.5V into any digital or analog pin; ATmega328P pins do NOT have 12V tolerance and will suffer internal silicon punch-through.
+  - Connecting high-voltage or AC mains circuits without galvanic opto-isolation.
+cheatSheetMarkdown: |
+  ### Arduino Uno Hardware Cheat Sheet
+  - **Pin Current Limits:** Max $20\,\text{mA}$ recommended per pin. Absolute max $40\,\text{mA}$. Total whole-chip limit = $200\,\text{mA}$.
+  - **Hardware Serial (UART):** Pins 0 (RX) and 1 (TX). Connected to USB-to-Serial converter. Avoid using Pins 0 and 1 for general I/O if using `Serial.print()`.
+  - **Hardware I2C (Two-Wire Interface):** Pin A4 (SDA), Pin A5 (SCL). Standard 100kHz / 400kHz speed. Requires $4.7\,\text{k}\Omega$ pull-ups to 5V.
+  - **Hardware SPI:** Pin 11 (MOSI), Pin 12 (MISO), Pin 13 (SCK), Pin 10 (SS/CS). High speed synchronous bus (up to 8 MHz).
+  - **PWM Timer Frequencies:**
+    - Pins 5 & 6 (Timer0): $\approx 980\,\text{Hz}$
+    - Pins 9 & 10 (Timer1): $\approx 490\,\text{Hz}$
+    - Pins 3 & 11 (Timer2): $\approx 490\,\text{Hz}$
+safetyNotes: Power through USB (5V) or 7-12V battery on VIN/barrel jack. Never connect more than 5.5V to any GPIO pin or the 5V rail.
+needsHumanVerification: false

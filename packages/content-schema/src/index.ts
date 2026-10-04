@@ -156,6 +156,81 @@ export const ProjectFrontmatterSchema = z.object({
 });
 export type ProjectFrontmatter = z.infer<typeof ProjectFrontmatterSchema>;
 
+// Component Library Schema
+export const PinFunctionSchema = z.enum([
+  'power',
+  'ground',
+  'gpio',
+  'analog_in',
+  'pwm',
+  'i2c_sda',
+  'i2c_scl',
+  'spi_mosi',
+  'spi_miso',
+  'spi_sck',
+  'spi_cs',
+  'uart_tx',
+  'uart_rx',
+  'passive',
+  'control',
+  'output',
+  'input',
+]);
+export type PinFunction = z.infer<typeof PinFunctionSchema>;
+
+export const ComponentPinSchema = z.object({
+  pin: z.number().int().positive(),
+  name: z.string().min(1),
+  function: PinFunctionSchema,
+  description: z.string(),
+  isShared: z.boolean().default(false),
+});
+export type ComponentPin = z.infer<typeof ComponentPinSchema>;
+
+export const AbsoluteMaxRatingsSchema = z.object({
+  voltage_V: z.number().optional(),
+  current_mA: z.number().optional(),
+  power_mW: z.number().optional(),
+  tempMax_C: z.number().optional(),
+  notes: z.string().optional(),
+});
+export type AbsoluteMaxRatings = z.infer<typeof AbsoluteMaxRatingsSchema>;
+
+export const ComponentSchema = z.object({
+  id: z.string().regex(/^[a-z0-9-]+$/),
+  name: z.string().min(1),
+  aliases: z.array(z.string()).default([]),
+  category: z.enum([
+    'passive',
+    'semiconductor',
+    'ic',
+    'sensor',
+    'actuator',
+    'power',
+    'microcontroller',
+  ]),
+  package: z.string().min(1),
+  description: z.string().min(1),
+  symbol: z.string().default(''),
+  pinout: z.array(ComponentPinSchema),
+  absoluteMaxRatings: AbsoluteMaxRatingsSchema,
+  typicalOperatingConditions: z
+    .object({
+      voltage_V: z.string().optional(),
+      current_mA: z.string().optional(),
+      frequency: z.string().optional(),
+    })
+    .optional(),
+  protocols: z
+    .array(z.enum(['none', 'analog', 'digital_gpio', 'pwm', 'i2c', 'spi', 'uart', '1-wire']))
+    .default([]),
+  commonMistakes: z.array(z.string()).min(1),
+  cheatSheetMarkdown: z.string().min(1),
+  safetyNotes: z.string().optional(),
+  needsHumanVerification: z.boolean().default(false),
+});
+export type Component = z.infer<typeof ComponentSchema>;
+
 // Validation functions
 export function validateLessonFrontmatter(data: unknown): LessonFrontmatter {
   return LessonFrontmatterSchema.parse(data);
@@ -175,4 +250,12 @@ export function validateModule(data: unknown): Module {
 
 export function validatePath(data: unknown): Path {
   return PathSchema.parse(data);
+}
+
+export function validateProjectFrontmatter(data: unknown): ProjectFrontmatter {
+  return ProjectFrontmatterSchema.parse(data);
+}
+
+export function validateComponent(data: unknown): Component {
+  return ComponentSchema.parse(data);
 }

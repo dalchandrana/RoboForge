@@ -1,0 +1,42 @@
+id: motor-tt-gearmotor
+name: Yellow TT DC Gearmotor (3-6V Dual Shaft)
+aliases:
+  - TT Motor
+  - Smart Car Gearmotor
+  - 1:48 Hobby DC Gearmotor
+category: actuator
+package: Yellow Plastic Spur Gearbox with Dual Output Shafts
+description: Standard hobby robotic propulsion motor pairing a small coreless DC brush motor with an internal 1:48 plastic spur reduction gearbox. Designed for 2WD/4WD wheeled educational mobile robots.
+symbol: M
+pinout:
+  - pin: 1
+    name: Motor Terminal A
+    function: passive
+    description: Reversible motor power terminal
+  - pin: 2
+    name: Motor Terminal B
+    function: passive
+    description: Reversible motor power terminal
+absoluteMaxRatings:
+  voltage_V: 9
+  current_mA: 1200
+  notes: Rated operating range 3V to 6V DC. Operating at 9V significantly shortens gear tooth and commutator brush lifespan.
+typicalOperatingConditions:
+  voltage_V: 4.5V - 6.0V
+  current_mA: 70mA (No Load), 250mA (Typical Driving), 800mA - 1000mA (Stall)
+protocols:
+  - pwm
+commonMistakes:
+  - Driving the motor directly from an Arduino digital GPIO pin; pins can only supply 20-40mA, while this motor requires 250mA (and stalls at ~1A), destroying the microcontroller pin instantly! Always use a transistor, MOSFET, or H-bridge driver.
+  - Soldering wires directly to the fragile copper solder tabs without strain relief, breaking the delicate commutator lead terminals.
+  - Omitting noise suppression capacitors (e.g. 100nF ceramic across motor terminals); electrical brush arcing injects massive EMI spikes into nearby sensors and microcontrollers.
+cheatSheetMarkdown: |
+  ### TT Gearmotor Specifications (at 6V DC)
+  - **Gear Reduction Ratio:** 1:48
+  - **No-Load Speed:** $\approx 200 - 240\,\text{RPM}$ (approx $130\,\text{RPM}$ at $3\,\text{V}$)
+  - **No-Load Current:** $\approx 70\,\text{mA}$
+  - **Stall Torque:** $\approx 0.8\,\text{kg}\cdot\text{cm}$ ($0.078\,\text{N}\cdot\text{m}$)
+  - **Stall Current:** $\approx 800 - 1000\,\text{mA}$
+  - **EMI Suppression:** Solder one 100nF (0.1µF) ceramic capacitor directly across the two motor terminals to suppress brush arcing noise.
+safetyNotes: Safe low-voltage motor (≤ 6V DC). Keep fingers, hair, and clothing clear of rotating wheel shafts and gears.
+needsHumanVerification: false

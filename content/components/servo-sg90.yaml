@@ -1,0 +1,53 @@
+id: servo-sg90
+name: SG90 9g Micro Servo Motor
+aliases:
+  - TowerPro SG90
+  - RC Hobby Servo
+  - 180 Degree Servo
+category: actuator
+package: 9g Micro Geared Enclosure with 3-Pin DuPont Female Cable
+description: Compact 180-degree position-controlled actuator integrating a coreless DC motor, nylon gearbox, feedback potentiometer, and closed-loop error amplifier in a 9g chassis. Controlled by 50Hz PWM pulse width.
+symbol: M
+pinout:
+  - pin: 1
+    name: GND
+    function: ground
+    description: Ground wire (Brown or Black)
+  - pin: 2
+    name: VCC
+    function: power
+    description: Motor positive supply voltage (+4.8V to +6.0V DC, Red wire)
+  - pin: 3
+    name: PWM / Signal
+    function: pwm
+    description: Position pulse control signal (Orange or Yellow wire)
+absoluteMaxRatings:
+  voltage_V: 6
+  current_mA: 750
+  notes: Operating voltage 4.8V to 6.0V. Stall current can reach 650-750 mA under heavy mechanical load.
+typicalOperatingConditions:
+  voltage_V: 5.0V
+  current_mA: 100mA - 250mA (Moving), 650mA (Stall)
+protocols:
+  - pwm
+commonMistakes:
+  - Powering the servo directly from the Arduino 5V pin; servo motor current surges and stall currents (up to 750mA) will drop the Arduino 5V rail below brownout threshold, resetting the microcontroller continuously. Always power servos from an external 5-6V battery pack or regulator with shared ground!
+  - Forcing the horn past 0° or 180° by hand; strips the miniature nylon gear teeth.
+cheatSheetMarkdown: |
+  ### SG90 Servo Timing Quick Reference
+  - **Frame Rate:** Standard 50 Hz PWM ($20\,\text{ms}$ repeat frame).
+  - **Pulse Width Mapping:**
+    - $\approx 544\,\mu\text{s} \to$ **0°** (Full clockwise)
+    - $\approx 1500\,\mu\text{s} \to$ **90°** (Center / Neutral)
+    - $\approx 2400\,\mu\text{s} \to$ **180°** (Full counter-clockwise)
+  - **Arduino Code Snippet:**
+    ```cpp
+    #include <Servo.h>
+    Servo myServo;
+    void setup() {
+      myServo.attach(9); // Signal on Pin 9
+      myServo.write(90); // Move to 90 degrees
+    }
+    ```
+safetyNotes: Power servos from an external 5V power supply or battery pack. Connect the battery negative terminal to the Arduino GND pin (common ground reference).
+needsHumanVerification: false

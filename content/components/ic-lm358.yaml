@@ -1,0 +1,64 @@
+id: ic-lm358
+name: LM358 Dual Operational Amplifier
+aliases:
+  - Dual Op-Amp
+  - Comparator IC
+category: ic
+package: DIP-8 Dual In-Line
+description: Industry-standard dual operational amplifier designed for single-supply operation (3V to 32V) with ground-sensing input stages. Used for analog sensor pre-amplification, active filtering, and voltage comparison.
+symbol: U
+pinout:
+  - pin: 1
+    name: 1OUT
+    function: output
+    description: Output of Op-Amp 1
+  - pin: 2
+    name: 1IN-
+    function: input
+    description: Inverting input of Op-Amp 1
+  - pin: 3
+    name: 1IN+
+    function: input
+    description: Non-inverting input of Op-Amp 1
+  - pin: 4
+    name: GND
+    function: ground
+    description: Negative supply / Circuit Ground (0V)
+  - pin: 5
+    name: 2IN+
+    function: input
+    description: Non-inverting input of Op-Amp 2
+  - pin: 6
+    name: 2IN-
+    function: input
+    description: Inverting input of Op-Amp 2
+  - pin: 7
+    name: 2OUT
+    function: output
+    description: Output of Op-Amp 2
+  - pin: 8
+    name: VCC
+    function: power
+    description: Positive supply voltage (+3V to +32V)
+absoluteMaxRatings:
+  voltage_V: 32
+  current_mA: 40
+  power_mW: 530
+  tempMax_C: 70
+  notes: Differential input voltage limit is 32V. Output short-circuit to ground is continuous.
+typicalOperatingConditions:
+  voltage_V: 5V - 15V
+  current_mA: 0.7mA (Quiescent per amplifier)
+protocols:
+  - analog
+commonMistakes:
+  - Expecting rail-to-rail output swing on VCC side; standard LM358 output can only swing up to $\approx VCC - 1.5\,\text{V}$. On a 5V supply, max output is $\approx 3.5\,\text{V}$.
+  - Leaving the unused op-amp inputs floating; causes oscillations and increased current draw. Wire unused op-amp as a voltage follower connected to ground or mid-rail.
+cheatSheetMarkdown: |
+  ### LM358 Basic Op-Amp Configurations
+  - **Non-Inverting Amplifier:** Gain $A_v = 1 + \frac{R_f}{R_{in}}$, $V_{out} = V_{in} \times \left(1 + \frac{R_f}{R_{in}}\right)$.
+  - **Inverting Amplifier:** Gain $A_v = -\frac{R_f}{R_{in}}$, $V_{out} = -V_{in} \times \frac{R_f}{R_{in}}$.
+  - **Voltage Follower (Buffer):** Connect Pin 1 (1OUT) directly to Pin 2 (1IN-). Input on Pin 3 (1IN+). Provides high input impedance ($> 10\,\text{M}\Omega$) and low output impedance.
+  - **Comparator:** Connect sensor signal to Pin 3 and reference threshold to Pin 2. Output saturates to HIGH or LOW.
+safetyNotes: LM358 input common-mode range includes Ground (0V), making it well-suited for single-supply 5V Arduino circuits.
+needsHumanVerification: false

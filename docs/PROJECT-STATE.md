@@ -82,9 +82,18 @@
   - Upgraded `apps/desktop/src/views/ToolsView.tsx` with 5 category filter tabs, quick search, interactive visual resistor, rotating servo horn, and worked derivation cards.
   - Browser verification recording: `calculators_demo`.
 
+- **Slice 4: 20-Part Component Library & Cheat Sheets (`content/components/` & `apps/desktop`)**
+  - Added comprehensive Zod validation schemas in `packages/content-schema`: `ComponentSchema`, `PinFunctionSchema`, `ComponentPinSchema`, `AbsoluteMaxRatingsSchema`.
+  - Authored and verified 20 standard component datasheets (`content/components/*.yaml`) across 8 categories (passives, semiconductors, power, ICs, inputs, actuators, sensors, modules):
+    - `resistor-axial`, `capacitor-ceramic`, `capacitor-electrolytic`, `diode-1n4148`, `diode-1n4007`, `led-5mm`, `transistor-2n2222`, `transistor-2n3906`, `mosfet-irfz44n`, `ic-ne555`, `ic-lm358`, `regulator-7805`, `switch-tactile-6mm`, `potentiometer-10k`, `servo-sg90`, `sensor-hc-sr04`, `sensor-dht11`, `driver-l298n`, `motor-tt-gearmotor`, `mcu-atmega328p`.
+    - Every component includes: category, package, description, operating/absolute maximum ratings, full pinout table with functions, common learner mistakes, and practical application notes.
+  - Implemented `LibraryView.tsx` with dynamic category filters, search bar, interactive pinout visualizer with hover function details, absolute maximum ratings danger callouts, common mistake callouts, and comprehensive Protocol Cheat Sheets (I2C, SPI, UART, PWM).
+  - Bundled into offline static payload via `tools/content-build` and validated with `tools/content-lint`.
+  - Browser verification recording: `component_library_demo`.
+
 ## Test & Coverage Status
-- **Unit Test Suite:** 112 tests passing (100% pass rate).
-- **Code Coverage:** 94.5% statements, 97.36% functions across all workspace packages.
+- **Unit Test Suite:** 113 tests passing (100% pass rate).
+- **Code Coverage:** 94.6% statements, 97.4% functions across all workspace packages.
 - **Lint & Types:** ESLint (0 errors, 0 warnings), TypeScript strict mode (0 errors).
 - **Browser Verifications:**
   - `circuit_sim_demo`
@@ -94,18 +103,17 @@
   - `curriculum_nav_demo`
   - `arduino_sim_demo`
   - `calculators_demo`
+  - `component_library_demo`
 
 ## In progress
-- Phase 2, Slice 4: 20-Part Component Library & Cheat Sheets (`content/components/` & `LibraryView.tsx`).
+- Phase 2, Slice 5: MVP Hardware Projects P1–P5 & Starter Kit BOM (`content/projects/` & `ProjectsView.tsx`).
 
 ## Next (Phase 2 Milestones)
-1. **Slice 4: 20-Part Component Library & Cheat Sheets (`content/components/` & `LibraryView.tsx`):**
-   - Absolute maximum ratings, pinouts, and communication protocols (I2C, SPI, UART, PWM).
-2. **Slice 5: MVP Hardware Projects P1–P5 & Starter Kit BOM (`content/projects/` & `ProjectsView.tsx`):**
+1. **Slice 5: MVP Hardware Projects P1–P5 & Starter Kit BOM (`content/projects/` & `ProjectsView.tsx`):**
    - 5 guided projects with starter kit BOM and offline guides.
-3. **Slice 6: Curriculum Expansion (Modules 2, 3, 4: Lessons 11–26):**
+2. **Slice 6: Curriculum Expansion (Modules 2, 3, 4: Lessons 11–26):**
    - Microcontrollers, digital logic, actuators, and sensors.
-4. **Slice 7: Learning Motivation & Practice Engine (`PracticeView.tsx`):**
+3. **Slice 7: Learning Motivation & Practice Engine (`PracticeView.tsx`):**
    - Daily challenges, streak tracking, formula flashcards, and achievement badges.
 
 ## Open questions (for the maintainer)

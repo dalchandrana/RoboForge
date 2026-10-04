@@ -1,0 +1,51 @@
+id: sensor-dht11
+name: DHT11 Digital Temperature & Humidity Sensor
+aliases:
+  - Temperature Sensor
+  - Humidity Sensor
+  - Relative Humidity Sensor
+category: sensor
+package: 4-Pin Single In-Line (or 3-Pin Breadboard Module with Built-in Pull-Up)
+description: Basic, ultra low-cost digital composite sensor containing a resistive humidity measurement component, an NTC temperature sensor, and an 8-bit microcontroller outputting single-wire serialized digital data.
+symbol: U
+pinout:
+  - pin: 1
+    name: VCC
+    function: power
+    description: Power supply (+3.3V to +5.5V DC)
+  - pin: 2
+    name: DATA
+    function: gpio
+    description: Bi-directional single-bus serialized digital data pin
+  - pin: 3
+    name: NC
+    function: passive
+    description: Not connected (present on 4-pin bare packages, omitted on 3-pin modules)
+  - pin: 4
+    name: GND
+    function: ground
+    description: Circuit ground (0V)
+absoluteMaxRatings:
+  voltage_V: 5.5
+  current_mA: 2.5
+  notes: "Humidity measurement range: 20-90% RH (±5% accuracy). Temperature range: 0-50°C (±2°C accuracy)."
+typicalOperatingConditions:
+  voltage_V: 3.3V - 5.0V
+  current_mA: "0.5mA - 1.5mA (During Conversion), 100µA (Standby)"
+protocols:
+  - 1-wire
+commonMistakes:
+  - Reading the sensor faster than once every 1 to 2 seconds; sensor takes up to 1 second to update internal humidity registers, returning duplicate or corrupted checksum frames.
+  - Omitting the 4.7kΩ - 10kΩ pull-up resistor from the DATA line to VCC on 4-pin bare packages.
+cheatSheetMarkdown: |
+  ### DHT11 Single-Bus Protocol Reference
+  - **Pull-Up Resistor:** Connect a $4.7\,\text{k}\Omega$ to $10\,\text{k}\Omega$ resistor between Pin 2 (DATA) and Pin 1 (VCC) if using a 4-pin bare package (3-pin PCB modules typically have this pre-soldered).
+  - **40-Bit Data Frame Structure:**
+    - Byte 1: Humidity Integer (8 bits)
+    - Byte 2: Humidity Decimal (8 bits, 0 for DHT11)
+    - Byte 3: Temperature Integer (8 bits)
+    - Byte 4: Temperature Decimal (8 bits, 0 for DHT11)
+    - Byte 5: Checksum = Byte 1 + Byte 2 + Byte 3 + Byte 4 (lowest 8 bits)
+  - **Sampling Rate:** Minimum interval between reads is **1.0 second**.
+safetyNotes: Operates on safe low voltages (3.3V to 5V). Do not expose sensor to condensed water or direct rain.
+needsHumanVerification: false

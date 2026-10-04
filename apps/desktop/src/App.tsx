@@ -8,6 +8,7 @@ import { SettingsView } from './views/SettingsView';
 import { ToolsView } from './views/ToolsView';
 import { SimulatorView } from './views/SimulatorView';
 import { CoachView } from './views/CoachView';
+import { LibraryView } from './views/LibraryView';
 import { PlaceholderView } from './views/PlaceholderView';
 import { OnboardingWizard } from './components/onboarding/OnboardingWizard';
 
@@ -222,21 +223,7 @@ export const App: React.FC = () => {
           />
         )}
 
-        {activeTab === 'library' && (
-          <PlaceholderView
-            title="Component Library & Cheat Sheets"
-            icon="📚"
-            phase="Phase 2"
-            description="20 fundamental robotics components with SVG pinouts, typical circuits, and common mistakes."
-            features={[
-              'Pinout diagrams and absolute maximum ratings',
-              'Typical application circuits and safety warnings',
-              'Protocol cheat sheets: UART, I2C, SPI',
-              'Vendor-neutral sourcing recommendations',
-            ]}
-            onNavigateHome={() => setActiveTab('home')}
-          />
-        )}
+        {activeTab === 'library' && <LibraryView />}
 
         {activeTab === 'coach' && <CoachView />}
       </main>

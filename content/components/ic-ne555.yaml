@@ -1,0 +1,67 @@
+id: ic-ne555
+name: NE555 Precision Timer IC
+aliases:
+  - 555 Timer
+  - Astable Multivibrator
+  - Monostable Pulse Generator
+category: ic
+package: DIP-8 Dual In-Line
+description: Legendary 8-pin mixed-signal timer IC configured in astable mode (free-running square wave oscillator) or monostable mode (one-shot pulse generator). Can source or sink up to 200mA directly.
+symbol: U
+pinout:
+  - pin: 1
+    name: GND
+    function: ground
+    description: Ground reference (0V)
+  - pin: 2
+    name: TRIG
+    function: input
+    description: Trigger input, starts timing cycle when voltage drops below 1/3 VCC
+  - pin: 3
+    name: OUT
+    function: output
+    description: High-current push-pull output stage (sources or sinks up to 200 mA)
+  - pin: 4
+    name: RESET
+    function: control
+    description: Active-LOW reset; connect directly to VCC if unused
+  - pin: 5
+    name: CTRL
+    function: analog_in
+    description: Control voltage (2/3 VCC); bypass with 10nF capacitor to GND for noise immunity
+  - pin: 6
+    name: THRES
+    function: input
+    description: Threshold input, resets flip-flop when voltage rises above 2/3 VCC
+  - pin: 7
+    name: DISCH
+    function: control
+    description: Open-collector discharge pin connected to internal NPN transistor
+  - pin: 8
+    name: VCC
+    function: power
+    description: Positive supply voltage (+4.5V to +16V DC)
+absoluteMaxRatings:
+  voltage_V: 18
+  current_mA: 225
+  power_mW: 600
+  tempMax_C: 70
+  notes: Maximum supply voltage VCC is 18V. Output sink/source limit is 200 mA.
+typicalOperatingConditions:
+  voltage_V: 4.5V - 15V
+  current_mA: 3mA - 15mA (Quiescent)
+  frequency: 0.1 Hz - 100 kHz
+protocols:
+  - none
+commonMistakes:
+  - Leaving Pin 4 (RESET) floating; random electro-static noise will reset the internal flip-flop erratically. Always tie Pin 4 to Pin 8 (VCC) if not actively driving it.
+  - Omitting the 100nF decoupling capacitor across Pin 1 and Pin 8; during output switching, the push-pull output creates a transient supply rail glitch.
+cheatSheetMarkdown: |
+  ### NE555 Astable Mode Formulas
+  - **Charge Time (HIGH):** $t_{\text{high}} = 0.693 \times (R_A + R_B) \times C$
+  - **Discharge Time (LOW):** $t_{\text{low}} = 0.693 \times R_B \times C$
+  - **Total Period:** $T = t_{\text{high}} + t_{\text{low}} = 0.693 \times (R_A + 2R_B) \times C$
+  - **Frequency:** $f = \frac{1.44}{(R_A + 2R_B) \times C}$
+  - **Duty Cycle:** $D = \frac{R_A + R_B}{R_A + 2R_B} \times 100\%$ (Standard circuit is always $> 50\%$).
+safetyNotes: Standard bipolar NE555 draws a 300mA shoot-through current pulse for ~100ns when switching. Always place a decoupling capacitor right across Pins 1 and 8.
+needsHumanVerification: false

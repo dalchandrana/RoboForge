@@ -5,6 +5,7 @@ import {
   validateExercise,
   validateModule,
   validatePath,
+  validateComponent,
 } from './index';
 
 describe('packages/content-schema', () => {
@@ -119,5 +120,29 @@ describe('packages/content-schema', () => {
       modules: ['m01-basics'],
     });
     expect(path.modules[0]).toBe('m01-basics');
+  });
+
+  it('validates a component library item', () => {
+    const comp = {
+      id: 'resistor-axial',
+      name: 'Resistor (1/4W)',
+      category: 'passive',
+      package: 'Axial Through-Hole',
+      description: 'Standard current-limiting resistor',
+      symbol: 'R',
+      pinout: [
+        { pin: 1, name: 'Lead 1', function: 'passive', description: 'Terminal 1' },
+        { pin: 2, name: 'Lead 2', function: 'passive', description: 'Terminal 2' },
+      ],
+      absoluteMaxRatings: {
+        power_mW: 250,
+        voltage_V: 250,
+      },
+      commonMistakes: ['Exceeding power rating leading to charred resistor'],
+      cheatSheetMarkdown: "## Resistor Cheat Sheet\nUse Ohm's Law V = I * R.",
+    };
+    const parsed = validateComponent(comp);
+    expect(parsed.id).toBe('resistor-axial');
+    expect(parsed.pinout).toHaveLength(2);
   });
 });

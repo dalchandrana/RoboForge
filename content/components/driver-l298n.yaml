@@ -1,0 +1,78 @@
+id: driver-l298n
+name: L298N Dual Full-Bridge Motor Driver Module
+aliases:
+  - H-Bridge Module
+  - L298 Dual Motor Controller
+  - Dual DC Motor Driver
+category: actuator
+package: Red PCB Breakout Module with Large Aluminum Heatsink and Screw Terminals
+description: Dual H-bridge high-power motor driver module based on the L298 bipolar integrated circuit. Capable of driving two DC brush motors with bi-directional rotation and PWM speed control, or one bipolar stepper motor.
+symbol: U
+pinout:
+  - pin: 1
+    name: +12V (VMS)
+    function: power
+    description: Motor supply power (+5V to +35V DC)
+  - pin: 2
+    name: GND
+    function: ground
+    description: Common circuit ground (must connect to Arduino GND!)
+  - pin: 3
+    name: +5V
+    function: power
+    description: 5V logic supply (outputs +5V from onboard regulator when 5V-EN jumper is installed)
+  - pin: 4
+    name: ENA
+    function: pwm
+    description: Motor A enable & PWM speed control input (active HIGH)
+  - pin: 5
+    name: IN1
+    function: gpio
+    description: Motor A direction input 1
+  - pin: 6
+    name: IN2
+    function: gpio
+    description: Motor A direction input 2
+  - pin: 7
+    name: IN3
+    function: gpio
+    description: Motor B direction input 1
+  - pin: 8
+    name: IN4
+    function: gpio
+    description: Motor B direction input 2
+  - pin: 9
+    name: ENB
+    function: pwm
+    description: Motor B enable & PWM speed control input (active HIGH)
+absoluteMaxRatings:
+  voltage_V: 35
+  current_mA: 2000
+  power_mW: 25000
+  tempMax_C: 130
+  notes: Maximum peak output current 2A per bridge. Bipolar transistors drop ~1.8V to 2.5V total voltage across the bridge.
+typicalOperatingConditions:
+  voltage_V: 6V - 12V (Motors), 5V (Logic)
+  current_mA: 200mA - 1200mA (Continuous per channel)
+protocols:
+  - pwm
+  - digital_gpio
+commonMistakes:
+  - Forgetting the common ground between the external motor battery and the Arduino; without common ground, logic signals have no reference voltage, causing erratic motor twitching.
+  - Leaving the 5V-EN onboard regulator jumper installed when feeding > 12V to the motor supply; causes the small onboard 78M05 linear regulator to overheat and burn out.
+  - Expecting full battery voltage at motor terminals; older bipolar L298 drop up to 2.0V internally as heat.
+cheatSheetMarkdown: |
+  ### L298N Direction & Speed Truth Table
+  | ENA (PWM) | IN1 | IN2 | Motor A Behavior |
+  |---|---|---|---|
+  | HIGH / 255 | HIGH | LOW | Forward full speed |
+  | HIGH / 255 | LOW | HIGH | Reverse full speed |
+  | PWM (0-255)| HIGH | LOW | Forward at variable speed |
+  | ANY | LOW | LOW | Fast motor brake / stop |
+  | LOW / 0 | ANY | ANY | Free-wheeling coast stop |
+
+  - **Onboard 5V Jumper Rule:**
+    - If motor voltage is $\le 12\,\text{V}$: Keep jumper **ON**. The module supplies 5V on the +5V terminal to power the Arduino.
+    - If motor voltage is $> 12\,\text{V}$: Remove jumper **OFF**, and provide external 5V to the +5V terminal.
+safetyNotes: Always connect the motor battery GND to Arduino GND. Never reverse motor power polarity on the terminal blocks.
+needsHumanVerification: false

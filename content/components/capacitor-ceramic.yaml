@@ -1,0 +1,38 @@
+id: capacitor-ceramic
+name: Ceramic Disc Capacitor (100nF / 0.1µF)
+aliases:
+  - 104 Capacitor
+  - Monolithic Ceramic Capacitor
+  - Bypass Capacitor
+category: passive
+package: Radial Through-Hole Disc / MLCC
+description: Non-polarized capacitor widely utilized for high-frequency noise filtering, power rail decoupling, and signal coupling across digital ICs.
+symbol: C
+pinout:
+  - pin: 1
+    name: Terminal 1
+    function: passive
+    description: Non-polarized lead
+  - pin: 2
+    name: Terminal 2
+    function: passive
+    description: Non-polarized lead
+absoluteMaxRatings:
+  voltage_V: 50
+  tempMax_C: 85
+  notes: Standard 50V DC breakdown rating. Exceeding breakdown causes dielectric punch-through short circuit.
+typicalOperatingConditions:
+  voltage_V: 3.3V - 12V
+  frequency: 10 kHz - 100 MHz
+protocols:
+  - none
+commonMistakes:
+  - Placing decoupling capacitor far away from IC power pins; traces introduce parasitic inductance that renders decoupling ineffective.
+  - Expecting large energy storage; 100nF is strictly for high-frequency spikes, not bulk energy storage.
+cheatSheetMarkdown: |
+  ### Ceramic Capacitor Quick Reference
+  - **Decoupling Rule:** Place one 100nF (0.1µF) ceramic capacitor as close as physically possible to the VCC and GND pins of every digital IC.
+  - **Marking Code '104':** 1st digit = 1, 2nd digit = 0, 3rd digit = 4 zeros in picofarads $\to 100,000\,\text{pF} = 100\,\text{nF} = 0.1\,\mu\text{F}$.
+  - **Non-Polarized:** Can be inserted into breadboard in either direction.
+safetyNotes: Safe for low-voltage school robotics circuits. Do not connect to mains AC voltages or high-voltage circuits.
+needsHumanVerification: false

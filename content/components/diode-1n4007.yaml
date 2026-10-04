@@ -1,0 +1,39 @@
+id: diode-1n4007
+name: 1N4007 1A Power Rectifier Diode
+aliases:
+  - 1A Rectifier
+  - Flyback Diode
+  - Free-Wheeling Diode
+category: semiconductor
+package: DO-41 Plastic Axial
+description: Standard silicon rectifier diode capable of handling 1.0A continuous forward current and up to 1000V reverse voltage, essential for inductive flyback suppression across motors, relays, and solenoids.
+symbol: D
+pinout:
+  - pin: 1
+    name: Anode
+    function: passive
+    description: Positive terminal
+  - pin: 2
+    name: Cathode
+    function: passive
+    description: Negative terminal marked by silver band
+absoluteMaxRatings:
+  voltage_V: 1000
+  current_mA: 1000
+  power_mW: 1000
+  tempMax_C: 150
+  notes: Continuous forward current limit is 1.0 A. Peak non-repetitive surge current limit is 30 A (8.3 ms half-sine).
+typicalOperatingConditions:
+  voltage_V: 0.7V - 1.1V (Forward Drop)
+  current_mA: 10mA - 1000mA
+protocols:
+  - none
+commonMistakes:
+  - Connecting flyback diode in forward bias across motor supply, creating a dead short across the power rails!
+  - Using for high-frequency switching power supplies (> 20 kHz); standard recovery time (30 µs) creates excessive switching losses.
+cheatSheetMarkdown: |
+  ### 1N4007 Flyback Quick Reference
+  - **Flyback Configuration:** Connect cathode (silver band) to positive motor rail ($V_{\text{motor}}$) and anode to the switched ground (transistor/MOSFET drain/collector).
+  - **Why Flyback Protection?** When a motor or relay coil is switched OFF abruptly, the collapsing magnetic field produces an inductive voltage spike: $V = -L \frac{di}{dt}$. Without a diode, this spike (often $> 100\,\text{V}$) destroys the switching transistor instantly.
+safetyNotes: Always install a flyback diode antiparallel across DC inductive loads (motors, solenoids, relays) to protect microcontrollers and driving transistors from inductive flyback spikes.
+needsHumanVerification: false

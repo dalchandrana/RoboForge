@@ -1,0 +1,43 @@
+id: led-5mm
+name: 5mm Standard Diffused LED
+aliases:
+  - Light Emitting Diode
+  - Indicator LED
+category: semiconductor
+package: 5mm Round Through-Hole (T-1 3/4)
+description: Semiconductor light source that emits photons when forward biased above its bandgap threshold. Requires a series resistor to prevent thermal runaway.
+symbol: LED
+pinout:
+  - pin: 1
+    name: Anode (+)
+    function: passive
+    description: Longer lead, connected to positive rail via resistor
+  - pin: 2
+    name: Cathode (-)
+    function: passive
+    description: Shorter lead, aligned with flat notch on epoxy lens edge
+absoluteMaxRatings:
+  voltage_V: 5
+  current_mA: 30
+  power_mW: 100
+  tempMax_C: 85
+  notes: Maximum continuous DC forward current is 25-30 mA. Peak reverse breakdown voltage is only 5V.
+typicalOperatingConditions:
+  voltage_V: 1.8V - 3.3V (Color Dependent)
+  current_mA: 10mA - 20mA
+protocols:
+  - none
+commonMistakes:
+  - Connecting directly across a 5V or 9V battery without a series current-limiting resistor, resulting in instantaneous burnout within 50 milliseconds.
+  - Reversing anode and cathode leads.
+cheatSheetMarkdown: |
+  ### 5mm LED Quick Reference
+  - **Color Forward Voltages ($V_f$ at $20\,\text{mA}$):**
+    - Red: $\approx 1.8 - 2.0\,\text{V}$
+    - Yellow / Orange: $\approx 2.0 - 2.2\,\text{V}$
+    - Green: $\approx 2.1 - 2.4\,\text{V}$
+    - Blue / Pure White: $\approx 3.0 - 3.4\,\text{V}$
+  - **Sizing Formula:** $R = \frac{V_{\text{source}} - V_f}{I_f}$
+    - For 5V Arduino driving Red LED ($2.0\,\text{V}$, $15\,\text{mA}$): $R = \frac{5 - 2}{0.015} = 200\,\Omega \to$ Use **$220\,\Omega$** standard E12 resistor.
+safetyNotes: Never connect an LED to a power source without a current-limiting resistor. The exponential diode I-V curve causes near-infinite current surge at forward threshold.
+needsHumanVerification: false

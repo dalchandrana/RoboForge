@@ -1,0 +1,37 @@
+id: capacitor-electrolytic
+name: Aluminum Electrolytic Capacitor (100µF 25V)
+aliases:
+  - Polarized Electrolytic Capacitor
+  - Bulk Smoothing Capacitor
+category: passive
+package: Radial Can (Through-Hole)
+description: Polarized capacitor providing high capacitance density, essential for low-frequency power supply filtering, smoothing rectified DC, and decoupling motor current surges.
+symbol: C
+pinout:
+  - pin: 1
+    name: Anode (+)
+    function: passive
+    description: Positive terminal (longer lead)
+  - pin: 2
+    name: Cathode (-)
+    function: passive
+    description: Negative terminal (shorter lead with white stripe on can)
+absoluteMaxRatings:
+  voltage_V: 25
+  tempMax_C: 105
+  notes: Strictly polarized. Reverse voltage exceeding 1.5V will cause internal gas buildup and rupture.
+typicalOperatingConditions:
+  voltage_V: 5V - 12V
+  frequency: 10 Hz - 100 kHz
+protocols:
+  - none
+commonMistakes:
+  - Reverse polarization (connecting negative stripe to positive rail) causes rapid heating, electrolyte venting, or pop.
+  - Exceeding rated breakdown voltage (e.g. connecting a 16V capacitor to a 24V supply).
+cheatSheetMarkdown: |
+  ### Electrolytic Capacitor Quick Reference
+  - **Polarity Identification:** The negative (-) lead is marked by a prominent stripe down the side of the cylindrical can and has a shorter physical wire lead.
+  - **Voltage De-rating:** Always choose a capacitor rated for at least $1.5\times$ to $2\times$ the maximum expected operating DC voltage.
+  - **RC Time Constant:** $\tau = R \times C$ (seconds). Full charge requires $\approx 5\tau$.
+safetyNotes: Never reverse polarity on electrolytic capacitors. In reverse bias, electrolysis generates hydrogen gas causing catastrophic casing rupture.
+needsHumanVerification: false
