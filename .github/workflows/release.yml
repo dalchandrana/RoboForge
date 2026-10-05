@@ -5,31 +5,44 @@ on:
     tags:
       - 'v*.*.*'
   workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Release Tag Name (e.g. v1.0.0)'
+        required: false
+        default: 'v1.0.0'
 
 permissions:
   contents: write
 
 jobs:
   build-bundles:
-    name: Build (${{ matrix.platform }})
+    name: Build (${{ matrix.name }})
     strategy:
       fail-fast: false
       matrix:
         include:
-          - platform: 'macos-14'
+          - name: 'macOS Apple Silicon'
+            platform: 'macos-14'
             args: '--target aarch64-apple-darwin'
+            rust-target: 'aarch64-apple-darwin'
             bundle-path: 'apps/desktop/src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/*.dmg'
             artifact-name: 'roboforge-macos-aarch64'
-          - platform: 'macos-13'
+          - name: 'macOS Intel'
+            platform: 'macos-14'
             args: '--target x86_64-apple-darwin'
+            rust-target: 'x86_64-apple-darwin'
             bundle-path: 'apps/desktop/src-tauri/target/x86_64-apple-darwin/release/bundle/dmg/*.dmg'
             artifact-name: 'roboforge-macos-x86_64'
-          - platform: 'ubuntu-22.04'
+          - name: 'Linux'
+            platform: 'ubuntu-22.04'
             args: ''
+            rust-target: ''
             bundle-path: 'apps/desktop/src-tauri/target/release/bundle/*/*'
             artifact-name: 'roboforge-linux'
-          - platform: 'windows-latest'
+          - name: 'Windows'
+            platform: 'windows-latest'
             args: ''
+            rust-target: ''
             bundle-path: 'apps/desktop/src-tauri/target/release/bundle/*/*'
             artifact-name: 'roboforge-windows'
     runs-on: ${{ matrix.platform }}
@@ -51,7 +64,7 @@ jobs:
       - name: Setup Rust toolchain
         uses: dtolnay/rust-toolchain@stable
         with:
-          targets: ${{ matrix.platform == 'macos-14' && 'aarch64-apple-darwin' || matrix.platform == 'macos-13' && 'x86_64-apple-darwin' || '' }}
+          targets: ${{ matrix.rust-target }}
 
       - name: Install Linux system dependencies
         if: matrix.platform == 'ubuntu-22.04'
@@ -105,6 +118,7 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ github.event.inputs.tag_name || github.ref_name }}
           files: release-assets/*
           generate_release_notes: true
           draft: false
